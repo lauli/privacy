@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="blue">#8fabd8</color>
+    <color name="brown">#cebb99</color>
+
+    <color name="paleGold">#c0b283</color>
+    <color name="silk">#dcd0c0</color>
+    <color name="paper">#f4f4f4</color>
+    <color name="charcoal">#373737</color>
+
+    <!-- Colors related to Corporate Design -->
+    <color name="grain">#D7CEC7</color>
+    <color name="blackboard">#2E2C29</color>
+    <color name="oxblood">#451818</color>
+    <color name="tan">#BEAD92</color>
+
+    <!-- Colors related to Gray Scheme -->
+    <color name="light_gray">#c2c7cc</color>
+    <color name="dark_gray">#3d454c</color>
+    <color name="dark_gray_pressed">#373e44</color>
+    <color name="darker_gray">#1f2226</color>
+</resources>

@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">PrivacyGame</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_client_register">Join Session</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">players name</string>
+    <string name="prompt_password">session ID</string>
+    <string name="action_sign_in">join</string>
+    <string name="action_sign_in_short">register</string>
+    <string name="error_invalid_email">This name is already used</string>
+    <string name="error_invalid_password">This ID is not known</string>
+    <string name="error_incorrect_password">This ID is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="client_register_join_button">join</string>
+    <string name="client_register_prompt_name">name</string>
+    <string name="client_register_prompt_sessionID">session ID</string>
+    <string name="title_activity_client_lobby">client_lobby</string>
+    <string name="create_or_join_informationText">Create:     A new game session will be created. \nYou will be the host and playmaker.  \nOthers will be able to join your session. \n\nJoin: Join an already created session by its unique ID. You will be a normal player.</string>
+    <string name="client_register_informationText">Please enter your name. \nIt will be user for identification during the game. \n\nPlease enter the ID of the play you want to join in. The session ID will be displayed at the host\'s app after a session was created.</string>
+
+    <!-- Strings related to actionbar -->
+    <string name="content_hint">Content</string>
+    <string name="drawer_hint">Drawer</string>
+    <string name="join">Join Session</string>
+    <string name="squared">See Squared</string>
+</resources>

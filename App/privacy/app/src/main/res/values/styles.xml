@@ -1,0 +1,38 @@
+<resources>
+    <!-- Base application theme. -->
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="@android:style/Theme.Holo.NoActionBar">
+        <item name="android:actionBarStyle">@style/ActionBarTheme</item>
+        <item name="android:buttonStyle">@style/ButtonTheme</item>
+        <item name="android:textColor">@color/blackboard</item>
+        <item name="android:textSize">14dp</item>
+        <item name="android:colorPrimaryDark">@color/blackboard</item>
+    </style>
+
+    <style name="AppStart" parent="@android:style/Theme.Holo.NoActionBar">
+        <item name="android:actionBarStyle">@style/ActionBarInvisible</item>
+    </style>
+
+
+
+    <style name="ActionBarInvisible" parent="@android:style/Widget.Holo.Light.ActionBar">
+    <item name= "android:visibility">invisible</item>
+    </style>
+
+    <style name="ActionBarTheme" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@color/oxblood</item>
+        <item name="android:textColor">@color/tan</item>
+    </style>
+
+    <style name="ButtonTheme" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@color/tan</item>
+        <item name="android:textColor">@color/oxblood</item>
+        <item name="android:textSize">24dp</item>
+    </style>
+
+    <style name="FormFloating" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:textColor">@color/oxblood</item>
+    </style>
+
+</resources>
