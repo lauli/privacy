@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:float="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     >
 
@@ -59,13 +60,25 @@
                       android:background="@color/tan">
 
             <!-- Login progress -->
-            <ProgressBar
+            <!--<ProgressBar-->
+                <!--android:id="@+id/host_register_progress"-->
+                <!--style="?android:attr/progressBarStyleLarge"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginBottom="8dp"-->
+                <!--android:visibility="gone" />-->
+
+            <com.rey.material.widget.ProgressView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
                 android:id="@+id/host_register_progress"
-                style="?android:attr/progressBarStyleLarge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:pv_autostart="true"
+                app:pv_circular="false"
+                app:pv_progressStyle="@style/Material.Drawable.CircularProgress"
+                app:pv_progressMode="indeterminate"
+                app:lpd_strokeColors="@array/progress"
+                />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -124,7 +137,12 @@
                             android:inputType="textFilter"
                             android:maxLines="1"
                             android:singleLine="true"
-                            android:textColor="@color/blackboard" />
+                            android:textColor="@color/blackboard"
+                            android:clickable="false"
+                            android:contextClickable="false"
+                            android:elegantTextHeight="false"
+                            android:editable="false"
+                            android:enabled="false"/>
                     </com.wrapp.floatlabelededittext.FloatLabeledEditText>
 
                     <Button

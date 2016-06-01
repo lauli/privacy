@@ -123,11 +123,11 @@ public class host_guess extends Activity implements AdapterView.OnItemSelectedLi
         // --------------------------------------------------------------------------------------------  actionbar End!
 
 
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapt = ArrayAdapter.createFromResource(this, R.array.spinner_elements, android.R.layout.simple_spinner_item);
-        adapt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapt);
-        spinner.setOnItemSelectedListener(this);
+//        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+//        ArrayAdapter<CharSequence> adapt = ArrayAdapter.createFromResource(this, R.array.spinner_elements, android.R.layout.simple_spinner_item);
+//        adapt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spinner.setAdapter(adapt);
+//        spinner.setOnItemSelectedListener(this);
     }
 
     public void onItemSelected(AdapterView<?> parent, View view,

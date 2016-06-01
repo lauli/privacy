@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:float="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     >
 
@@ -96,12 +97,23 @@
                 android:layout_gravity="right"
                 />
 
-            <Spinner
-                android:layout_width="wrap_content"
+            <!--<Spinner-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/spinner"-->
+                <!--android:background="@drawable/spinner_design"-->
+                <!--android:gravity="bottom|right"/>-->
+
+            <com.rey.material.widget.Slider
+                style="@style/Material.Widget.Slider"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/spinner"
-                android:background="@drawable/spinner_design"
-                android:gravity="bottom|right"/>
+                android:gravity="center"
+                app:sl_minValue="0"
+                app:sl_maxValue="8"
+                app:sl_value="4"
+                app:sl_discreteMode="true"
+                app:sl_primaryColor="@color/blackboard"/>
 
         </LinearLayout>
 
