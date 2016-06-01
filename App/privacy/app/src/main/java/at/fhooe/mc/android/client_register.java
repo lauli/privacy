@@ -149,8 +149,8 @@ public class client_register extends Activity implements  LoaderCallbacks<Cursor
 
             @Override public void onClick(View v) {
                 styleButton.setText(rounded //
-                        ? resources.getString(R.string.join) //
-                        : resources.getString(R.string.squared));
+                        ? resources.getString(R.string.join)
+                        : resources.getString(R.string.amazing));
 
                 rounded = !rounded;
 

@@ -15,7 +15,7 @@
     </style>
 
 
-
+<!-- Action Bars -->
     <style name="ActionBarInvisible" parent="@android:style/Widget.Holo.Light.ActionBar">
     <item name= "android:visibility">invisible</item>
     </style>
@@ -25,14 +25,31 @@
         <item name="android:textColor">@color/tan</item>
     </style>
 
+
+<!-- Button -->
     <style name="ButtonTheme" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@color/tan</item>
         <item name="android:textColor">@color/oxblood</item>
         <item name="android:textSize">24dp</item>
     </style>
 
+<!-- Register Form -->
     <style name="FormFloating" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:textColor">@color/oxblood</item>
+    </style>
+
+<!-- Question -->
+    <style name="Question" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:textColor">@color/oxblood</item>
+        <item name="android:textSize">18dp</item>
+        <item name="android:background">@color/tan</item>
+    </style>
+
+    <!-- Spinner -->
+    <style name="Spinner" parent="@android:style/Widget.Holo">
+        <item name="android:background">@color/tan</item>
+        <item name="android:textColor">@color/oxblood</item>
+        <item name="android:textSize">24dp</item>
     </style>
 
 </resources>

@@ -9,7 +9,9 @@
     <string name="create_or_join">Create Or Join A Session</string>
     <string name="join">Join Session</string>
     <string name="lobby">Lobby</string>
-    <string name="squared">See Squared</string>
+    <string name="question">Question</string>
+    <string name="guess">Guess</string>
+    <string name="amazing">You are amazing</string>
 
     <!-- Strings related to create or join -->
     <string name="create_or_join_informationText">Create:     A new game session will be created. \nYou will be the host and playmaker.  \nOthers will be able to join your session. \n\nJoin: Join an already created session by its unique ID. You will be a normal player.</string>
@@ -18,7 +20,7 @@
     <string name="prompt_email">players name</string>
     <string name="prompt_password">session ID</string>
     <string name="action_sign_in">join</string>
-    <string name="action_sign_in_short">join</string>
+    <string name="action_sign_in_short">close</string>
     <string name="error_invalid_email">This name is already used</string>
     <string name="error_invalid_password">This ID is not known</string>
     <string name="error_incorrect_password">This ID is incorrect</string>
@@ -32,5 +34,12 @@
 
     <!-- Strings related to lobby -->
     <string name="client_lobby_information">Please wait while other players join your session.\nThe game will start as soon as your host agrees to.</string>
+
+    <!-- Strings related to question -->
+    <string name="sample_question">Have you ever wanted to.. ?</string>
+    <string name="client_question_information">Please answer following question truthfully.\nYou will get to the next step after everyone has answered or your host has decided to continue manually.</string>
+
+    <!-- Strings related to question -->
+    <string name="client_guess_information">Now guess correctly how many of these players answered the last Question with YES - yourself included.</string>
 
 </resources>

@@ -1,42 +1,34 @@
 package at.fhooe.mc.android;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
-public class client_question extends Activity implements View.OnClickListener{
+public class client_guess extends Activity {
 
     private DrawerArrowDrawable drawerArrowDrawable;
     private float offset;
     private boolean flipped;
     private ListView drawerList;
 
-
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.client_question);
-
-        Button b = null;
-        b = (Button) findViewById(R.id.client_question_yes);
-        b.setOnClickListener(this);
-        b = (Button) findViewById(R.id.client_question_no);
-        b.setOnClickListener(this);
+        setContentView(R.layout.client_guess);
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
-        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.client_question_drawer_layout);
-        final ImageView imageView = (ImageView) findViewById(R.id.client_question_drawer_indicator);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.client_guess_drawer_layout);
+        final ImageView imageView = (ImageView) findViewById(R.id.client_guess_drawer_indicator);
         final Resources resources = getResources();
-        final ListView drawerList = (ListView) findViewById(R.id.client_question_drawer_list);
+        final ListView drawerList = (ListView) findViewById(R.id.client_guess_drawer_list);
 
         drawerArrowDrawable = new DrawerArrowDrawable(resources);
         drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
@@ -77,13 +69,13 @@ public class client_question extends Activity implements View.OnClickListener{
             }
         });
 
-        final TextView styleButton = (TextView) findViewById(R.id.client_question_indicator_style);
+        final TextView styleButton = (TextView) findViewById(R.id.client_guess_indicator_style);
         styleButton.setOnClickListener(new View.OnClickListener() {
             boolean rounded = false;
 
             @Override public void onClick(View v) {
                 styleButton.setText(rounded //
-                        ? resources.getString(R.string.question) //
+                        ? resources.getString(R.string.guess) //
                         : resources.getString(R.string.amazing));
 
                 rounded = !rounded;
@@ -97,12 +89,12 @@ public class client_question extends Activity implements View.OnClickListener{
             }
         });
         // --------------------------------------------------------------------------------------------  actionbar End!
-    }
 
-    @Override
-    public void onClick(View _view) {
-        Intent i = new Intent(this, client_guess.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
+
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapt = ArrayAdapter.createFromResource(this, R.array.spinner_elements, android.R.layout.simple_spinner_item);
+        adapt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapt);
+
     }
 }

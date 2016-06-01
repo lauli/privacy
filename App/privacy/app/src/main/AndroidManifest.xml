@@ -31,6 +31,8 @@
         <activity android:name=".create_or_join"/>
         <activity android:name=".client_question">
         </activity>
+        <activity android:name=".client_guess">
+        </activity>
     </application>
 
 </manifest>

@@ -83,8 +83,8 @@ public class create_or_join extends Activity implements View.OnClickListener{
 
             @Override public void onClick(View v) {
                 styleButton.setText(rounded //
-                        ? resources.getString(R.string.join) //
-                        : resources.getString(R.string.squared));
+                        ? resources.getString(R.string.create_or_join)
+                        : resources.getString(R.string.amazing));
 
                 rounded = !rounded;
 

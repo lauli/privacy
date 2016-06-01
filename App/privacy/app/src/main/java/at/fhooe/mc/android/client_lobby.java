@@ -95,8 +95,8 @@ public class client_lobby extends Activity implements View.OnClickListener{
 
             @Override public void onClick(View v) {
                 styleButton.setText(rounded //
-                        ? resources.getString(R.string.join) //
-                        : resources.getString(R.string.squared));
+                        ? resources.getString(R.string.lobby)
+                        : resources.getString(R.string.amazing));
 
                 rounded = !rounded;
 
@@ -114,7 +114,7 @@ public class client_lobby extends Activity implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-        Intent i = new Intent(this, client_register.class);
+        Intent i = new Intent(this, client_question.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
     }
