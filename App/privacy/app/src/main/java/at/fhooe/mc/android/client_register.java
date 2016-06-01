@@ -3,12 +3,8 @@ package at.fhooe.mc.android;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.ActionBar;
 import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -21,17 +17,11 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.view.GravityCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.EditText;
@@ -62,7 +52,7 @@ public class client_register extends Activity implements  LoaderCallbacks<Cursor
     private UserLoginTask mAuthTask = null;
 
     // UI references.
-    private AutoCompleteTextView mUsername;
+    private EditText mUsername;
     private EditText mSessionId;
     private View mProgressView;
     private View mJoinFormView;
@@ -76,8 +66,7 @@ public class client_register extends Activity implements  LoaderCallbacks<Cursor
         super.onCreate(savedInstanceState);
         setContentView(R.layout.client_register);
         // Set up the login form.
-        mUsername = (AutoCompleteTextView) findViewById(R.id.client_register_username);
-        populateAutoComplete();
+        mUsername = (EditText) findViewById(R.id.client_register_username);
 
 
         /*higi
@@ -88,7 +77,7 @@ public class client_register extends Activity implements  LoaderCallbacks<Cursor
         mSessionId.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                if (id == R.id.login || id == EditorInfo.IME_ACTION_DONE) {
                     attemptLogin();
                     return true;
                 }
@@ -101,7 +90,6 @@ public class client_register extends Activity implements  LoaderCallbacks<Cursor
             @Override
             public void onClick(View view) {
                 attemptLogin();
-
             }
         });
 
@@ -111,10 +99,10 @@ public class client_register extends Activity implements  LoaderCallbacks<Cursor
 
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
-        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        final ImageView imageView = (ImageView) findViewById(R.id.drawer_indicator);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.client_register_drawer_layout);
+        final ImageView imageView = (ImageView) findViewById(R.id.client_register_drawer_indicator);
         final Resources resources = getResources();
-        final ListView drawerList = (ListView) findViewById(R.id.drawer_list);
+        final ListView drawerList = (ListView) findViewById(R.id.client_register_drawer_list);
 
         drawerArrowDrawable = new DrawerArrowDrawable(resources);
         drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
@@ -175,11 +163,6 @@ public class client_register extends Activity implements  LoaderCallbacks<Cursor
             }
         });
         // --------------------------------------------------------------------------------------------  actionbar End!
-    }
-
-
-    private void populateAutoComplete() {
-        getLoaderManager().initLoader(0, null, this);
     }
 
 
@@ -312,21 +295,11 @@ public class client_register extends Activity implements  LoaderCallbacks<Cursor
             cursor.moveToNext();
         }
 
-        addEmailsToAutoComplete(emails);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
 
-    }
-
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(client_register.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-        mUsername.setAdapter(adapter);
     }
 
     @Override
@@ -406,17 +379,6 @@ public class client_register extends Activity implements  LoaderCallbacks<Cursor
             showProgress(false);
         }
 
-    }
-
-    public void hideKeyBoard(Activity activity) {
-        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        //Find the currently focused view, so we can grab the correct window token from it.
-        View view = activity.getCurrentFocus();
-        //If no view currently has focus, create a new one, just so we can grab a window token from it
-        if (view == null) {
-            view = new View(activity);
-        }
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }
 

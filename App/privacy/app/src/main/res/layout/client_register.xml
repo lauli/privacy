@@ -14,7 +14,7 @@
         >
 
         <ImageView
-            android:id="@+id/drawer_indicator"
+            android:id="@+id/client_register_drawer_indicator"
             android:layout_width="@dimen/actionbar_dimen"
             android:layout_height="@dimen/actionbar_dimen"
             android:scaleType="centerInside"
@@ -41,7 +41,7 @@
     <android.support.v4.widget.DrawerLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/drawer_layout"
+        android:id="@+id/client_register_drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -72,35 +72,39 @@
                 android:layout_height="wrap_content"
                 android:text="@string/client_register_informationText"
                 android:id="@+id/textView5"
-                android:layout_gravity="top"/>
+                android:layout_gravity="top"
+                />
 
             <ScrollView
                 android:id="@+id/client_register_scroll"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="40dp">
+                android:layout_marginTop="0dp">
 
                 <LinearLayout
                     android:id="@+id/email_login_form"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    >
+                    android:layout_gravity="bottom"
+                    android:foregroundGravity="bottom"
+                    android:baselineAligned="false">
 
                     <com.wrapp.floatlabelededittext.FloatLabeledEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         float:fletTextAppearance="@style/FormFloating">
 
-                        <AutoCompleteTextView
+                        <EditText
                             android:id="@+id/client_register_username"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/client_register_prompt_name"
-                            android:inputType="textPersonName"
+                            android:inputType="textFilter"
                             android:maxLines="1"
                             android:singleLine="true"
-                            android:textColor="@color/blackboard"/>
+                            android:textColor="@color/blackboard"
+                            />
 
                     </com.wrapp.floatlabelededittext.FloatLabeledEditText>
 
@@ -117,7 +121,7 @@
                             android:imeActionId="@+id/login"
                             android:imeActionLabel="@string/action_sign_in_short"
                             android:imeOptions="actionUnspecified"
-                            android:inputType="textPassword"
+                            android:inputType="textFilter"
                             android:maxLines="1"
                             android:singleLine="true"
                             android:textColor="@color/blackboard" />
@@ -126,12 +130,12 @@
                     <Button
                         android:id="@+id/client_register_join_button"
                         style="@style/ButtonTheme"
-                        android:layout_width="match_parent"
+                        android:layout_width="300dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
                         android:text="@string/client_register_join_button"
                         android:textStyle="bold"
-                        android:gravity="right"/>
+                        android:gravity="bottom|right"
+                        android:background="@drawable/button_design"/>
 
                 </LinearLayout>
             </ScrollView>
@@ -140,7 +144,7 @@
 
         <ListView xmlns:android="http://schemas.android.com/apk/res/android"
                   xmlns:tools="http://schemas.android.com/tools"
-                  android:id="@+id/drawer_list"
+                  android:id="@+id/client_register_drawer_list"
                   android:layout_width="120dp"
                   android:layout_height="match_parent"
                   android:background="#cccc"
