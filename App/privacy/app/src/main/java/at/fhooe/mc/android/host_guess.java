@@ -7,36 +7,60 @@ import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
-public class create_or_join extends Activity implements View.OnClickListener{
+import java.util.ArrayList;
 
+public class host_guess extends Activity implements AdapterView.OnItemSelectedListener, View.OnClickListener{
+
+    private ArrayList<String> listItems = new ArrayList<String>();
+    private ListView list;
 
     private DrawerArrowDrawable drawerArrowDrawable;
     private float offset;
     private boolean flipped;
     private ListView drawerList;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.create_or_join);
+        setContentView(R.layout.host_guess);
+
+        list = null;
+        list = (ListView) findViewById(R.id.host_guess_players_list);
+        list.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,listItems));
+        addItem();
+        addItem();
+        addItem();
+        addItem();
+        addItem();
+        addItem();
+        addItem();
+        addItem();
+        addItem();
+        addItem();
+        addItem();
+        addItem();
+        addItem();
+        addItem();
+        addItem();
+        addItem();
+
         Button b = null;
-        b = (Button) findViewById(R.id.create_or_join_create);
-        b.setOnClickListener(this);
-        b = (Button) findViewById(R.id.create_or_join_join);
+        b = (Button) findViewById(R.id.host_guess_continue);
         b.setOnClickListener(this);
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
-        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.create_or_join_drawer_layout);
-        final ImageView imageView = (ImageView) findViewById(R.id.create_or_join_drawer_indicator);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.host_guess_drawer_layout);
+        final ImageView imageView = (ImageView) findViewById(R.id.host_guess_drawer_indicator);
         final Resources resources = getResources();
-        final ListView drawerList = (ListView) findViewById(R.id.create_or_join_drawer_list);
+        final ListView drawerList = (ListView) findViewById(R.id.host_guess_drawer_list);
 
         drawerArrowDrawable = new DrawerArrowDrawable(resources);
         drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
@@ -45,7 +69,7 @@ public class create_or_join extends Activity implements View.OnClickListener{
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
-                new String[]{"Profile", "References", "Copyright"});
+                new String[]{"Name", "Points", "Picture", "", "Skip", "Quit"});
         drawerList.setAdapter(adapter);
 
 
@@ -77,13 +101,13 @@ public class create_or_join extends Activity implements View.OnClickListener{
             }
         });
 
-        final TextView styleButton = (TextView) findViewById(R.id.create_or_join_indicator_style);
+        final TextView styleButton = (TextView) findViewById(R.id.host_guess_indicator_style);
         styleButton.setOnClickListener(new View.OnClickListener() {
             boolean rounded = false;
 
             @Override public void onClick(View v) {
                 styleButton.setText(rounded //
-                        ? resources.getString(R.string.create_or_join)
+                        ? resources.getString(R.string.guess) //
                         : resources.getString(R.string.amazing));
 
                 rounded = !rounded;
@@ -99,23 +123,32 @@ public class create_or_join extends Activity implements View.OnClickListener{
         // --------------------------------------------------------------------------------------------  actionbar End!
 
 
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapt = ArrayAdapter.createFromResource(this, R.array.spinner_elements, android.R.layout.simple_spinner_item);
+        adapt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapt);
+        spinner.setOnItemSelectedListener(this);
+    }
+
+    public void onItemSelected(AdapterView<?> parent, View view,
+                               int pos, long id) {
+        // An item was selected. You can retrieve the selected item using
+        // parent.getItemAtPosition(pos)
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+        // Another interface callback
+    }
+
+    public void addItem(){
+        listItems.add("playername");
+        list.invalidate();
     }
 
     @Override
-    public void onClick(View _v) {
-        switch(_v.getId()){
-            case R.id.create_or_join_create : {
-                Intent i = new Intent(this, host_register.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(i);
-            }break;
-            case R.id.create_or_join_join : {
-                Intent i = new Intent(this, client_register.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(i);
-            }break;
-            default :
-        }
-
+    public void onClick(View _view) {
+        Intent i = new Intent(this, host_question.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
     }
 }

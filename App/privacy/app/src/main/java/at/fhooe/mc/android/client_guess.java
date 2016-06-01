@@ -6,13 +6,19 @@ import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class client_guess extends Activity {
+import java.util.ArrayList;
+
+public class client_guess extends Activity implements AdapterView.OnItemSelectedListener{
+
+    private ArrayList<String> listItems = new ArrayList<String>();
+    private ListView list;
 
     private DrawerArrowDrawable drawerArrowDrawable;
     private float offset;
@@ -23,6 +29,14 @@ public class client_guess extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.client_guess);
+
+        list = null;
+        list = (ListView) findViewById(R.id.client_guess_players_list);
+        list.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,listItems));
+        addItem();
+        addItem();
+        addItem();
+        addItem();
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.client_guess_drawer_layout);
@@ -95,6 +109,21 @@ public class client_guess extends Activity {
         ArrayAdapter<CharSequence> adapt = ArrayAdapter.createFromResource(this, R.array.spinner_elements, android.R.layout.simple_spinner_item);
         adapt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapt);
+        spinner.setOnItemSelectedListener(this);
+    }
 
+    public void onItemSelected(AdapterView<?> parent, View view,
+                               int pos, long id) {
+        // An item was selected. You can retrieve the selected item using
+        // parent.getItemAtPosition(pos)
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+        // Another interface callback
+    }
+
+    public void addItem(){
+        listItems.add("playername");
+        list.invalidate();
     }
 }

@@ -33,6 +33,12 @@
         </activity>
         <activity android:name=".client_guess">
         </activity>
+
+        <activity android:name=".host_register"></activity>
+        <activity android:name=".host_lobby"></activity>
+        <activity android:name=".host_question"></activity>
+        <activity android:name=".host_voted"></activity>
+        <activity android:name=".host_guess"></activity>
     </application>
 
 </manifest>
