@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/action_id"
+          android:icon="@drawable/privacy_logo"
+          android:title="@string/actionbar_id"
+          android:showAsAction="ifRoom" />
+    <item android:id="@+id/action_name"
+          android:icon="@drawable/privacy_logo"
+          android:title="@string/actionbar_name"
+          android:showAsAction="ifRoom" />
+    <item android:id="@+id/action_points"
+          android:icon="@drawable/privacy_logo"
+          android:title="@string/actionbar_points"
+          android:showAsAction="ifRoom" />
+    <item android:id="@+id/action_language"
+          android:icon="@drawable/privacy_logo"
+          android:title="@string/actionbar_lang"
+          android:showAsAction="ifRoom" />
+    <item android:id="@+id/action_skip"
+          android:icon="@drawable/privacy_logo"
+          android:title="@string/actionbar_skip"
+          android:showAsAction="ifRoom" />
+    <item android:id="@+id/action_quit"
+          android:title="@string/actionbar_quit"
+          android:showAsAction="never" />
+    <item android:id="@+id/action_credits"
+          android:title="@string/actionbar_credits"
+          android:showAsAction="never" />
+</menu>

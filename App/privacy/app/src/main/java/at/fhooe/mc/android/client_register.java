@@ -107,11 +107,19 @@ public class client_register extends Activity implements  LoaderCallbacks<Cursor
         drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
         imageView.setImageDrawable(drawerArrowDrawable);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                new String[]{"credits"});
-        drawerList.setAdapter(adapter);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+//                this,
+//                android.R.layout.simple_list_item_1,
+//                new String[]{"Name: -", "Points: -", "Picture", "", "Skip", "Quit"});
+//        drawerList.setAdapter(adapter);
+
+        String[] oben = {"#123456789", "Name", "Points",
+                "Language", "Skip", "Quit", "Credits"};
+
+        String[] unten = {"", "laureen", "1000", "-", "", "", ""};
+
+        MyAdapter myAdapter = new MyAdapter(this, oben, unten);
+        drawerList.setAdapter(myAdapter);
 
 
         drawer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {

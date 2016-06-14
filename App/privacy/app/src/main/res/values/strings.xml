@@ -56,4 +56,16 @@
     <!-- Strings related to voted -->
     <string name="host_voted_information">Please wait while other players answer the question.\nWhen all players answered, the next step will automatically appear. But you can manually start it by clicking continue.\nWarning: When you click continue while others haven\'t answered yet, they won\'t be able to participate in this round. They can join again with the following question. </string>
 
+
+
+    <!-- Strings related to ActionBar -->
+    <string name="actionbar_id">#12345679</string>
+    <string name="actionbar_name">Name: </string>
+    <string name="actionbar_points">Points: </string>
+    <string name="actionbar_lang">Language: </string>
+    <string name="actionbar_skip">Skip Q</string>
+    <string name="actionbar_quit">Quit</string>
+    <string name="actionbar_credits">Credits</string>
+
+
 </resources>
