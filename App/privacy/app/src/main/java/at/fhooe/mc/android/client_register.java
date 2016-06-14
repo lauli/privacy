@@ -14,9 +14,11 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.ContactsContract;
 import android.support.v4.view.GravityCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,6 +30,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,10 +72,6 @@ public class client_register extends Activity implements  LoaderCallbacks<Cursor
         mUsername = (EditText) findViewById(R.id.client_register_username);
 
 
-        /*higi
-        TODO: Keyboard verstecken !!
-         */
-
         mSessionId = (EditText) findViewById(R.id.client_register_sessionID);
         mSessionId.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -111,7 +110,7 @@ public class client_register extends Activity implements  LoaderCallbacks<Cursor
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
-                new String[]{"Name", "Points", "Picture", "", "Skip", "Quit"});
+                new String[]{"credits"});
         drawerList.setAdapter(adapter);
 
 
@@ -341,6 +340,8 @@ public class client_register extends Activity implements  LoaderCallbacks<Cursor
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
+
+
             try {
                 // Simulate network access.
                 Thread.sleep(2000);
@@ -356,7 +357,29 @@ public class client_register extends Activity implements  LoaderCallbacks<Cursor
                 }
             }
 
-            // TODO: register the new account here.
+
+            Looper.prepare();
+            additional_methodes helper = additional_methodes.getInstance();
+            try {
+                helper.registerClient(1, mName);
+                Thread.sleep(5000);
+            } catch (RuntimeException _e) {
+                    Log.i("", "A failure accured while trying to register. Plz try again");
+            } catch (InterruptedException _e){
+                Log.i("", "A failure accured while trying to register. Plz try again");
+            }
+
+            try {
+                helper.joinGame(helper.getUserID(), mSessionID);
+                Thread.sleep(5000);
+            }
+            catch(RuntimeException _e){
+                    Log.i("", "A failure accured while trying to join a session. Plz try again");
+            }catch (InterruptedException _e){
+                Log.i("", "A failure accured while trying to register. Plz try again");
+            }
+
+
             return true;
         }
 

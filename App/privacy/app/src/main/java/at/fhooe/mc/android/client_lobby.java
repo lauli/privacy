@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.app.Activity;
+import android.os.Looper;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -25,6 +27,8 @@ public class client_lobby extends Activity implements View.OnClickListener{
     private float offset;
     private boolean flipped;
     private ListView drawerList;
+
+    additional_methodes helper = additional_methodes.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,14 @@ public class client_lobby extends Activity implements View.OnClickListener{
         addItem("playername");
         addItem("playername");
 
+        try {
+            additional_methodes helper = additional_methodes.getInstance();
+            Toast.makeText(getApplicationContext(), helper.getName() + "s ID = " + helper.getUserID(), Toast.LENGTH_SHORT).show();
+        }catch (RuntimeException _e){
+            return;
+        }
+
+
         Button b = null;
         b = (Button) findViewById(R.id.client_lobby_continue);
         b.setOnClickListener(this);
@@ -69,7 +81,7 @@ public class client_lobby extends Activity implements View.OnClickListener{
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
-                new String[]{"Name", "Points", "Picture", "", "Skip", "Quit"});
+                new String[]{"Name: " + helper.getName(), "Points: ", "Language: " + helper.getLanguage(), "Skip", "Quit", "Credits"});
         drawerList.setAdapter(adapter);
 
 
