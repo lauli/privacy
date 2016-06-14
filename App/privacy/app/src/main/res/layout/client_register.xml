@@ -53,8 +53,6 @@
                       android:layout_height="match_parent"
                       android:orientation="vertical"
                       android:paddingBottom="@dimen/activity_vertical_margin"
-                      android:paddingLeft="@dimen/activity_horizontal_margin"
-                      android:paddingRight="@dimen/activity_horizontal_margin"
                       android:paddingTop="@dimen/activity_vertical_margin"
                       tools:context="at.fhooe.mc.android.client_register"
                       android:background="@color/tan">
@@ -78,7 +76,8 @@
                 app:pv_progressStyle="@style/Material.Drawable.CircularProgress"
                 app:pv_progressMode="indeterminate"
                 app:lpd_strokeColors="@array/progress"
-                />
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -86,6 +85,8 @@
                 android:text="@string/client_register_informationText"
                 android:id="@+id/textView5"
                 android:layout_gravity="top"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
                 />
 
             <ScrollView
@@ -106,7 +107,9 @@
                     <com.wrapp.floatlabelededittext.FloatLabeledEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        float:fletTextAppearance="@style/FormFloating">
+                        float:fletTextAppearance="@style/FormFloating"
+                        android:paddingLeft="@dimen/activity_horizontal_margin"
+                        android:paddingRight="@dimen/activity_horizontal_margin">
 
                         <EditText
                             android:id="@+id/client_register_username"
@@ -117,6 +120,8 @@
                             android:maxLines="1"
                             android:singleLine="true"
                             android:textColor="@color/blackboard"
+                            android:paddingLeft="@dimen/activity_horizontal_margin"
+                            android:paddingRight="@dimen/activity_horizontal_margin"
                             />
 
                     </com.wrapp.floatlabelededittext.FloatLabeledEditText>
@@ -124,7 +129,9 @@
                     <com.wrapp.floatlabelededittext.FloatLabeledEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        float:fletTextAppearance="@style/FormFloating">
+                        float:fletTextAppearance="@style/FormFloating"
+                        android:paddingLeft="@dimen/activity_horizontal_margin"
+                        android:paddingRight="@dimen/activity_horizontal_margin">
 
                         <EditText
                             android:id="@+id/client_register_sessionID"
@@ -137,7 +144,9 @@
                             android:inputType="textFilter"
                             android:maxLines="1"
                             android:singleLine="true"
-                            android:textColor="@color/blackboard" />
+                            android:textColor="@color/blackboard"
+                            android:paddingLeft="@dimen/activity_horizontal_margin"
+                            android:paddingRight="@dimen/activity_horizontal_margin"/>
                     </com.wrapp.floatlabelededittext.FloatLabeledEditText>
 
                     <Button

@@ -35,22 +35,22 @@ public class host_guess extends Activity implements AdapterView.OnItemSelectedLi
         list = null;
         list = (ListView) findViewById(R.id.host_guess_players_list);
         list.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,listItems));
-        addItem();
-        addItem();
-        addItem();
-        addItem();
-        addItem();
-        addItem();
-        addItem();
-        addItem();
-        addItem();
-        addItem();
-        addItem();
-        addItem();
-        addItem();
-        addItem();
-        addItem();
-        addItem();
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
 
         Button b = null;
         b = (Button) findViewById(R.id.host_guess_continue);
@@ -140,8 +140,8 @@ public class host_guess extends Activity implements AdapterView.OnItemSelectedLi
         // Another interface callback
     }
 
-    public void addItem(){
-        listItems.add("playername");
+    public void addItem(String name){
+        listItems.add(name);
         list.invalidate();
     }
 

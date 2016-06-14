@@ -32,6 +32,9 @@ public class client_question extends Activity implements View.OnClickListener{
         b = (Button) findViewById(R.id.client_question_no);
         b.setOnClickListener(this);
 
+        TextView question = (TextView) findViewById(R.id.question);
+        question.setText("Have you ever wanted to.. ");
+
         // --------------------------------------------------------------------------------------------  actionbar Start!
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.client_question_drawer_layout);
         final ImageView imageView = (ImageView) findViewById(R.id.client_question_drawer_indicator);

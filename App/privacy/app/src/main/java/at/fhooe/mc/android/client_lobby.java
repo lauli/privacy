@@ -35,10 +35,22 @@ public class client_lobby extends Activity implements View.OnClickListener{
         list = null;
         list = (ListView) findViewById(R.id.client_lobby_players_list);
         list.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,listItems));
-        addItem();
-        addItem();
-        addItem();
-        addItem();
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
 
         Button b = null;
         b = (Button) findViewById(R.id.client_lobby_continue);
@@ -119,8 +131,8 @@ public class client_lobby extends Activity implements View.OnClickListener{
         startActivity(i);
     }
 
-    public void addItem(){
-        listItems.add("playername");
+    public void addItem(String name){
+        listItems.add(name);
         list.invalidate();
     }
 }

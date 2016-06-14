@@ -33,10 +33,22 @@ public class client_guess extends Activity implements AdapterView.OnItemSelected
         list = null;
         list = (ListView) findViewById(R.id.client_guess_players_list);
         list.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,listItems));
-        addItem();
-        addItem();
-        addItem();
-        addItem();
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.client_guess_drawer_layout);
@@ -122,8 +134,8 @@ public class client_guess extends Activity implements AdapterView.OnItemSelected
         // Another interface callback
     }
 
-    public void addItem(){
-        listItems.add("playername");
+    public void addItem(String name){
+        listItems.add(name);
         list.invalidate();
     }
 }
