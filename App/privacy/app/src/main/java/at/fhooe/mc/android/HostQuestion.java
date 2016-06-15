@@ -13,12 +13,16 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
 public class HostQuestion extends Activity implements View.OnClickListener{
 
     private DrawerArrowDrawable drawerArrowDrawable;
     private float offset;
     private boolean flipped;
     private ListView drawerList;
+
+    AdditionalMethods helper = AdditionalMethods.getInstance();
 
 
     @Override
@@ -45,12 +49,19 @@ public class HostQuestion extends Activity implements View.OnClickListener{
         drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
         imageView.setImageDrawable(drawerArrowDrawable);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                new String[]{"Name", "Points", "Picture", "", "Skip", "Quit"});
-        drawerList.setAdapter(adapter);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+//                this,
+//                android.R.layout.simple_list_item_1,
+//                new String[]{"Name", "Points", "Picture", "", "Skip", "Quit"});
+//        drawerList.setAdapter(adapter);
 
+        String[] oben = {"# " + helper.getGameIdString(), "Name", "Points",
+                "Language", "Skip", "Quit", "Credits"};
+
+        String[] unten = {  "", helper.getName(), helper.getPointsString(), helper.getLanguage(),
+                            "skip this question", "quit this game", "thanks for help"};
+        MyAdapter myAdapter = new MyAdapter(this, oben, unten);
+        drawerList.setAdapter(myAdapter);
 
         drawer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
@@ -104,6 +115,31 @@ public class HostQuestion extends Activity implements View.OnClickListener{
 
     @Override
     public void onClick(View _view) {
+        switch (_view.getId()){
+            case R.id.host_question_yes : {
+                helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.getQuestionId(), 1, 0, new OnJSONResponseCallback() {
+                    @Override
+                    public void onJSONResponse(boolean success, JSONObject response) {
+                        Intent i = new Intent(HostQuestion.this, HostVoted.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+                    }
+                });
+            } break;
+            case R.id.host_question_no : {
+                helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.getQuestionId(), 2, 0, new OnJSONResponseCallback() {
+                    @Override
+                    public void onJSONResponse(boolean success, JSONObject response) {
+                        Intent i = new Intent(HostQuestion.this, HostVoted.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+                    }
+                });
+            } break;
+            default : {}
+        }
+
+
         Intent i = new Intent(this, HostVoted.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);

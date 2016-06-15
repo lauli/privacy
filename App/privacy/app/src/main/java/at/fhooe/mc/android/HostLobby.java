@@ -90,11 +90,20 @@ public class HostLobby extends Activity implements View.OnClickListener{
         drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
         imageView.setImageDrawable(drawerArrowDrawable);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                new String[]{"Name", "Points", "Picture", "", "Skip", "Quit"});
-        drawerList.setAdapter(adapter);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+//                this,
+//                android.R.layout.simple_list_item_1,
+//                new String[]{"Name", "Points", "Picture", "", "Skip", "Quit"});
+//        drawerList.setAdapter(adapter);
+
+
+        String[] oben = {"# " + helper.getGameIdString(), "Name", "Points",
+                "Language", "Skip", "Quit", "Credits"};
+
+        String[] unten = {  "", helper.getName(), helper.getPointsString(), helper.getLanguage(),
+                "skip this question", "quit this game", "thanks for help"};
+        MyAdapter myAdapter = new MyAdapter(this, oben, unten);
+        drawerList.setAdapter(myAdapter);
 
 
         drawer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {

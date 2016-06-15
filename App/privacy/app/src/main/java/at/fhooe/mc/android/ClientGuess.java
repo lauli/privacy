@@ -25,6 +25,8 @@ public class ClientGuess extends Activity implements AdapterView.OnItemSelectedL
     private boolean flipped;
     private ListView drawerList;
 
+    AdditionalMethods helper = AdditionalMethods.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,12 +62,19 @@ public class ClientGuess extends Activity implements AdapterView.OnItemSelectedL
         drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
         imageView.setImageDrawable(drawerArrowDrawable);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                new String[]{"Name", "Points", "Picture", "", "Skip", "Quit"});
-        drawerList.setAdapter(adapter);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+//                this,
+//                android.R.layout.simple_list_item_1,
+//                new String[]{"Name", "Points", "Picture", "", "Skip", "Quit"});
+//        drawerList.setAdapter(adapter);
 
+
+        String[] oben = {"# " + helper.getGameIdString(), "Name", "Points",
+                "Language", "Quit", "Credits"};
+
+        String[] unten = {"", helper.getName(),  helper.getPointsString(), helper.getLanguage(), "quit this game", "thanks for help"};
+        MyAdapter myAdapter = new MyAdapter(this, oben, unten);
+        drawerList.setAdapter(myAdapter);
 
         drawer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override

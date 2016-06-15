@@ -93,12 +93,17 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
         drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
         imageView.setImageDrawable(drawerArrowDrawable);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                new String[]{"Name", "Points", "Picture", "", "Skip", "Quit"});
-        drawerList.setAdapter(adapter);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+//                this,
+//                android.R.layout.simple_list_item_1,
+//                new String[]{"Name", "Points", "Picture", "", "Skip", "Quit"});
+//        drawerList.setAdapter(adapter);
 
+        String[] oben = {"# SessionId", "Credits"};
+
+        String[] unten = {"", "thanks for help"};
+        MyAdapter myAdapter = new MyAdapter(this, oben, unten);
+        drawerList.setAdapter(myAdapter);
 
         drawer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override

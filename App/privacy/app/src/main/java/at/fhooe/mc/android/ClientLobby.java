@@ -101,11 +101,20 @@ public class ClientLobby extends Activity implements View.OnClickListener{
         drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
         imageView.setImageDrawable(drawerArrowDrawable);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                new String[]{"Name: " + helper.getName(), "Points: ", "Language: " + helper.getLanguage(), "Skip", "Quit", "Credits"});
-        drawerList.setAdapter(adapter);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+//                this,
+//                android.R.layout.simple_list_item_1,
+//                new String[]{"Name: " + helper.getName(), "Points: ", "Language: " + helper.getLanguage(), "Skip", "Quit", "Credits"});
+//        drawerList.setAdapter(adapter);
+
+        String[] oben = {"# " + helper.getGameIdString(), "Name", "Points",
+                "Language", "Quit", "Credits"};
+
+        String[] unten = {"", helper.getName(),  helper.getPointsString(), helper.getLanguage(), "quit this game", "thanks for help"};
+        MyAdapter myAdapter = new MyAdapter(ClientLobby.this, oben, unten);
+        drawerList.setAdapter(myAdapter);
+
+
 
 
         drawer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {

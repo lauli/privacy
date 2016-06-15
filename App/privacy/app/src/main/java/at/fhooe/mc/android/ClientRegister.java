@@ -117,11 +117,9 @@ public class ClientRegister extends Activity implements  LoaderCallbacks<Cursor>
 //                new String[]{"Name: -", "Points: -", "Picture", "", "Skip", "Quit"});
 //        drawerList.setAdapter(adapter);
 
-        String[] oben = {"#123456789", "Name", "Points",
-                "Language", "Skip", "Quit", "Credits"};
+        String[] oben = {"# SessionId", "Credits"};
 
-        String[] unten = {"", "laureen", "1000", "-", "", "", ""};
-
+        String[] unten = {"", "thanks for help"};
         MyAdapter myAdapter = new MyAdapter(this, oben, unten);
         drawerList.setAdapter(myAdapter);
 

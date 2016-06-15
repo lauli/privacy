@@ -61,7 +61,9 @@ public class AdditionalMethods {
     protected int gameId;
     protected int questionId;
     protected String[] players;
+    protected String[] answeredPlayers;
     protected String question;
+    protected int points = 0;
 
 
     public static AdditionalMethods getInstance() {
@@ -78,6 +80,8 @@ public class AdditionalMethods {
         return gameId;
     }
 
+    public String getGameIdString(){return Integer.toString(gameId);}
+
     public int getQuestionId(){ return questionId; }
 
     public String getName(){
@@ -92,7 +96,13 @@ public class AdditionalMethods {
 
     public String[] getPlayers(){ return players;}
 
+    public String[] getAnsweredPlayers(){ return answeredPlayers;}
+
     public String getQuestion(){ return question;}
+
+    public int getPoints(){ return points;}
+
+    public String getPointsString(){ return Integer.toString(points);}
 
     public RequestHandle executeSample(AsyncHttpClient client,
                                        String URL,
@@ -324,14 +334,12 @@ public class AdditionalMethods {
     }
 
     protected void getAnsweredUsers(int gameId,  final OnJSONResponseCallback callback) {
-        AsyncHttpClient client = new AsyncHttpClient();
+        SyncHttpClient client = new SyncHttpClient();
 
-        gameId = 1;
 
         RequestParams params = new RequestParams();
         params.put("game_id", gameId);
-
-        client.post(getAnsweredUsersURL(), params, new TextHttpResponseHandler() {
+        client.post(forceNextQuestionURL(), params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
                 callback.onJSONResponse(false, null);
@@ -340,9 +348,25 @@ public class AdditionalMethods {
             @Override
             public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
                 Log.i(LOG_TAG,"getAnsweredUsers was a success.");
-                String firstEvent = responseString;
+                JSONObject json;
 
-                callback.onJSONResponse(true, null);
+                try {
+                    json = new JSONObject(responseString);
+
+                    JSONArray array = json.getJSONArray("Players");
+
+                    String[] name = new String[array.length()];
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject obj = array.getJSONObject(i);
+                        name[i] = obj.getString("title");
+                    }
+
+                    answeredPlayers = new String[name.length];
+                    callback.onJSONResponse(true, null);
+                } catch (JSONException _e) {
+                    // TODO: error handling
+                    _e.printStackTrace();
+                }
             }
         });
     }
@@ -514,7 +538,7 @@ public class AdditionalMethods {
     }
 
     protected void getQuestionByUserAndGameId(int userId, int gameId, final OnJSONResponseCallback callback) {
-        AsyncHttpClient client = new AsyncHttpClient();
+        SyncHttpClient client = new SyncHttpClient();
 
 
         RequestParams params = new RequestParams();
@@ -533,8 +557,10 @@ public class AdditionalMethods {
 
                 try {
                     json = new JSONObject(responseString);
-                    questionId = json.getInt("id");
-                    question = json.getString("title");
+                    JSONArray arrayId = json.getJSONArray("id");
+                    JSONArray arrayQ = json.getJSONArray("title");
+                    questionId = arrayId.getInt(0);
+                    question = arrayQ.getString(0);
                     callback.onJSONResponse(true, null);
                 } catch (JSONException _e) {
                     // TODO: error handling
@@ -544,6 +570,33 @@ public class AdditionalMethods {
         });
     }
 
+
+    protected void answerQuestion(int user_id, int game_id,int question_id, int yn_answer, int cnt_answer, final OnJSONResponseCallback callback) {
+       // yn_answer ---->     1 == true , 2 == false
+
+        AsyncHttpClient client = new AsyncHttpClient();
+
+
+        RequestParams params = new RequestParams();
+        params.put("user_id", user_id);
+        params.put("game_id", game_id);
+        params.put("question_id", question_id);
+        params.put("yn_answer", yn_answer);
+        params.put("cnt_answer", cnt_answer);
+        client.post(forceNextQuestionURL(), params, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
+                callback.onJSONResponse(false, null);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
+                Log.i(LOG_TAG,"answerQuestion was a success.");
+                //returns true when success
+                callback.onJSONResponse(true, null);
+            }
+        });
+    }
 
     public int toInt( byte[] bytes ) {
         int result = 0;

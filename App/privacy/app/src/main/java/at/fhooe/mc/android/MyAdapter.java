@@ -54,4 +54,8 @@ public class MyAdapter extends BaseAdapter {
         return rowView;
     }
 
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+    }
 }
