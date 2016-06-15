@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class HostLobby extends Activity implements View.OnClickListener{
+public class ClientStatistics extends Activity implements View.OnClickListener{
 
     private ArrayList<String> listItems = new ArrayList<String>();
     private ListView list;
@@ -29,28 +30,24 @@ public class HostLobby extends Activity implements View.OnClickListener{
     private float offset;
     private boolean flipped;
     private ListView drawerList;
-
-    Timer timer;
     private ArrayAdapter<String> adapter;
+    Timer timer;
 
+    AdditionalMethods helper = AdditionalMethods.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.host_lobby);
+        setContentView(R.layout.client_statistics);
 
-        Button id = null;
-        id = (Button) findViewById(R.id.host_lobby_players);
-        AdditionalMethods helper = AdditionalMethods.getInstance();
-        id.setText("ID: " + helper.getGameId());
 
-        list = null;
-        list = (ListView) findViewById(R.id.host_lobby_players_list);
+        list = (ListView) findViewById(R.id.client_statistics_players_list);
         this.adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
         list.setAdapter(this.adapter);
 
         final Handler handler = new Handler();
-        int delay = 2000;   // delay for 2 sec.
+
+        int delay = 2000;   // delay for 5 sec.
         int interval = 5000;  // iterate every sec.
         timer = new Timer();
 
@@ -77,15 +74,24 @@ public class HostLobby extends Activity implements View.OnClickListener{
         }, delay, interval);
 
 
+
+        try {
+            Toast.makeText(getApplicationContext(), helper.getName() + "s ID = " + helper.getUserID(), Toast.LENGTH_SHORT).show();
+        }catch (RuntimeException _e){
+            return;
+        }
+
+
+
         Button b = null;
-        b = (Button) findViewById(R.id.host_lobby_continue);
+        b = (Button) findViewById(R.id.client_statistics_continue);
         b.setOnClickListener(this);
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
-        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.host_lobby_drawer_layout);
-        final ImageView imageView = (ImageView) findViewById(R.id.host_lobby_drawer_indicator);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.client_statistics_drawer_layout);
+        final ImageView imageView = (ImageView) findViewById(R.id.client_statistics_drawer_indicator);
         final Resources resources = getResources();
-        final ListView drawerList = (ListView) findViewById(R.id.host_lobby_drawer_list);
+        final ListView drawerList = (ListView) findViewById(R.id.client_statistics_drawer_list);
 
         drawerArrowDrawable = new DrawerArrowDrawable(resources);
         drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
@@ -94,17 +100,17 @@ public class HostLobby extends Activity implements View.OnClickListener{
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 //                this,
 //                android.R.layout.simple_list_item_1,
-//                new String[]{"Name", "Points", "Picture", "", "Skip", "Quit"});
+//                new String[]{"Name: " + helper.getName(), "Points: ", "Language: " + helper.getLanguage(), "Skip", "Quit", "Credits"});
 //        drawerList.setAdapter(adapter);
 
-
         String[] oben = {"# " + helper.getGameIdString(), "Name", "Points",
-                "Language", "Skip", "Quit", "Credits"};
+                "Language", "Quit", "Credits"};
 
-        String[] unten = {  "", helper.getName(), helper.getPointsString(), helper.getLanguage(),
-                "skip this question", "quit this game", "thanks for help"};
-        MyAdapter myAdapter = new MyAdapter(this, oben, unten);
+        String[] unten = {"", helper.getName(),  helper.getPointsString(), helper.getLanguage(), "quit this game", "thanks for help"};
+        MyAdapter myAdapter = new MyAdapter(ClientStatistics.this, oben, unten);
         drawerList.setAdapter(myAdapter);
+
+
 
 
         drawer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
@@ -135,7 +141,7 @@ public class HostLobby extends Activity implements View.OnClickListener{
             }
         });
 
-        final TextView styleButton = (TextView) findViewById(R.id.host_lobby_indicator_style);
+        final TextView styleButton = (TextView) findViewById(R.id.client_statistics_indicator_style);
         styleButton.setOnClickListener(new View.OnClickListener() {
             boolean rounded = false;
 
@@ -159,17 +165,11 @@ public class HostLobby extends Activity implements View.OnClickListener{
     }
 
     @Override
-    public void onClick(View _view) {
-        switch (_view.getId()){
-            case R.id.host_lobby_continue :{
-                timer.cancel();
-                Intent i = new Intent(this, HostQuestion.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(i);
-            } break;
-            default : {}
-        }
-
+    public void onClick(View view) {
+        timer.cancel();
+        Intent i = new Intent(this, ClientQuestion.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
     }
 
     public void addItem(String name){
@@ -185,6 +185,23 @@ public class HostLobby extends Activity implements View.OnClickListener{
         if (!foundEqual) {
             adapter.add(name);
             adapter.notifyDataSetChanged();
+        }
+    }
+
+    private class callPlayers extends TimerTask {
+        @Override
+        public void run() {
+            final AdditionalMethods helper = AdditionalMethods.getInstance();
+            helper.getPlayersInGame(helper.getGameId(), new OnJSONResponseCallback() {
+                @Override
+                public void onJSONResponse(boolean success, JSONObject response) {
+                    if(success) {
+                        for (int i = 0; i < helper.getPlayers().length; i++) {
+                            addItem(helper.getPlayers()[i]);
+                        }
+                    }
+                }
+            });
         }
     }
 }

@@ -43,7 +43,7 @@ public class AdditionalMethods {
     public String changeLanguageURL()               {return "http://emagycavirpeht.esy.es/change_language.php";}
     public String getQuestionGroupsByUserIdURL()    {return "http://emagycavirpeht.esy.es/get_question_groups_by_user_id.php";}
     public String getQuestionsIdsByGrpIdURL ()      {return "http://emagycavirpeht.esy.es/get_question_ids_by_grp_id.php";}
-    public String getQuestionByUserAndGameIdURL ()  {return "http://emagycavirpeht.esy.es/get_question_by_user_and_game_id";}
+    public String getQuestionByUserAndGameIdURL ()  {return "http://emagycavirpeht.esy.es/get_question_by_user_and_game_id.php";}
     public String newGameURL ()                     {return "http://emagycavirpeht.esy.es/new_game.php";}
     public String joinGameURL ()                    {return "http://emagycavirpeht.esy.es/join_game.php";}
     public String answerQuestionURL ()              {return "http://emagycavirpeht.esy.es/answer_question.php";}
@@ -64,6 +64,8 @@ public class AdditionalMethods {
     protected String[] answeredPlayers;
     protected String question;
     protected int points = 0;
+    protected int answer;
+    protected int guess;
 
 
     public static AdditionalMethods getInstance() {
@@ -103,6 +105,10 @@ public class AdditionalMethods {
     public int getPoints(){ return points;}
 
     public String getPointsString(){ return Integer.toString(points);}
+
+    public int getAnswer(){ return answer;}
+
+    public int getGuess(){ return guess;}
 
     public RequestHandle executeSample(AsyncHttpClient client,
                                        String URL,
@@ -339,7 +345,7 @@ public class AdditionalMethods {
 
         RequestParams params = new RequestParams();
         params.put("game_id", gameId);
-        client.post(forceNextQuestionURL(), params, new TextHttpResponseHandler() {
+        client.post(getAnsweredUsersURL(), params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
                 callback.onJSONResponse(false, null);
@@ -351,9 +357,12 @@ public class AdditionalMethods {
                 JSONObject json;
 
                 try {
+//                    responseString = "{ \"Players\" : " + responseString;
+//                    responseString = responseString + "}";
                     json = new JSONObject(responseString);
 
-                    JSONArray array = json.getJSONArray("Players");
+                    JSONArray array = json.getJSONArray("Payers");
+
 
                     String[] name = new String[array.length()];
                     for (int i = 0; i < array.length(); i++) {
@@ -362,6 +371,7 @@ public class AdditionalMethods {
                     }
 
                     answeredPlayers = new String[name.length];
+                    answeredPlayers = name;
                     callback.onJSONResponse(true, null);
                 } catch (JSONException _e) {
                     // TODO: error handling
@@ -538,15 +548,16 @@ public class AdditionalMethods {
     }
 
     protected void getQuestionByUserAndGameId(int userId, int gameId, final OnJSONResponseCallback callback) {
-        SyncHttpClient client = new SyncHttpClient();
+        AsyncHttpClient client = new AsyncHttpClient();
 
 
         RequestParams params = new RequestParams();
         params.put("user_id", userId);
         params.put("game_id", gameId);
-        client.post(forceNextQuestionURL(), params, new TextHttpResponseHandler() {
+        client.post(getQuestionByUserAndGameIdURL(), params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
+                Log.i(LOG_TAG,"getQuestionByUserAndGameId was a failure.");
                 callback.onJSONResponse(false, null);
             }
 
@@ -557,10 +568,8 @@ public class AdditionalMethods {
 
                 try {
                     json = new JSONObject(responseString);
-                    JSONArray arrayId = json.getJSONArray("id");
-                    JSONArray arrayQ = json.getJSONArray("title");
-                    questionId = arrayId.getInt(0);
-                    question = arrayQ.getString(0);
+                    questionId = json.getInt("id");
+                    question = json.getString("title");
                     callback.onJSONResponse(true, null);
                 } catch (JSONException _e) {
                     // TODO: error handling
@@ -576,6 +585,8 @@ public class AdditionalMethods {
 
         AsyncHttpClient client = new AsyncHttpClient();
 
+        this.answer = yn_answer;
+        this.guess = cnt_answer;
 
         RequestParams params = new RequestParams();
         params.put("user_id", user_id);
@@ -583,7 +594,7 @@ public class AdditionalMethods {
         params.put("question_id", question_id);
         params.put("yn_answer", yn_answer);
         params.put("cnt_answer", cnt_answer);
-        client.post(forceNextQuestionURL(), params, new TextHttpResponseHandler() {
+        client.post(answerQuestionURL(), params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
                 callback.onJSONResponse(false, null);

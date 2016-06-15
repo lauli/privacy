@@ -46,29 +46,13 @@ public class ClientQuestion extends Activity implements View.OnClickListener{
         question.setText("Here you will see your question.. ");
 
         final Handler handler = new Handler();
-
-        int delay = 1000;   // delay for 5 sec.
-        int interval = 2000;  // iterate every sec.
-        Timer timer = new Timer();
-
-        timer.scheduleAtFixedRate(new TimerTask() {
-            public void run() {
-                final AdditionalMethods helper = AdditionalMethods.getInstance();
-                helper.getQuestionByUserAndGameId(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
-                    @Override
-                    public void onJSONResponse(boolean success, JSONObject response) {
-                        if(success) {
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    showQuestion(helper.getQuestion());
-                                }
-                            });
-                        }
-                    }
-                });
+        helper.getQuestionByUserAndGameId(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
+            @Override
+            public void onJSONResponse(boolean success, JSONObject response) {
+                showQuestion(helper.getQuestion());
             }
-        }, delay, interval);
+        });
+
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.client_question_drawer_layout);
@@ -145,14 +129,33 @@ public class ClientQuestion extends Activity implements View.OnClickListener{
     }
 
     private void showQuestion(String _question) {
-        question.clearComposingText();
-        question.append(_question);
+        question.setText(_question);
     }
 
     @Override
     public void onClick(View _view) {
-        Intent i = new Intent(this, ClientGuess.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
+        switch (_view.getId()){
+            case R.id.client_question_yes : {
+                helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.getQuestionId(), 1, 0, new OnJSONResponseCallback() {
+                    @Override
+                    public void onJSONResponse(boolean success, JSONObject response) {
+                        Intent i = new Intent(ClientQuestion.this, ClientGuess.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+                    }
+                });
+            } break;
+            case R.id.client_question_no : {
+                helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.getQuestionId(), 2, 0, new OnJSONResponseCallback() {
+                    @Override
+                    public void onJSONResponse(boolean success, JSONObject response) {
+                        Intent i = new Intent(ClientQuestion.this, ClientGuess.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+                    }
+                });
+            } break;
+            default : {}
+        }
     }
 }

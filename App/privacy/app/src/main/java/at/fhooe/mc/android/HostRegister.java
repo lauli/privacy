@@ -93,12 +93,6 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
         drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
         imageView.setImageDrawable(drawerArrowDrawable);
 
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-//                this,
-//                android.R.layout.simple_list_item_1,
-//                new String[]{"Name", "Points", "Picture", "", "Skip", "Quit"});
-//        drawerList.setAdapter(adapter);
-
         String[] oben = {"# SessionId", "Credits"};
 
         String[] unten = {"", "thanks for help"};
@@ -198,7 +192,7 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
             showProgress(true);
             name = mName;
             mAuthTask = new UserLoginTask(mName);
-            mAuthTask.execute((Void) null);
+//            mAuthTask.execute((Void) null);
             return true;
         }
     }
@@ -283,7 +277,6 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
         if(attemptLogin()){
             final AdditionalMethods helper = AdditionalMethods.getInstance();
             // TODO: last parameter is category! -> now 1
-            // TODO: Ladebalken
             helper.registerClient(1, name, new OnJSONResponseCallback() {
                 @Override
                 public void onJSONResponse(boolean success, JSONObject response) {

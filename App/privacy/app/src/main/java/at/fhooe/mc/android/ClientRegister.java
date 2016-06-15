@@ -226,7 +226,7 @@ public class ClientRegister extends Activity implements  LoaderCallbacks<Cursor>
             sessionId = Integer.parseInt(mID);
             showProgress(true);
             mAuthTask = new UserLoginTask(mName, mID);
-            mAuthTask.execute((Void) null);
+//            mAuthTask.execute((Void) null);
             return true;
         }
     }

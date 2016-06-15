@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -14,6 +15,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.rey.material.widget.Slider;
 
 import org.json.JSONObject;
 
@@ -32,6 +35,8 @@ public class HostGuess extends Activity implements AdapterView.OnItemSelectedLis
     private ListView drawerList;
 
     AdditionalMethods helper = AdditionalMethods.getInstance();
+    private ArrayAdapter<String> adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,34 +45,46 @@ public class HostGuess extends Activity implements AdapterView.OnItemSelectedLis
 
         list = null;
         list = (ListView) findViewById(R.id.host_guess_players_list);
-        list.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,listItems));
+        this.adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
+        list.setAdapter(this.adapter);
 
-        final Handler handler = new Handler();
-        int delay = 2000;   // delay for 2 sec.
-        int interval = 5000;  // iterate every sec.
-        Timer timer = new Timer();
 
-        timer.scheduleAtFixedRate(new TimerTask() {
-            public void run() {
-                final AdditionalMethods helper = AdditionalMethods.getInstance();
-                helper.getPlayersInGame(helper.getGameId(), new OnJSONResponseCallback() {
-                    @Override
-                    public void onJSONResponse(boolean success, JSONObject response) {
-                        if(success) {
-                            for (int i = 0; i < helper.getPlayers().length; i++) {
-                                final int finalI = i;
-                                handler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        addItem(helper.getPlayers()[finalI]);
-                                    }
-                                });
-                            }
+        for (int i = 0; i < helper.getAnsweredPlayers().length; i++) {
+            addItem(helper.getAnsweredPlayers()[i]);
+        }
+
+        final int[] guess = {-1};
+
+        com.rey.material.widget.Slider slider = (com.rey.material.widget.Slider) findViewById(R.id.host_guess_slider);
+        slider.setValueRange(0, helper.getAnsweredPlayers().length, true);
+
+        slider.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==MotionEvent.ACTION_DOWN && guess[0] != -1) {
+                    helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.questionId, helper.getAnswer(), guess[0], new OnJSONResponseCallback() {
+                        @Override
+                        public void onJSONResponse(boolean success, JSONObject response) {
+                            helper.allowStatistics(helper.userId, helper.getGameId(), new OnJSONResponseCallback() {
+                                @Override
+                                public void onJSONResponse(boolean success, JSONObject response) {
+                                    Intent i = new Intent(HostGuess.this, ClientStatistics.class);
+                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(i);
+                                }
+                            });
                         }
-                    }
-                });
+                    });
+                }
+                return false;
             }
-        }, delay, interval);
+        });
+        slider.setOnPositionChangeListener(new Slider.OnPositionChangeListener() {
+            @Override
+            public void onPositionChanged(Slider view, boolean fromUser, float oldPos, float newPos, int oldValue, int newValue) {
+                guess[0] = newValue;
+            }
+        });
 
         Button b = null;
         b = (Button) findViewById(R.id.host_guess_continue);
@@ -166,13 +183,24 @@ public class HostGuess extends Activity implements AdapterView.OnItemSelectedLis
     }
 
     public void addItem(String name){
-        listItems.add(name);
-        list.invalidate();
+        boolean foundEqual = false;
+        if(!adapter.isEmpty()) {
+            for (int i = 0; (i < adapter.getCount() && !foundEqual); i++) {
+
+                if (adapter.getItem(i).equals(name)) {
+                    foundEqual = true;
+                }
+            }
+        }
+        if (!foundEqual) {
+            adapter.add(name);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override
     public void onClick(View _view) {
-        Intent i = new Intent(this, HostQuestion.class);
+        Intent i = new Intent(this, ClientStatistics.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
     }

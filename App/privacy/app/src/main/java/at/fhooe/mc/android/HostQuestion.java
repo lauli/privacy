@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
@@ -21,6 +22,7 @@ public class HostQuestion extends Activity implements View.OnClickListener{
     private float offset;
     private boolean flipped;
     private ListView drawerList;
+    TextView question;
 
     AdditionalMethods helper = AdditionalMethods.getInstance();
 
@@ -36,8 +38,16 @@ public class HostQuestion extends Activity implements View.OnClickListener{
         b = (Button) findViewById(R.id.host_question_no);
         b.setOnClickListener(this);
 
-        TextView question = (TextView) findViewById(R.id.question);
-        question.setText("Have you ever wanted to.. ");
+        question = (TextView) findViewById(R.id.question);
+        question.setText("Here you will see your question.. ");
+
+        final Handler handler = new Handler();
+        helper.getQuestionByUserAndGameId(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
+            @Override
+            public void onJSONResponse(boolean success, JSONObject response) {
+                showQuestion(helper.getQuestion());
+            }
+        });
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.host_question_drawer_layout);
@@ -138,10 +148,9 @@ public class HostQuestion extends Activity implements View.OnClickListener{
             } break;
             default : {}
         }
+    }
 
-
-        Intent i = new Intent(this, HostVoted.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
+    private void showQuestion(String _question) {
+        question.setText(_question);
     }
 }

@@ -109,6 +109,7 @@
                 style="@style/Material.Widget.Slider"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/host_guess_slider"
                 android:gravity="center"
                 app:sl_minValue="0"
                 app:sl_maxValue="8"
@@ -117,20 +118,21 @@
                 app:sl_primaryColor="@color/oxblood"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"/>
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:visibility="visible"/>
 
-            <Button
-                style="ButtonTheme"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:text="continue"
-                android:id="@+id/host_guess_continue"
-                android:layout_alignParentBottom="true"
-                android:background="@drawable/button_design"
-                android:layout_gravity="left"
-                android:gravity="bottom|right"
-                android:layout_marginBottom="10dp"
-                android:paddingTop="20dp"/>
+            <!--<Button-->
+                <!--style="ButtonTheme"-->
+                <!--android:layout_width="300dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="continue"-->
+                <!--android:id="@+id/host_guess_continue"-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:background="@drawable/button_design"-->
+                <!--android:layout_gravity="left"-->
+                <!--android:gravity="bottom|right"-->
+                <!--android:layout_marginBottom="10dp"-->
+                <!--android:paddingTop="20dp"/>-->
 
         </LinearLayout>
 

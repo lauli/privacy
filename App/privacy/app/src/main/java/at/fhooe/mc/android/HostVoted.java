@@ -30,7 +30,9 @@ public class HostVoted extends Activity implements View.OnClickListener{
     private boolean flipped;
     private ListView drawerList;
 
+    private ArrayAdapter<String> adapter;
     AdditionalMethods helper = AdditionalMethods.getInstance();
+    Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +42,13 @@ public class HostVoted extends Activity implements View.OnClickListener{
 
         list = null;
         list = (ListView) findViewById(R.id.host_voted_players_list);
-        list.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,listItems));
+        this.adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
+        list.setAdapter(this.adapter);
 
         final Handler handler = new Handler();
         int delay = 2000;   // delay for 2 sec.
         int interval = 5000;  // iterate every sec.
-        Timer timer = new Timer();
+        timer = new Timer();
 
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
@@ -54,7 +57,7 @@ public class HostVoted extends Activity implements View.OnClickListener{
                     @Override
                     public void onJSONResponse(boolean success, JSONObject response) {
                         if(success) {
-                            for (int i = 0; i < helper.getPlayers().length; i++) {
+                            for (int i = 0; i < helper.getAnsweredPlayers().length; i++) {
                                 final int finalI = i;
                                 handler.post(new Runnable() {
                                     @Override
@@ -155,6 +158,7 @@ public class HostVoted extends Activity implements View.OnClickListener{
         helper.allowStatistics(helper.userId, helper.getGameId(), new OnJSONResponseCallback() {
             @Override
             public void onJSONResponse(boolean success, JSONObject response) {
+                timer.cancel();
                 Intent i = new Intent(HostVoted.this, HostGuess.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i);
@@ -163,8 +167,19 @@ public class HostVoted extends Activity implements View.OnClickListener{
     }
 
     public void addItem(String name){
-        listItems.add(name);
-        list.invalidate();
+        boolean foundEqual = false;
+        if(!adapter.isEmpty()) {
+            for (int i = 0; (i < adapter.getCount() && !foundEqual); i++) {
+
+                if (adapter.getItem(i).equals(name)) {
+                    foundEqual = true;
+                }
+            }
+        }
+        if (!foundEqual) {
+            adapter.add(name);
+            adapter.notifyDataSetChanged();
+        }
     }
 }
 

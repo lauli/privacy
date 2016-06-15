@@ -32,8 +32,8 @@
         <activity android:name=".CreateOrJoin"/>
         <activity android:name=".ClientQuestion">
         </activity>
-        <activity android:name=".ClientGuess">
-        </activity>
+        <activity android:name=".ClientGuess"></activity>
+        <activity android:name=".ClientStatistics"></activity>
 
         <activity android:name=".HostRegister"></activity>
         <activity android:name=".HostLobby"></activity>

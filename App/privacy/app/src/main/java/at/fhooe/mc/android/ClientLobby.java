@@ -36,6 +36,7 @@ public class ClientLobby extends Activity implements View.OnClickListener{
     private boolean flipped;
     private ListView drawerList;
     private ArrayAdapter<String> adapter;
+    Timer timer;
 
     AdditionalMethods helper = AdditionalMethods.getInstance();
 
@@ -53,7 +54,7 @@ public class ClientLobby extends Activity implements View.OnClickListener{
 
         int delay = 2000;   // delay for 5 sec.
         int interval = 5000;  // iterate every sec.
-        Timer timer = new Timer();
+        timer = new Timer();
 
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
@@ -170,6 +171,7 @@ public class ClientLobby extends Activity implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
+        timer.cancel();
         Intent i = new Intent(this, ClientQuestion.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
