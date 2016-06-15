@@ -14,20 +14,23 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.ContactsContract;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.support.v4.widget.DrawerLayout;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,16 +39,16 @@ import java.util.List;
 /**
  * A login screen that offers login via name/ID.
  */
-public class host_register extends Activity implements  LoaderCallbacks<Cursor>, OnClickListener  {
+public class ClientRegister extends Activity implements  LoaderCallbacks<Cursor>, OnClickListener  {
 
     /**
      * A dummy authentication store containing known user names and passwords.
      * TODO: remove after connecting to a real authentication system.
      */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "12345", "12", "1234567890"
-            //sessionID Database
-    };
+//    private static final String[] DUMMY_CREDENTIALS = new String[]{
+//            "23", "24", "25", "26", "27"
+//            //sessionID Database
+//    };
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -57,6 +60,9 @@ public class host_register extends Activity implements  LoaderCallbacks<Cursor>,
     private View mProgressView;
     private View mJoinFormView;
 
+    private String name;
+    private int sessionId;
+
     private DrawerArrowDrawable drawerArrowDrawable;
     private float offset;
     private boolean flipped;
@@ -64,28 +70,25 @@ public class host_register extends Activity implements  LoaderCallbacks<Cursor>,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.host_register);
+        setContentView(R.layout.client_register);
         // Set up the login form.
-        mUsername = (EditText) findViewById(R.id.host_register_username);
+        mUsername = (EditText) findViewById(R.id.client_register_username);
 
 
-        /*higi
-        TODO: Keyboard verstecken !!
-         */
-
-        mSessionId = (EditText) findViewById(R.id.host_register_sessionID);
+        mSessionId = (EditText) findViewById(R.id.client_register_sessionID);
         mSessionId.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_ACTION_DONE) {
-                    attemptLogin();
+                    //attemptLogin();
                     return true;
                 }
                 return false;
             }
         });
 
-        Button mName = (Button) findViewById(R.id.host_register_join_button);
+        Button mName = (Button) findViewById(R.id.client_register_join_button);
+
         mName.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,26 +96,34 @@ public class host_register extends Activity implements  LoaderCallbacks<Cursor>,
             }
         });
 
-        mJoinFormView = findViewById(R.id.host_register_scroll);
-        mProgressView = findViewById(R.id.host_register_progress);
-        mName.setOnClickListener(host_register.this);
+        mJoinFormView = findViewById(R.id.client_register_scroll);
+        mProgressView = findViewById(R.id.client_register_progress);
+        mName.setOnClickListener(ClientRegister.this);
 
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
-        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.host_register_drawer_layout);
-        final ImageView imageView = (ImageView) findViewById(R.id.host_register_drawer_indicator);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.client_register_drawer_layout);
+        final ImageView imageView = (ImageView) findViewById(R.id.client_register_drawer_indicator);
         final Resources resources = getResources();
-        final ListView drawerList = (ListView) findViewById(R.id.host_register_drawer_list);
+        final ListView drawerList = (ListView) findViewById(R.id.client_register_drawer_list);
 
         drawerArrowDrawable = new DrawerArrowDrawable(resources);
         drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
         imageView.setImageDrawable(drawerArrowDrawable);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                new String[]{"Name", "Points", "Picture", "", "Skip", "Quit"});
-        drawerList.setAdapter(adapter);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+//                this,
+//                android.R.layout.simple_list_item_1,
+//                new String[]{"Name: -", "Points: -", "Picture", "", "Skip", "Quit"});
+//        drawerList.setAdapter(adapter);
+
+        String[] oben = {"#123456789", "Name", "Points",
+                "Language", "Skip", "Quit", "Credits"};
+
+        String[] unten = {"", "laureen", "1000", "-", "", "", ""};
+
+        MyAdapter myAdapter = new MyAdapter(this, oben, unten);
+        drawerList.setAdapter(myAdapter);
 
 
         drawer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
@@ -133,7 +144,7 @@ public class host_register extends Activity implements  LoaderCallbacks<Cursor>,
             }
         });
 
-        imageView.setOnClickListener(new OnClickListener() {
+        imageView.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if (drawer.isDrawerVisible(GravityCompat.START)) {
                     drawer.closeDrawer(GravityCompat.START);
@@ -144,7 +155,7 @@ public class host_register extends Activity implements  LoaderCallbacks<Cursor>,
         });
 
         final TextView styleButton = (TextView) findViewById(R.id.indicator_style);
-        styleButton.setOnClickListener(new OnClickListener() {
+        styleButton.setOnClickListener(new View.OnClickListener() {
             boolean rounded = false;
 
             @Override public void onClick(View v) {
@@ -188,14 +199,14 @@ public class host_register extends Activity implements  LoaderCallbacks<Cursor>,
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(mID) && !isSessionIdValid(mID)) {
-            mSessionId.setError(getString(R.string.error_invalid_password));
-            focusView = mSessionId;
-            cancel = true;
-        }
+//        if (!TextUtils.isEmpty(mID) && !isSessionIdValid(mID)) {
+//            mSessionId.setError(getString(R.string.error_invalid_password));
+//            focusView = mSessionId;
+//            cancel = true;
+//        }
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(mName)) {
+        if (TextUtils.isEmpty(mName) || TextUtils.isEmpty(mID)) {
             mUsername.setError(getString(R.string.error_field_required));
             focusView = mUsername;
             cancel = true;
@@ -213,6 +224,8 @@ public class host_register extends Activity implements  LoaderCallbacks<Cursor>,
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
+            name = mName;
+            sessionId = Integer.parseInt(mID);
             showProgress(true);
             mAuthTask = new UserLoginTask(mName, mID);
             mAuthTask.execute((Void) null);
@@ -225,13 +238,13 @@ public class host_register extends Activity implements  LoaderCallbacks<Cursor>,
         return true;
     }
 
-    private boolean isSessionIdValid(String _id) {
-        //TODO: Replace this with your own logic
-        for(int i = 0; i < DUMMY_CREDENTIALS.length; i++){
-            if(_id.equals(DUMMY_CREDENTIALS[i])) return true;
-        }
-        return false;
-    }
+//    private boolean isSessionIdValid(String _id) {
+//        //TODO: Replace this with your own logic
+//        for(int i = 0; i < DUMMY_CREDENTIALS.length; i++){
+//            if(_id.equals(DUMMY_CREDENTIALS[i])) return true;
+//        }
+//        return false;
+//    }
 
     /**
      * Shows the progress UI and hides the login form.
@@ -304,11 +317,37 @@ public class host_register extends Activity implements  LoaderCallbacks<Cursor>,
 
     @Override
     public void onClick(View view) {
+        final AdditionalMethods helper = AdditionalMethods.getInstance();
+        if(attemptLogin()) {
+            // TODO: make dynamic
+            //helper.registerClient(1, name, false, sessionId);
+            helper.registerClient(1, name, new OnJSONResponseCallback() {
+                @Override
+                public void onJSONResponse(boolean success, JSONObject response) {
+                    if (success) {
+                        helper.joinGame(helper.getUserID(), sessionId, new OnJSONResponseCallback() {
+                            @Override
+                            public void onJSONResponse(boolean success, JSONObject response) {
+                                if(success) {
+                                    Intent i = new Intent(ClientRegister.this, ClientLobby.class);
+                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(i);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+
+
+        }
+        /*
         if(attemptLogin()){
-            Intent i = new Intent(this, host_lobby.class);
+            Intent i = new Intent(this, ClientLobby.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
         };
+        */
 
     }
 
@@ -327,6 +366,7 @@ public class host_register extends Activity implements  LoaderCallbacks<Cursor>,
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
+
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mName;
@@ -341,22 +381,49 @@ public class host_register extends Activity implements  LoaderCallbacks<Cursor>,
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
+
+/*
             try {
                 // Simulate network access.
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 return false;
             }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mName)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mSessionID);
-                }
-            }
-
-            // TODO: register the new account here.
+*/
+//            for (String credential : DUMMY_CREDENTIALS) {
+//                String[] pieces = credential.split(":");
+//                if (pieces[0].equals(mName)) {
+//                    // Account exists, return true if the password matches.
+//                    return pieces[1].equals(mSessionID);
+//                }
+//            }
+//
+//
+//            Looper.prepare();
+//            AdditionalMethods helper = AdditionalMethods.getInstance();
+//            try {
+//                helper.registerClient(1, mName, false);
+//                //Thread.sleep(5000);
+//            } catch (RuntimeException _e) {
+//                    Log.i("", "A failure accured while trying to register. Plz try again");
+//            }
+//            /*catch (InterruptedException _e){
+//                Log.i("", "A failure accured while trying to register. Plz try again");
+//            } */
+//
+//            try {
+//                helper.joinGame(helper.getUserID(), mSessionID);
+//                //Thread.sleep(5000);
+//            }
+//            catch(RuntimeException _e){
+//                    Log.i("", "A failure accured while trying to join a session. Plz try again");
+//            }
+//            /*catch (InterruptedException _e){
+//                Log.i("", "A failure accured while trying to register. Plz try again");
+//            }
+//            */
+//
+//
             return true;
         }
 

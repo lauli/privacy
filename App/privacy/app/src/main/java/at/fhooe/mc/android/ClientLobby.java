@@ -4,21 +4,29 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.app.Activity;
+import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import org.json.JSONObject;
 
-public class client_lobby extends Activity implements View.OnClickListener{
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+public class ClientLobby extends Activity implements View.OnClickListener{
 
     private ArrayList<String> listItems = new ArrayList<String>();
     private ListView list;
@@ -27,8 +35,9 @@ public class client_lobby extends Activity implements View.OnClickListener{
     private float offset;
     private boolean flipped;
     private ListView drawerList;
+    private ArrayAdapter<String> adapter;
 
-    additional_methodes helper = additional_methodes.getInstance();
+    AdditionalMethods helper = AdditionalMethods.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,32 +45,46 @@ public class client_lobby extends Activity implements View.OnClickListener{
         setContentView(R.layout.client_lobby);
 
 
-        list = null;
         list = (ListView) findViewById(R.id.client_lobby_players_list);
-        list.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,listItems));
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
+        this.adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
+        list.setAdapter(this.adapter);
+
+        final Handler handler = new Handler();
+
+        int delay = 2000;   // delay for 5 sec.
+        int interval = 5000;  // iterate every sec.
+        Timer timer = new Timer();
+
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                final AdditionalMethods helper = AdditionalMethods.getInstance();
+                helper.getPlayersInGame(helper.getGameId(), new OnJSONResponseCallback() {
+                    @Override
+                    public void onJSONResponse(boolean success, JSONObject response) {
+                        if(success) {
+                            for (int i = 0; i < helper.getPlayers().length; i++) {
+                                final int finalI = i;
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        addItem(helper.getPlayers()[finalI]);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+        }, delay, interval);
+
+
 
         try {
-            additional_methodes helper = additional_methodes.getInstance();
             Toast.makeText(getApplicationContext(), helper.getName() + "s ID = " + helper.getUserID(), Toast.LENGTH_SHORT).show();
         }catch (RuntimeException _e){
             return;
         }
+
 
 
         Button b = null;
@@ -138,14 +161,42 @@ public class client_lobby extends Activity implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-        Intent i = new Intent(this, client_question.class);
+        Intent i = new Intent(this, ClientQuestion.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
     }
 
     public void addItem(String name){
-        listItems.add(name);
-        list.invalidate();
+        boolean foundEqual = false;
+        if(!adapter.isEmpty()) {
+            for (int i = 0; (i < adapter.getCount() && !foundEqual); i++) {
+
+                if (adapter.getItem(i).equals(name)) {
+                    foundEqual = true;
+                }
+            }
+        }
+        if (!foundEqual) {
+            adapter.add(name);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    private class callPlayers extends TimerTask {
+        @Override
+        public void run() {
+            final AdditionalMethods helper = AdditionalMethods.getInstance();
+            helper.getPlayersInGame(helper.getGameId(), new OnJSONResponseCallback() {
+                @Override
+                public void onJSONResponse(boolean success, JSONObject response) {
+                    if(success) {
+                        for (int i = 0; i < helper.getPlayers().length; i++) {
+                            addItem(helper.getPlayers()[i]);
+                        }
+                    }
+                }
+            });
+        }
     }
 }
 

@@ -24,22 +24,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".client_register"
+            android:name=".ClientRegister"
             android:label="@string/title_activity_client_register"/>
         <activity
-            android:name=".client_lobby"
+            android:name=".ClientLobby"
             android:label="@string/title_activity_client_lobby"/>
-        <activity android:name=".create_or_join"/>
-        <activity android:name=".client_question">
+        <activity android:name=".CreateOrJoin"/>
+        <activity android:name=".ClientQuestion">
         </activity>
-        <activity android:name=".client_guess">
+        <activity android:name=".ClientGuess">
         </activity>
 
-        <activity android:name=".host_register"></activity>
-        <activity android:name=".host_lobby"></activity>
-        <activity android:name=".host_question"></activity>
-        <activity android:name=".host_voted"></activity>
-        <activity android:name=".host_guess"></activity>
+        <activity android:name=".HostRegister"></activity>
+        <activity android:name=".HostLobby"></activity>
+        <activity android:name=".HostQuestion"></activity>
+        <activity android:name=".HostVoted"></activity>
+        <activity android:name=".HostGuess"></activity>
     </application>
 
 </manifest>

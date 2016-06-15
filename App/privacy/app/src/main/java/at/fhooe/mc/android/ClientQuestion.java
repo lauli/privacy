@@ -4,21 +4,29 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class client_question extends Activity implements View.OnClickListener{
+import org.json.JSONObject;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class ClientQuestion extends Activity implements View.OnClickListener{
 
     private DrawerArrowDrawable drawerArrowDrawable;
     private float offset;
     private boolean flipped;
     private ListView drawerList;
+    TextView question;
 
 
     @Override
@@ -32,8 +40,33 @@ public class client_question extends Activity implements View.OnClickListener{
         b = (Button) findViewById(R.id.client_question_no);
         b.setOnClickListener(this);
 
-        TextView question = (TextView) findViewById(R.id.question);
-        question.setText("Have you ever wanted to.. ");
+        question = (TextView) findViewById(R.id.question);
+        question.setText("Here you will see your question.. ");
+
+        final Handler handler = new Handler();
+
+        int delay = 1000;   // delay for 5 sec.
+        int interval = 2000;  // iterate every sec.
+        Timer timer = new Timer();
+
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                final AdditionalMethods helper = AdditionalMethods.getInstance();
+                helper.getPlayersInGame(helper.getGameId(), new OnJSONResponseCallback() {
+                    @Override
+                    public void onJSONResponse(boolean success, JSONObject response) {
+                        if(success) {
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    showQuestion(helper.getQuestion());
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        }, delay, interval);
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.client_question_drawer_layout);
@@ -102,9 +135,14 @@ public class client_question extends Activity implements View.OnClickListener{
         // --------------------------------------------------------------------------------------------  actionbar End!
     }
 
+    private void showQuestion(String _question) {
+        question.clearComposingText();
+        question.append(_question);
+    }
+
     @Override
     public void onClick(View _view) {
-        Intent i = new Intent(this, client_guess.class);
+        Intent i = new Intent(this, ClientGuess.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
     }

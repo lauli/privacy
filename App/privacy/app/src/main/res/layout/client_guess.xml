@@ -54,7 +54,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="at.fhooe.mc.android.client_guess"
+            tools:context=".ClientGuess"
             android:background="@color/tan">
 
 

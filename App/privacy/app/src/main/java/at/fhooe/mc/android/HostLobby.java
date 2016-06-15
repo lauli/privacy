@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
@@ -13,30 +14,77 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class create_or_join extends Activity implements View.OnClickListener{
+import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class HostLobby extends Activity implements View.OnClickListener{
+
+    private ArrayList<String> listItems = new ArrayList<String>();
+    private ListView list;
 
     private DrawerArrowDrawable drawerArrowDrawable;
     private float offset;
     private boolean flipped;
     private ListView drawerList;
 
+    private ArrayAdapter<String> adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.create_or_join);
+        setContentView(R.layout.host_lobby);
+
+        Button id = null;
+        id = (Button) findViewById(R.id.host_lobby_players);
+        AdditionalMethods helper = AdditionalMethods.getInstance();
+        id.setText("ID: " + helper.getGameId());
+
+        list = null;
+        list = (ListView) findViewById(R.id.host_lobby_players_list);
+        this.adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
+        list.setAdapter(this.adapter);
+
+        final Handler handler = new Handler();
+        int delay = 2000;   // delay for 2 sec.
+        int interval = 5000;  // iterate every sec.
+        Timer timer = new Timer();
+
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                final AdditionalMethods helper = AdditionalMethods.getInstance();
+                helper.getPlayersInGame(helper.getGameId(), new OnJSONResponseCallback() {
+                    @Override
+                    public void onJSONResponse(boolean success, JSONObject response) {
+                        if(success) {
+                            for (int i = 0; i < helper.getPlayers().length; i++) {
+                                final int finalI = i;
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        addItem(helper.getPlayers()[finalI]);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+        }, delay, interval);
+
+
         Button b = null;
-        b = (Button) findViewById(R.id.create_or_join_create);
-        b.setOnClickListener(this);
-        b = (Button) findViewById(R.id.create_or_join_join);
+        b = (Button) findViewById(R.id.host_lobby_continue);
         b.setOnClickListener(this);
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
-        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.create_or_join_drawer_layout);
-        final ImageView imageView = (ImageView) findViewById(R.id.create_or_join_drawer_indicator);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.host_lobby_drawer_layout);
+        final ImageView imageView = (ImageView) findViewById(R.id.host_lobby_drawer_indicator);
         final Resources resources = getResources();
-        final ListView drawerList = (ListView) findViewById(R.id.create_or_join_drawer_list);
+        final ListView drawerList = (ListView) findViewById(R.id.host_lobby_drawer_list);
 
         drawerArrowDrawable = new DrawerArrowDrawable(resources);
         drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
@@ -45,7 +93,7 @@ public class create_or_join extends Activity implements View.OnClickListener{
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
-                new String[]{"Profile", "References", "Copyright"});
+                new String[]{"Name", "Points", "Picture", "", "Skip", "Quit"});
         drawerList.setAdapter(adapter);
 
 
@@ -77,13 +125,13 @@ public class create_or_join extends Activity implements View.OnClickListener{
             }
         });
 
-        final TextView styleButton = (TextView) findViewById(R.id.create_or_join_indicator_style);
+        final TextView styleButton = (TextView) findViewById(R.id.host_lobby_indicator_style);
         styleButton.setOnClickListener(new View.OnClickListener() {
             boolean rounded = false;
 
             @Override public void onClick(View v) {
                 styleButton.setText(rounded //
-                        ? resources.getString(R.string.create_or_join)
+                        ? resources.getString(R.string.lobby)
                         : resources.getString(R.string.amazing));
 
                 rounded = !rounded;
@@ -98,24 +146,29 @@ public class create_or_join extends Activity implements View.OnClickListener{
         });
         // --------------------------------------------------------------------------------------------  actionbar End!
 
-
     }
 
     @Override
-    public void onClick(View _v) {
-        switch(_v.getId()){
-            case R.id.create_or_join_create : {
-                Intent i = new Intent(this, host_register.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(i);
-            }break;
-            case R.id.create_or_join_join : {
-                Intent i = new Intent(this, client_register.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(i);
-            }break;
-            default :
-        }
+    public void onClick(View view) {
+        Intent i = new Intent(this, HostQuestion.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+    }
 
+    public void addItem(String name){
+        boolean foundEqual = false;
+        if(!adapter.isEmpty()) {
+            for (int i = 0; (i < adapter.getCount() && !foundEqual); i++) {
+
+                if (adapter.getItem(i).equals(name)) {
+                    foundEqual = true;
+                }
+            }
+        }
+        if (!foundEqual) {
+            adapter.add(name);
+            adapter.notifyDataSetChanged();
+        }
     }
 }
+

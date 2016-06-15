@@ -13,53 +13,33 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
-public class host_lobby extends Activity implements View.OnClickListener{
-
-    private ArrayList<String> listItems = new ArrayList<String>();
-    private ListView list;
+public class HostQuestion extends Activity implements View.OnClickListener{
 
     private DrawerArrowDrawable drawerArrowDrawable;
     private float offset;
     private boolean flipped;
     private ListView drawerList;
 
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.host_lobby);
-
-
-        list = null;
-        list = (ListView) findViewById(R.id.host_lobby_players_list);
-        list.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,listItems));
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
-        addItem("playername");
+        setContentView(R.layout.host_question);
 
         Button b = null;
-        b = (Button) findViewById(R.id.host_lobby_continue);
+        b = (Button) findViewById(R.id.host_question_yes);
+        b.setOnClickListener(this);
+        b = (Button) findViewById(R.id.host_question_no);
         b.setOnClickListener(this);
 
+        TextView question = (TextView) findViewById(R.id.question);
+        question.setText("Have you ever wanted to.. ");
+
         // --------------------------------------------------------------------------------------------  actionbar Start!
-        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.host_lobby_drawer_layout);
-        final ImageView imageView = (ImageView) findViewById(R.id.host_lobby_drawer_indicator);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.host_question_drawer_layout);
+        final ImageView imageView = (ImageView) findViewById(R.id.host_question_drawer_indicator);
         final Resources resources = getResources();
-        final ListView drawerList = (ListView) findViewById(R.id.host_lobby_drawer_list);
+        final ListView drawerList = (ListView) findViewById(R.id.host_question_drawer_list);
 
         drawerArrowDrawable = new DrawerArrowDrawable(resources);
         drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
@@ -100,13 +80,13 @@ public class host_lobby extends Activity implements View.OnClickListener{
             }
         });
 
-        final TextView styleButton = (TextView) findViewById(R.id.host_lobby_indicator_style);
+        final TextView styleButton = (TextView) findViewById(R.id.host_question_indicator_style);
         styleButton.setOnClickListener(new View.OnClickListener() {
             boolean rounded = false;
 
             @Override public void onClick(View v) {
                 styleButton.setText(rounded //
-                        ? resources.getString(R.string.lobby)
+                        ? resources.getString(R.string.question) //
                         : resources.getString(R.string.amazing));
 
                 rounded = !rounded;
@@ -120,19 +100,12 @@ public class host_lobby extends Activity implements View.OnClickListener{
             }
         });
         // --------------------------------------------------------------------------------------------  actionbar End!
-
     }
 
     @Override
-    public void onClick(View view) {
-        Intent i = new Intent(this, host_question.class);
+    public void onClick(View _view) {
+        Intent i = new Intent(this, HostVoted.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
     }
-
-    public void addItem(String name){
-        listItems.add(name);
-        list.invalidate();
-    }
 }
-

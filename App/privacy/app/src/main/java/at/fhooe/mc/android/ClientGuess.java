@@ -1,45 +1,60 @@
 package at.fhooe.mc.android;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
-public class host_question extends Activity implements View.OnClickListener{
+import java.util.ArrayList;
+
+public class ClientGuess extends Activity implements AdapterView.OnItemSelectedListener{
+
+    private ArrayList<String> listItems = new ArrayList<String>();
+    private ListView list;
 
     private DrawerArrowDrawable drawerArrowDrawable;
     private float offset;
     private boolean flipped;
     private ListView drawerList;
 
-
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.host_question);
+        setContentView(R.layout.client_guess);
 
-        Button b = null;
-        b = (Button) findViewById(R.id.host_question_yes);
-        b.setOnClickListener(this);
-        b = (Button) findViewById(R.id.host_question_no);
-        b.setOnClickListener(this);
-
-        TextView question = (TextView) findViewById(R.id.question);
-        question.setText("Have you ever wanted to.. ");
+        list = null;
+        list = (ListView) findViewById(R.id.client_guess_players_list);
+        list.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,listItems));
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
+        addItem("playername");
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
-        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.host_question_drawer_layout);
-        final ImageView imageView = (ImageView) findViewById(R.id.host_question_drawer_indicator);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.client_guess_drawer_layout);
+        final ImageView imageView = (ImageView) findViewById(R.id.client_guess_drawer_indicator);
         final Resources resources = getResources();
-        final ListView drawerList = (ListView) findViewById(R.id.host_question_drawer_list);
+        final ListView drawerList = (ListView) findViewById(R.id.client_guess_drawer_list);
 
         drawerArrowDrawable = new DrawerArrowDrawable(resources);
         drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
@@ -80,13 +95,13 @@ public class host_question extends Activity implements View.OnClickListener{
             }
         });
 
-        final TextView styleButton = (TextView) findViewById(R.id.host_question_indicator_style);
+        final TextView styleButton = (TextView) findViewById(R.id.client_guess_indicator_style);
         styleButton.setOnClickListener(new View.OnClickListener() {
             boolean rounded = false;
 
             @Override public void onClick(View v) {
                 styleButton.setText(rounded //
-                        ? resources.getString(R.string.question) //
+                        ? resources.getString(R.string.guess) //
                         : resources.getString(R.string.amazing));
 
                 rounded = !rounded;
@@ -100,12 +115,27 @@ public class host_question extends Activity implements View.OnClickListener{
             }
         });
         // --------------------------------------------------------------------------------------------  actionbar End!
+
+
+//        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+//        ArrayAdapter<CharSequence> adapt = ArrayAdapter.createFromResource(this, R.array.spinner_elements, android.R.layout.simple_spinner_item);
+//        adapt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spinner.setAdapter(adapt);
+//        spinner.setOnItemSelectedListener(this);
     }
 
-    @Override
-    public void onClick(View _view) {
-        Intent i = new Intent(this, host_voted.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
+    public void onItemSelected(AdapterView<?> parent, View view,
+                               int pos, long id) {
+        // An item was selected. You can retrieve the selected item using
+        // parent.getItemAtPosition(pos)
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+        // Another interface callback
+    }
+
+    public void addItem(String name){
+        listItems.add(name);
+        list.invalidate();
     }
 }
