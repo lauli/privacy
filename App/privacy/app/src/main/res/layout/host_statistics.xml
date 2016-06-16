@@ -15,7 +15,7 @@
         >
 
         <ImageView
-            android:id="@+id/client_statistics_drawer_indicator"
+            android:id="@+id/host_statistics_drawer_indicator"
             android:layout_width="@dimen/actionbar_dimen"
             android:layout_height="@dimen/actionbar_dimen"
             android:scaleType="centerInside"
@@ -24,7 +24,7 @@
             />
 
         <TextView
-            android:id="@+id/client_statistics_indicator_style"
+            android:id="@+id/host_statistics_indicator_style"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/actionbar_dimen"
             android:paddingLeft="12dp"
@@ -42,7 +42,7 @@
     <android.support.v4.widget.DrawerLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/client_statistics_drawer_layout"
+        android:id="@+id/host_statistics_drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -81,7 +81,7 @@
             <TextView
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/client_statistic_score_view"
+                android:id="@+id/host_statistic_score_view"
                 android:layout_gravity="right"/>
 
             <Button
@@ -89,7 +89,7 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:text="continue"
-                android:id="@+id/client_statistics_continue"
+                android:id="@+id/host_statistics_continue"
                 android:layout_alignParentBottom="true"
                 android:background="@drawable/button_design"
                 android:layout_gravity="left"
@@ -100,7 +100,7 @@
 
         <ListView xmlns:android="http://schemas.android.com/apk/res/android"
                   xmlns:tools="http://schemas.android.com/tools"
-                  android:id="@+id/client_statistics_drawer_list"
+                  android:id="@+id/host_statistics_drawer_list"
                   android:layout_width="120dp"
                   android:layout_height="match_parent"
                   android:background="#cccc"

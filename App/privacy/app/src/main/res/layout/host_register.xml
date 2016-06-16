@@ -30,7 +30,7 @@
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
             android:layout_gravity="end"
-            android:text="@string/join"
+            android:text="@string/create"
             android:textStyle="bold"
             android:textColor="@color/grain"
             android:gravity="center"

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -32,7 +33,7 @@ public class HostVoted extends Activity implements View.OnClickListener{
 
     private ArrayAdapter<String> adapter;
     AdditionalMethods helper = AdditionalMethods.getInstance();
-    Timer timer;
+    private Timer timer = new Timer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +49,6 @@ public class HostVoted extends Activity implements View.OnClickListener{
         final Handler handler = new Handler();
         int delay = 2000;   // delay for 2 sec.
         int interval = 5000;  // iterate every sec.
-        timer = new Timer();
 
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
@@ -57,6 +57,7 @@ public class HostVoted extends Activity implements View.OnClickListener{
                     @Override
                     public void onJSONResponse(boolean success, JSONObject response) {
                         if(success) {
+                            Log.i("", "hostvoted");
                             for (int i = 0; i < helper.getAnsweredPlayers().length; i++) {
                                 final int finalI = i;
                                 handler.post(new Runnable() {
@@ -136,7 +137,7 @@ public class HostVoted extends Activity implements View.OnClickListener{
             @Override public void onClick(View v) {
                 styleButton.setText(rounded //
                         ? resources.getString(R.string.voted)
-                        : resources.getString(R.string.amazing));
+                        : resources.getString(R.string.fantastic));
 
                 rounded = !rounded;
 
@@ -154,11 +155,12 @@ public class HostVoted extends Activity implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
+        timer.cancel();
+        timer.purge();
 
         helper.allowStatistics(helper.userId, helper.getGameId(), new OnJSONResponseCallback() {
             @Override
             public void onJSONResponse(boolean success, JSONObject response) {
-                timer.cancel();
                 Intent i = new Intent(HostVoted.this, HostGuess.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i);

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ClientStatistics extends Activity implements View.OnClickListener{
+public class HostStatistics extends Activity implements View.OnClickListener{
 
     private ArrayList<String> listItems = new ArrayList<String>();
     private ListView list;
@@ -38,15 +38,15 @@ public class ClientStatistics extends Activity implements View.OnClickListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.client_statistics);
+        setContentView(R.layout.host_statistics);
 
 
 
-        TextView score = (TextView) findViewById(R.id.client_statistic_score_view);
+        TextView score = (TextView) findViewById(R.id.host_statistic_score_view);
         score.setText("guess/total = " + helper.getGuess() + "/" + helper.getHowManyYes());
         score.append("\ndifference: " + (helper.getAnsweredPlayers().length - helper.getPointsFromThisRound()));
 
-//        list = (ListView) findViewById(R.id.client_statistics_players_list);
+//        list = (ListView) findViewById(R.id.host_statistics_players_list);
 //        this.adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
 //        list.setAdapter(this.adapter);
 
@@ -89,14 +89,14 @@ public class ClientStatistics extends Activity implements View.OnClickListener{
 
 
         Button b = null;
-        b = (Button) findViewById(R.id.client_statistics_continue);
+        b = (Button) findViewById(R.id.host_statistics_continue);
         b.setOnClickListener(this);
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
-        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.client_statistics_drawer_layout);
-        final ImageView imageView = (ImageView) findViewById(R.id.client_statistics_drawer_indicator);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.host_statistics_drawer_layout);
+        final ImageView imageView = (ImageView) findViewById(R.id.host_statistics_drawer_indicator);
         final Resources resources = getResources();
-        final ListView drawerList = (ListView) findViewById(R.id.client_statistics_drawer_list);
+        final ListView drawerList = (ListView) findViewById(R.id.host_statistics_drawer_list);
 
         drawerArrowDrawable = new DrawerArrowDrawable(resources);
         drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
@@ -112,7 +112,7 @@ public class ClientStatistics extends Activity implements View.OnClickListener{
                 "Language", "Quit", "Credits"};
 
         String[] unten = {"", helper.getName(),  helper.getPointsString(), helper.getLanguage(), "quit this game", "thanks for help"};
-        MyAdapter myAdapter = new MyAdapter(ClientStatistics.this, oben, unten);
+        MyAdapter myAdapter = new MyAdapter(HostStatistics.this, oben, unten);
         drawerList.setAdapter(myAdapter);
 
 
@@ -146,7 +146,7 @@ public class ClientStatistics extends Activity implements View.OnClickListener{
             }
         });
 
-        final TextView styleButton = (TextView) findViewById(R.id.client_statistics_indicator_style);
+        final TextView styleButton = (TextView) findViewById(R.id.host_statistics_indicator_style);
         styleButton.setOnClickListener(new View.OnClickListener() {
             boolean rounded = false;
 
@@ -172,9 +172,14 @@ public class ClientStatistics extends Activity implements View.OnClickListener{
     @Override
     public void onClick(View view) {
 //        timer.cancel();
-        Intent i = new Intent(this, ClientQuestion.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
+        helper.forceNextQuestion(helper.getUserID(), helper.getGameId(), helper.getQuestionId(), new OnJSONResponseCallback() {
+            @Override
+            public void onJSONResponse(boolean success, JSONObject response) {
+                Intent i = new Intent(HostStatistics.this, HostQuestion.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+            }
+        });
     }
 
 //    public void addItem(String _name, int _points, int _difference){
@@ -192,7 +197,7 @@ public class ClientStatistics extends Activity implements View.OnClickListener{
 //            adapter.notifyDataSetChanged();
 //        }
 //    }
-//
+
 //    private class callPlayers extends TimerTask {
 //        @Override
 //        public void run() {

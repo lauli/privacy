@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -32,6 +33,7 @@ public class HostLobby extends Activity implements View.OnClickListener{
 
     Timer timer;
     private ArrayAdapter<String> adapter;
+    AdditionalMethods helper = AdditionalMethods.getInstance();
 
 
     @Override
@@ -41,7 +43,6 @@ public class HostLobby extends Activity implements View.OnClickListener{
 
         Button id = null;
         id = (Button) findViewById(R.id.host_lobby_players);
-        AdditionalMethods helper = AdditionalMethods.getInstance();
         id.setText("ID: " + helper.getGameId());
 
         list = null;
@@ -56,7 +57,6 @@ public class HostLobby extends Activity implements View.OnClickListener{
 
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
-                final AdditionalMethods helper = AdditionalMethods.getInstance();
                 helper.getPlayersInGame(helper.getGameId(), new OnJSONResponseCallback() {
                     @Override
                     public void onJSONResponse(boolean success, JSONObject response) {
@@ -67,6 +67,7 @@ public class HostLobby extends Activity implements View.OnClickListener{
                                     @Override
                                     public void run() {
                                         addItem(helper.getPlayers()[finalI]);
+                                        Log.i("", "HostLobby Timer ");
                                     }
                                 });
                             }
@@ -142,7 +143,7 @@ public class HostLobby extends Activity implements View.OnClickListener{
             @Override public void onClick(View v) {
                 styleButton.setText(rounded //
                         ? resources.getString(R.string.lobby)
-                        : resources.getString(R.string.amazing));
+                        : resources.getString(R.string.handsome));
 
                 rounded = !rounded;
 
@@ -163,11 +164,23 @@ public class HostLobby extends Activity implements View.OnClickListener{
         switch (_view.getId()){
             case R.id.host_lobby_continue :{
                 timer.cancel();
-                Intent i = new Intent(this, HostQuestion.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(i);
-            } break;
-            default : {}
+                timer.purge();
+                timer = null;
+
+                helper.allowCounting(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
+                    @Override
+                    public void onJSONResponse(boolean success, JSONObject response) {
+                        Intent i = new Intent(HostLobby.this, HostQuestion.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+                    }
+                });
+
+                break;
+            }
+            default : {
+                break;
+            }
         }
 
     }

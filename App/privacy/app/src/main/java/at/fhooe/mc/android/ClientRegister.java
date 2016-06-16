@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.provider.ContactsContract;
 import android.support.v4.view.GravityCompat;
@@ -29,6 +30,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -67,6 +69,9 @@ public class ClientRegister extends Activity implements  LoaderCallbacks<Cursor>
     private float offset;
     private boolean flipped;
     private ListView drawerList;
+
+    AdditionalMethods helper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -159,7 +164,7 @@ public class ClientRegister extends Activity implements  LoaderCallbacks<Cursor>
             @Override public void onClick(View v) {
                 styleButton.setText(rounded //
                         ? resources.getString(R.string.join)
-                        : resources.getString(R.string.amazing));
+                        : resources.getString(R.string.cool));
 
                 rounded = !rounded;
 
@@ -204,19 +209,23 @@ public class ClientRegister extends Activity implements  LoaderCallbacks<Cursor>
 //        }
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(mName) || TextUtils.isEmpty(mID)) {
+        if (TextUtils.isEmpty(mName)) {
             mUsername.setError(getString(R.string.error_field_required));
             focusView = mUsername;
             cancel = true;
-        } else if (!isUsernameValid(mName)) {
+        }
+        else if (TextUtils.isEmpty(mID)) {
+            mSessionId.setError(getString(R.string.error_field_required));
+            focusView = mSessionId;
+            cancel = true;
+        }
+        else if (!isUsernameValid(mName, mID)) {
             mUsername.setError(getString(R.string.error_invalid_email));
             focusView = mUsername;
             cancel = true;
         }
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
             focusView.requestFocus();
             return false;
         } else {
@@ -231,9 +240,23 @@ public class ClientRegister extends Activity implements  LoaderCallbacks<Cursor>
         }
     }
 
-    private boolean isUsernameValid(String _name) {
-        //TODO: Replace this with your own logic
-        return true;
+    private boolean isUsernameValid(final String _name, String _id) {
+//        int mId = Integer.valueOf(_id);
+//        final boolean[] foundEqual = {false};
+//        helper.getPlayersInGame(mId, new OnJSONResponseCallback() {
+//            @Override
+//            public void onJSONResponse(boolean success, JSONObject response) {
+//                if(success) {
+//                    for (int i = 0; i < helper.getPlayers().length; i++) {
+//                        if(helper.getPlayers()[i].equals(_name))
+//                            foundEqual[0] = true;
+//                    }
+//                }
+//            }
+//        });
+//        if(foundEqual[0] == true) return false;
+//        else
+            return true;
     }
 
 //    private boolean isSessionIdValid(String _id) {
@@ -315,10 +338,9 @@ public class ClientRegister extends Activity implements  LoaderCallbacks<Cursor>
 
     @Override
     public void onClick(View view) {
-        final AdditionalMethods helper = AdditionalMethods.getInstance();
+        helper = AdditionalMethods.getInstance();
+        Handler handler = new Handler();
         if(attemptLogin()) {
-            // TODO: make dynamic
-            //helper.registerClient(1, name, false, sessionId);
             helper.registerClient(1, name, new OnJSONResponseCallback() {
                 @Override
                 public void onJSONResponse(boolean success, JSONObject response) {
@@ -327,9 +349,13 @@ public class ClientRegister extends Activity implements  LoaderCallbacks<Cursor>
                             @Override
                             public void onJSONResponse(boolean success, JSONObject response) {
                                 if(success) {
-                                    Intent i = new Intent(ClientRegister.this, ClientLobby.class);
-                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    startActivity(i);
+                                    if (helper.getGameId() != -1) {
+                                        Intent i = new Intent(ClientRegister.this, ClientLobby.class);
+                                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(i);
+                                    } else {
+                                        Toast.makeText(ClientRegister.this, "Oops. That did not work.\n Your Session ID was wrong.", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             }
                         });

@@ -88,14 +88,10 @@ public class ClientGuess extends Activity implements AdapterView.OnItemSelectedL
                     helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.questionId, helper.getAnswer(), guess[0], new OnJSONResponseCallback() {
                         @Override
                         public void onJSONResponse(boolean success, JSONObject response) {
-                            helper.allowStatistics(helper.userId, helper.getGameId(), new OnJSONResponseCallback() {
-                                @Override
-                                public void onJSONResponse(boolean success, JSONObject response) {
-                                    Intent i = new Intent(ClientGuess.this, ClientStatistics.class);
-                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    startActivity(i);
-                                }
-                            });
+                            timer.purge(); timer.cancel();
+                            Intent i = new Intent(ClientGuess.this, ClientStatistics.class);
+                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(i);
                         }
                     });
                 }
@@ -169,7 +165,7 @@ public class ClientGuess extends Activity implements AdapterView.OnItemSelectedL
             @Override public void onClick(View v) {
                 styleButton.setText(rounded //
                         ? resources.getString(R.string.guess) //
-                        : resources.getString(R.string.amazing));
+                        : resources.getString(R.string.funny));
 
                 rounded = !rounded;
 

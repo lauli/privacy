@@ -86,11 +86,28 @@ public class ClientLobby extends Activity implements View.OnClickListener{
             return;
         }
 
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                final AdditionalMethods helper = AdditionalMethods.getInstance();
+                helper.isContinueAllowed(helper.getGameId(), new OnJSONResponseCallback() {
+                    @Override
+                    public void onJSONResponse(boolean success, JSONObject response) {
+                        if(success) {
+                            timer.cancel();
+                            Intent i = new Intent(ClientLobby.this, ClientQuestion.class);
+                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(i);
+                        }
+                    }
+                });
+            }
+        }, delay, interval);
 
 
-        Button b = null;
-        b = (Button) findViewById(R.id.client_lobby_continue);
-        b.setOnClickListener(this);
+
+//        Button b = null;
+//        b = (Button) findViewById(R.id.client_lobby_continue);
+//        b.setOnClickListener(this);
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.client_lobby_drawer_layout);
@@ -153,7 +170,7 @@ public class ClientLobby extends Activity implements View.OnClickListener{
             @Override public void onClick(View v) {
                 styleButton.setText(rounded //
                         ? resources.getString(R.string.lobby)
-                        : resources.getString(R.string.amazing));
+                        : resources.getString(R.string.handsome));
 
                 rounded = !rounded;
 

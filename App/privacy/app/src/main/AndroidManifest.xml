@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
     <uses-permission android:name="android.permission.READ_PROFILE"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -32,14 +32,15 @@
         <activity android:name=".CreateOrJoin"/>
         <activity android:name=".ClientQuestion">
         </activity>
-        <activity android:name=".ClientGuess"></activity>
-        <activity android:name=".ClientStatistics"></activity>
-
-        <activity android:name=".HostRegister"></activity>
-        <activity android:name=".HostLobby"></activity>
-        <activity android:name=".HostQuestion"></activity>
-        <activity android:name=".HostVoted"></activity>
-        <activity android:name=".HostGuess"></activity>
+        <activity android:name=".ClientGuess"/>
+        <activity android:name=".ClientStatistics"/>
+        <activity android:name=".HostRegister"/>
+        <activity android:name=".HostLobby"/>
+        <activity android:name=".HostQuestion"/>
+        <activity android:name=".HostVoted"/>
+        <activity android:name=".HostGuess"/>
+        <activity android:name=".HostStatistics">
+        </activity>
     </application>
 
 </manifest>

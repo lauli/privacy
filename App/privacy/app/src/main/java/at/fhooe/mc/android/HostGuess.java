@@ -68,9 +68,19 @@ public class HostGuess extends Activity implements AdapterView.OnItemSelectedLis
                             helper.allowStatistics(helper.userId, helper.getGameId(), new OnJSONResponseCallback() {
                                 @Override
                                 public void onJSONResponse(boolean success, JSONObject response) {
-                                    Intent i = new Intent(HostGuess.this, ClientStatistics.class);
-                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    startActivity(i);
+                                    helper.getStatisticsByGameId(helper.getGameId(), new OnJSONResponseCallback() {
+                                        @Override
+                                        public void onJSONResponse(boolean success, JSONObject response) {
+                                            helper.pushPointsToProfile(helper.getUserID(), helper.getPointsFromThisRound(), new OnJSONResponseCallback() {
+                                                @Override
+                                                public void onJSONResponse(boolean success, JSONObject response) {
+                                                    Intent i = new Intent(HostGuess.this, HostStatistics.class);
+                                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                    startActivity(i);
+                                                }
+                                            });
+                                        }
+                                    });
                                 }
                             });
                         }
@@ -86,9 +96,9 @@ public class HostGuess extends Activity implements AdapterView.OnItemSelectedLis
             }
         });
 
-        Button b = null;
-        b = (Button) findViewById(R.id.host_guess_continue);
-        b.setOnClickListener(this);
+//        Button b = null;
+//        b = (Button) findViewById(R.id.host_guess_continue);
+//        b.setOnClickListener(this);
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.host_guess_drawer_layout);
@@ -150,7 +160,7 @@ public class HostGuess extends Activity implements AdapterView.OnItemSelectedLis
             @Override public void onClick(View v) {
                 styleButton.setText(rounded //
                         ? resources.getString(R.string.guess) //
-                        : resources.getString(R.string.amazing));
+                        : resources.getString(R.string.funny));
 
                 rounded = !rounded;
 

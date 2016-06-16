@@ -133,8 +133,8 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
 
             @Override public void onClick(View v) {
                 styleButton.setText(rounded //
-                        ? resources.getString(R.string.join)
-                        : resources.getString(R.string.amazing));
+                        ? resources.getString(R.string.create)
+                        : resources.getString(R.string.cool));
 
                 rounded = !rounded;
 
@@ -276,13 +276,13 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
     public void onClick(View view) {
         if(attemptLogin()){
             final AdditionalMethods helper = AdditionalMethods.getInstance();
-            // TODO: last parameter is category! -> now 1
+            // TODO: last parameter is category! -> now 3 over18
             helper.registerClient(1, name, new OnJSONResponseCallback() {
                 @Override
                 public void onJSONResponse(boolean success, JSONObject response) {
                     // do anything here.
                     if (success) {
-                        helper.getQuestionIdsByGroupId(1, new OnJSONResponseCallback() {
+                        helper.getQuestionIdsByGroupId(3, new OnJSONResponseCallback() {
                             @Override
                             public void onJSONResponse(boolean success, JSONObject response) {
                                 if (success) {
@@ -302,9 +302,6 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
                     }
                 }
             });
-
-
-
         };
 
     }

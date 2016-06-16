@@ -42,11 +42,11 @@ public class CreateOrJoin extends Activity implements View.OnClickListener{
         drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
         imageView.setImageDrawable(drawerArrowDrawable);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                new String[]{"Profile", "References", "Copyright"});
-        drawerList.setAdapter(adapter);
+        String[] oben = {"# SessionId", "Credits"};
+
+        String[] unten = {"", "thanks for help"};
+        MyAdapter myAdapter = new MyAdapter(this, oben, unten);
+        drawerList.setAdapter(myAdapter);
 
 
         drawer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
@@ -84,7 +84,7 @@ public class CreateOrJoin extends Activity implements View.OnClickListener{
             @Override public void onClick(View v) {
                 styleButton.setText(rounded //
                         ? resources.getString(R.string.create_or_join)
-                        : resources.getString(R.string.amazing));
+                        : resources.getString(R.string.nice));
 
                 rounded = !rounded;
 

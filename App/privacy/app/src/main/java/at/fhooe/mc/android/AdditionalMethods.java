@@ -39,21 +39,23 @@ public class AdditionalMethods {
         return true;
     }
 
-    public String createUserURL()                   {return "http://emagycavirpeht.esy.es/create_user.php";}
-    public String changeLanguageURL()               {return "http://emagycavirpeht.esy.es/change_language.php";}
-    public String getQuestionGroupsByUserIdURL()    {return "http://emagycavirpeht.esy.es/get_question_groups_by_user_id.php";}
-    public String getQuestionsIdsByGrpIdURL ()      {return "http://emagycavirpeht.esy.es/get_question_ids_by_grp_id.php";}
-    public String getQuestionByUserAndGameIdURL ()  {return "http://emagycavirpeht.esy.es/get_question_by_user_and_game_id.php";}
-    public String newGameURL ()                     {return "http://emagycavirpeht.esy.es/new_game.php";}
-    public String joinGameURL ()                    {return "http://emagycavirpeht.esy.es/join_game.php";}
-    public String answerQuestionURL ()              {return "http://emagycavirpeht.esy.es/answer_question.php";}
-    public String getAnsweredUsersURL ()            {return "http://emagycavirpeht.esy.es/get_answered_users.php";}
-    public String allowStatisticsURL()              {return "http://emagycavirpeht.esy.es/allow_statistics.php";}
-    public String countPlayersByGameIdURL()         {return "http://emagycavirpeht.esy.es/count_players_by_game_id.php";}
-    public String getStatisticsbyGameIdURL()        {return "http://emagycavirpeht.esy.es/get_statistics_by_game_id.php";}
-    public String pushPointsToProfileURL ()         {return "http://emagycavirpeht.esy.es/push_points_to_profile.php";}
-    public String forceNextQuestionURL()            {return "http://emagycavirpeht.esy.es/force_next_question.php";}
-    public String getPlayersInGameURL()             {return "http://emagycavirpeht.esy.es/get_players_in_game.php";}
+    public String createUserURL()                   {return "http://privacygame.soft-tec.net/create_user.php";}
+    public String changeLanguageURL()               {return "http://privacygame.soft-tec.net/change_language.php";}
+    public String getQuestionGroupsByUserIdURL()    {return "http://privacygame.soft-tec.net/get_question_groups_by_user_id.php";}
+    public String getQuestionsIdsByGrpIdURL ()      {return "http://privacygame.soft-tec.net/get_question_ids_by_grp_id.php";}
+    public String getQuestionByUserAndGameIdURL ()  {return "http://privacygame.soft-tec.net/get_question_by_user_and_game_id.php";}
+    public String newGameURL ()                     {return "http://privacygame.soft-tec.net/new_game.php";}
+    public String joinGameURL ()                    {return "http://privacygame.soft-tec.net/join_game.php";}
+    public String answerQuestionURL ()              {return "http://privacygame.soft-tec.net/answer_question.php";}
+    public String getAnsweredUsersURL ()            {return "http://privacygame.soft-tec.net/get_answered_users.php";}
+    public String allowStatisticsURL()              {return "http://privacygame.soft-tec.net/allow_statistics.php";}
+    public String countPlayersByGameIdURL()         {return "http://privacygame.soft-tec.net/count_players_by_game_id.php";}
+    public String getStatisticsbyGameIdURL()        {return "http://privacygame.soft-tec.net/get_statistic_by_game_id.php";}
+    public String pushPointsToProfileURL ()         {return "http://privacygame.soft-tec.net/push_points_to_profile.php";}
+    public String forceNextQuestionURL()            {return "http://privacygame.soft-tec.net/force_next_question.php";}
+    public String getPlayersInGameURL()             {return "http://privacygame.soft-tec.net/get_players_in_game.php";}
+    public String allowCountingURL()                {return "http://privacygame.soft-tec.net/allow_counting.php";}
+    public String isCountinueAllowedURL()             {return "http://privacygame.soft-tec.net/is_continue_allowed.php";}
 
     protected int lang;
     protected String name;
@@ -62,10 +64,13 @@ public class AdditionalMethods {
     protected int questionId;
     protected String[] players;
     protected String[] answeredPlayers;
+    protected Player[] statistic;
     protected String question;
     protected int points = 0;
+    protected int pointsFromThisRound;
     protected int answer;
     protected int guess;
+    protected int howManyYes;
 
 
     public static AdditionalMethods getInstance() {
@@ -104,11 +109,17 @@ public class AdditionalMethods {
 
     public int getPoints(){ return points;}
 
+    public int getPointsFromThisRound(){ return pointsFromThisRound;}
+
     public String getPointsString(){ return Integer.toString(points);}
 
     public int getAnswer(){ return answer;}
 
     public int getGuess(){ return guess;}
+
+    public int getHowManyYes(){ return howManyYes;}
+
+    public Player[] getStatistic() { return statistic;}
 
     public RequestHandle executeSample(AsyncHttpClient client,
                                        String URL,
@@ -269,7 +280,7 @@ public class AdditionalMethods {
 
         RequestParams params = new RequestParams();
         params.put("user_id", userId);
-        params.put("q_id", questionId);
+        params.put("question_id", questionId);
         client.post(newGameURL(), params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
@@ -361,7 +372,7 @@ public class AdditionalMethods {
 //                    responseString = responseString + "}";
                     json = new JSONObject(responseString);
 
-                    JSONArray array = json.getJSONArray("Payers");
+                    JSONArray array = json.getJSONArray("Players");
 
 
                     String[] name = new String[array.length()];
@@ -432,7 +443,6 @@ public class AdditionalMethods {
     protected void getStatisticsByGameId(int gameId,  final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
-        gameId = 1;
 
         RequestParams params = new RequestParams();
         params.put("game_id", gameId);
@@ -444,10 +454,35 @@ public class AdditionalMethods {
 
             @Override
             public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
-                Log.i(LOG_TAG,"getStatisticsByGameId was a success.");
-                String firstEvent = responseString;
+                Log.i(LOG_TAG, "getStatisticsByGameId was a success.");
 
-                callback.onJSONResponse(true, null);
+                JSONObject json;
+
+                try {
+                    json = new JSONObject(responseString);
+                    JSONArray array = json.getJSONArray("STAT");
+
+                    //get the total amount of yeses
+                    JSONObject obj = array.getJSONObject(0);
+                    howManyYes= Integer.parseInt(obj.getString("yeses"));
+
+                    //get my points from this round and add it to my points from the game
+                    pointsFromThisRound = getAnsweredPlayers().length - Math.abs(getHowManyYes() - getGuess());
+                    points += pointsFromThisRound;
+
+
+                    //TODO: implement statistic form all users with Player[] statistic
+                    statistic = new Player[array.length()];
+                    for (int i = 0; i < array.length(); i++) {
+                        statistic[i].guessed = Integer.parseInt(array.getJSONObject(i).getString("guessed"));
+                        statistic[i].name = array.getJSONObject(i).getString("name");
+                        statistic[i].points = Integer.parseInt(array.getJSONObject(i).getString("points"));
+                        statistic[i].mistake = (Math.abs(getHowManyYes() - statistic[i].guessed));
+                    }
+                    callback.onJSONResponse(true, null);
+                } catch (JSONException _e) {
+                    _e.printStackTrace();
+                }
             }
         });
     }
@@ -455,8 +490,7 @@ public class AdditionalMethods {
     protected void pushPointsToProfile(int userId, int points,  final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
-        userId = 1;
-        points = 100;
+        this.points += points;
 
         RequestParams params = new RequestParams();
         params.put("user_id", userId);
@@ -605,6 +639,58 @@ public class AdditionalMethods {
                 Log.i(LOG_TAG,"answerQuestion was a success.");
                 //returns true when success
                 callback.onJSONResponse(true, null);
+            }
+        });
+    }
+
+    protected void allowCounting(int user_id, int game_id, final OnJSONResponseCallback callback) {
+        AsyncHttpClient client = new AsyncHttpClient();
+
+
+        RequestParams params = new RequestParams();
+        params.put("user_id", user_id);
+        params.put("game_id", game_id);
+        client.post(allowCountingURL(), params, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
+                callback.onJSONResponse(false, null);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
+                Log.i(LOG_TAG,"allowCounting was a success.");
+                //returns true when success
+                callback.onJSONResponse(true, null);
+            }
+        });
+    }
+
+    protected void isContinueAllowed(int game_id, final OnJSONResponseCallback callback) {
+        SyncHttpClient client = new SyncHttpClient();
+
+
+        RequestParams params = new RequestParams();
+        params.put("game_id", game_id);
+        client.post(isCountinueAllowedURL(), params, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
+                callback.onJSONResponse(false, null);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
+                Log.i(LOG_TAG, "isContinueAllowed was a success.");
+                boolean allowed = false;
+                if(responseString.equals("true")) {
+                    allowed = true;
+                    Log.i(LOG_TAG, "isContinueAllowed is allowed.");
+                }
+                else Log.i(LOG_TAG, "isContinueAllowed is not allowed.");
+                //returns true when allowed
+                if(allowed)
+                    callback.onJSONResponse(true, null);
+                else
+                    callback.onJSONResponse(false, null);
             }
         });
     }

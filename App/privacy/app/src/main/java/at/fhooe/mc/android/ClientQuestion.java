@@ -29,6 +29,7 @@ public class ClientQuestion extends Activity implements View.OnClickListener{
     TextView question;
 
     AdditionalMethods helper = AdditionalMethods.getInstance();
+    Timer timer = new Timer();
 
 
     @Override
@@ -139,19 +140,61 @@ public class ClientQuestion extends Activity implements View.OnClickListener{
                 helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.getQuestionId(), 1, 0, new OnJSONResponseCallback() {
                     @Override
                     public void onJSONResponse(boolean success, JSONObject response) {
-                        Intent i = new Intent(ClientQuestion.this, ClientGuess.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(i);
+                        if(success){
+                            timer.scheduleAtFixedRate(new TimerTask() {
+                                public void run() {
+                                    final AdditionalMethods helper = AdditionalMethods.getInstance();
+                                    helper.isContinueAllowed(helper.getGameId(), new OnJSONResponseCallback() {
+                                        @Override
+                                        public void onJSONResponse(boolean success, JSONObject response) {
+                                            if(success) {
+                                                helper.getAnsweredUsers(helper.getGameId(), new OnJSONResponseCallback() {
+                                                    @Override
+                                                    public void onJSONResponse(boolean success, JSONObject response) {
+                                                        timer.cancel();
+                                                        Intent i = new Intent(ClientQuestion.this, ClientGuess.class);
+                                                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                        startActivity(i);
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                }
+                            }, 2000, 5000);
+                        }
+
                     }
                 });
             } break;
             case R.id.client_question_no : {
-                helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.getQuestionId(), 2, 0, new OnJSONResponseCallback() {
+                helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.getQuestionId(), 0, 0, new OnJSONResponseCallback() {
                     @Override
                     public void onJSONResponse(boolean success, JSONObject response) {
-                        Intent i = new Intent(ClientQuestion.this, ClientGuess.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(i);
+                        if(success){
+                            timer.scheduleAtFixedRate(new TimerTask() {
+                                public void run() {
+                                    final AdditionalMethods helper = AdditionalMethods.getInstance();
+                                    helper.isContinueAllowed(helper.getGameId(), new OnJSONResponseCallback() {
+                                        @Override
+                                        public void onJSONResponse(boolean success, JSONObject response) {
+                                            if(success) {
+                                                helper.getAnsweredUsers(helper.getGameId(), new OnJSONResponseCallback() {
+                                                    @Override
+                                                    public void onJSONResponse(boolean success, JSONObject response) {
+                                                        timer.cancel();
+                                                        Intent i = new Intent(ClientQuestion.this, ClientGuess.class);
+                                                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                        startActivity(i);
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                }
+                            }, 2000, 5000);
+                        }
+
                     }
                 });
             } break;

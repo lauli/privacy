@@ -7,12 +7,21 @@
     <string name="content_hint">Content</string>
     <string name="drawer_hint">Drawer</string>
     <string name="create_or_join">Create Or Join A Session</string>
+    <string name="create">Create Session</string>
     <string name="join">Join Session</string>
     <string name="lobby">Lobby</string>
     <string name="question">Question</string>
     <string name="voted">Voted</string>
     <string name="guess">Guess</string>
+    <string name="score">Score</string>
     <string name="amazing">You are amazing</string>
+    <string name="fantastic">You are fantastic</string>
+    <string name="handsome">You are handsome</string>
+    <string name="nice">You are looking nice today</string>
+    <string name="lucky">You will be lucky next round</string>
+    <string name="funny">You are funny</string>
+    <string name="adorable">You are really adorable</string>
+    <string name="cool">You are cool</string>
 
     <!-- Strings related to create or join -->
     <string name="create_or_join_informationText">Create:     A new game session will be created. \nYou will be the host and playmaker.  \nOthers will be able to join your session. \n\nJoin: Join an already created session by its unique ID. You will be a normal player.</string>
@@ -31,7 +40,8 @@
     <string name="client_register_prompt_name">name</string>
     <string name="client_register_prompt_sessionID">session ID</string>
     <string name="title_activity_client_lobby">client_lobby</string>
-    <string name="client_register_informationText">Please enter your name. \nIt will be user for identification during the game. \n\nPlease enter the ID of the play you want to join in. The session ID will be displayed at the host\'s app after a session was created.</string>
+    <string name="client_register_informationText">Please enter your name. \nIt will be used for identification during the game. \n\nPlease enter the ID of the play you want to join in. The session ID will be displayed at the host\'s app after a session was created.</string>
+    <string name="client_statistic_informationText">Here you can see your score in this round.</string>
 
     <string name="host_register_join_button">host</string>
     <string name="host_register_prompt_name">name</string>
@@ -55,7 +65,6 @@
 
     <!-- Strings related to voted -->
     <string name="host_voted_information">Please wait while other players answer the question.\nWhen all players answered, the next step will automatically appear. But you can manually start it by clicking continue.\nWarning: When you click continue while others haven\'t answered yet, they won\'t be able to participate in this round. They can join again with the following question. </string>
-
 
 
     <!-- Strings related to ActionBar -->

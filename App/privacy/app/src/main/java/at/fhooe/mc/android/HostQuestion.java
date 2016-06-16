@@ -35,13 +35,13 @@ public class HostQuestion extends Activity implements View.OnClickListener{
         Button b = null;
         b = (Button) findViewById(R.id.host_question_yes);
         b.setOnClickListener(this);
+
         b = (Button) findViewById(R.id.host_question_no);
         b.setOnClickListener(this);
 
         question = (TextView) findViewById(R.id.question);
         question.setText("Here you will see your question.. ");
 
-        final Handler handler = new Handler();
         helper.getQuestionByUserAndGameId(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
             @Override
             public void onJSONResponse(boolean success, JSONObject response) {
