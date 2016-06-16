@@ -197,7 +197,7 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
         }
     }
 
-    private boolean isUsernameValid(String _name) {
+    private boolean isUsernameValid(String name) {
         //TODO: Replace this with your own logic
         return true;
     }
@@ -325,8 +325,8 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
 
         private final String mName;
 
-        UserLoginTask(String _name) {
-            mName = _name;
+        UserLoginTask(String name) {
+            mName = name;
         }
 
         @Override

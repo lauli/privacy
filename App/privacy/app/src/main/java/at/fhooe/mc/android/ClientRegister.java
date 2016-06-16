@@ -240,15 +240,15 @@ public class ClientRegister extends Activity implements  LoaderCallbacks<Cursor>
         }
     }
 
-    private boolean isUsernameValid(final String _name, String _id) {
-//        int mId = Integer.valueOf(_id);
+    private boolean isUsernameValid(final String name, String id) {
+//        int mId = Integer.valueOf(id);
 //        final boolean[] foundEqual = {false};
 //        helper.getPlayersInGame(mId, new OnJSONResponseCallback() {
 //            @Override
 //            public void onJSONResponse(boolean success, JSONObject response) {
 //                if(success) {
 //                    for (int i = 0; i < helper.getPlayers().length; i++) {
-//                        if(helper.getPlayers()[i].equals(_name))
+//                        if(helper.getPlayers()[i].equals(name))
 //                            foundEqual[0] = true;
 //                    }
 //                }
@@ -259,10 +259,10 @@ public class ClientRegister extends Activity implements  LoaderCallbacks<Cursor>
             return true;
     }
 
-//    private boolean isSessionIdValid(String _id) {
+//    private boolean isSessionIdValid(String id) {
 //        //TODO: Replace this with your own logic
 //        for(int i = 0; i < DUMMY_CREDENTIALS.length; i++){
-//            if(_id.equals(DUMMY_CREDENTIALS[i])) return true;
+//            if(id.equals(DUMMY_CREDENTIALS[i])) return true;
 //        }
 //        return false;
 //    }
@@ -396,9 +396,9 @@ public class ClientRegister extends Activity implements  LoaderCallbacks<Cursor>
         private final String mName;
         private final String mSessionID;
 
-        UserLoginTask(String _name, String _id) {
-            mName = _name;
-            mSessionID = _id;
+        UserLoginTask(String name, String id) {
+            mName = name;
+            mSessionID = id;
         }
 
         @Override

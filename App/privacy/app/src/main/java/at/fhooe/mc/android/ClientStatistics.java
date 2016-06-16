@@ -177,18 +177,18 @@ public class ClientStatistics extends Activity implements View.OnClickListener{
         startActivity(i);
     }
 
-//    public void addItem(String _name, int _points, int _difference){
+//    public void addItem(String name, int points, int difference){
 //        boolean foundEqual = false;
 //        if(!adapter.isEmpty()) {
 //            for (int i = 0; (i < adapter.getCount() && !foundEqual); i++) {
 //
-//                if (adapter.getItem(i).equals(_name + " (" + _points + ") " + _difference)) {
+//                if (adapter.getItem(i).equals(name + " (" + points + ") " + difference)) {
 //                    foundEqual = true;
 //                }
 //            }
 //        }
 //        if (!foundEqual) {
-//            adapter.add(_name + " (" + _points + ") " + _difference);
+//            adapter.add(name + " (" + points + ") " + difference);
 //            adapter.notifyDataSetChanged();
 //        }
 //    }

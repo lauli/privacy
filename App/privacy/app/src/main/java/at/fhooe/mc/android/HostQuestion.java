@@ -124,8 +124,8 @@ public class HostQuestion extends Activity implements View.OnClickListener{
     }
 
     @Override
-    public void onClick(View _view) {
-        switch (_view.getId()){
+    public void onClick(View view) {
+        switch (view.getId()){
             case R.id.host_question_yes : {
                 helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.getQuestionId(), 1, 0, new OnJSONResponseCallback() {
                     @Override
@@ -163,7 +163,7 @@ public class HostQuestion extends Activity implements View.OnClickListener{
         }
     }
 
-    private void showQuestion(String _question) {
-        question.setText(_question);
+    private void showQuestion(String questionString) {
+        question.setText(questionString);
     }
 }

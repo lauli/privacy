@@ -208,7 +208,7 @@ public class HostGuess extends Activity implements AdapterView.OnItemSelectedLis
     }
 
     @Override
-    public void onClick(View _view) {
+    public void onClick(View view) {
         helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.questionId, helper.getAnswer(), guess[0], new OnJSONResponseCallback() {
             @Override
             public void onJSONResponse(boolean success, JSONObject response) {

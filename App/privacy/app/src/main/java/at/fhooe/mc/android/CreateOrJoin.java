@@ -102,8 +102,8 @@ public class CreateOrJoin extends Activity implements View.OnClickListener{
     }
 
     @Override
-    public void onClick(View _v) {
-        switch(_v.getId()){
+    public void onClick(View v) {
+        switch(v.getId()){
             case R.id.create_or_join_create : {
                 Intent i = new Intent(this, HostRegister.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -160,8 +160,8 @@ public class HostLobby extends Activity implements View.OnClickListener{
     }
 
     @Override
-    public void onClick(View _view) {
-        switch (_view.getId()){
+    public void onClick(View view) {
+        switch (view.getId()){
             case R.id.host_lobby_continue :{
                 timer.cancel();
                 timer.purge();
