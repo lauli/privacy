@@ -97,17 +97,17 @@
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 />
 
-            <Button
-                style="ButtonTheme"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:text="continue"
-                android:id="@+id/client_lobby_continue"
-                android:layout_alignParentBottom="true"
-                android:background="@drawable/button_design"
-                android:layout_gravity="left"
-                android:gravity="bottom|right"
-                android:layout_marginTop="90dp"/>
+            <!--<Button-->
+                <!--style="ButtonTheme"-->
+                <!--android:layout_width="300dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="continue"-->
+                <!--android:id="@+id/client_lobby_continue"-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:background="@drawable/button_design"-->
+                <!--android:layout_gravity="left"-->
+                <!--android:gravity="bottom|right"-->
+                <!--android:layout_marginTop="90dp"/>-->
 
         </LinearLayout>
 

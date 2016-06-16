@@ -71,6 +71,7 @@ public class AdditionalMethods {
     protected int answer;
     protected int guess;
     protected int howManyYes;
+    protected int[] ids;
 
 
     public static AdditionalMethods getInstance() {
@@ -120,6 +121,8 @@ public class AdditionalMethods {
     public int getHowManyYes(){ return howManyYes;}
 
     public Player[] getStatistic() { return statistic;}
+
+    public int[] getQuestionIds() { return ids;}
 
     public RequestHandle executeSample(AsyncHttpClient client,
                                        String URL,
@@ -255,7 +258,7 @@ public class AdditionalMethods {
 
                     JSONArray array = json.getJSONArray("IDS");
 
-                    int[] ids = new int[array.length()];
+                    ids = new int[array.length()];
                     for (int i = 0; i < array.length(); i++) {
                         JSONObject obj = array.getJSONObject(i);
                         ids[i] = obj.getInt("id");
@@ -474,6 +477,7 @@ public class AdditionalMethods {
                     //TODO: implement statistic form all users with Player[] statistic
                     statistic = new Player[array.length()];
                     for (int i = 0; i < array.length(); i++) {
+                        statistic[i] = new Player();
                         statistic[i].guessed = Integer.parseInt(array.getJSONObject(i).getString("guessed"));
                         statistic[i].name = array.getJSONObject(i).getString("name");
                         statistic[i].points = Integer.parseInt(array.getJSONObject(i).getString("points"));
@@ -490,7 +494,6 @@ public class AdditionalMethods {
     protected void pushPointsToProfile(int userId, int points,  final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
-        this.points += points;
 
         RequestParams params = new RequestParams();
         params.put("user_id", userId);
@@ -515,9 +518,7 @@ public class AdditionalMethods {
     protected void forceNextQuestion(int userId, int gameId, int questionId,  final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
-        userId = 1;
-        gameId = 1;
-        questionId = 1;
+        questionId = ids[(0 + (int)(Math.random() * ((ids.length-1 - 0) + 1)))];
 
         RequestParams params = new RequestParams();
         params.put("user_id", userId);
@@ -531,9 +532,7 @@ public class AdditionalMethods {
 
             @Override
             public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
-                Log.i(LOG_TAG,"forceNextQuestion was a success.");
-                String firstEvent = responseString;
-
+                Log.i(LOG_TAG,"forceNextQuestion was a success." + responseString);
                 callback.onJSONResponse(true, null);
             }
         });

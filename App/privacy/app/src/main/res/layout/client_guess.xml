@@ -114,7 +114,9 @@
                 app:sl_value="4"
                 app:sl_discreteMode="true"
                 app:sl_primaryColor="@color/blackboard"
-                android:id="@+id/client_guess_slider"/>
+                android:id="@+id/client_guess_slider"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"/>
 
         </LinearLayout>
 

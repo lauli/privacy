@@ -130,9 +130,13 @@ public class HostQuestion extends Activity implements View.OnClickListener{
                 helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.getQuestionId(), 1, 0, new OnJSONResponseCallback() {
                     @Override
                     public void onJSONResponse(boolean success, JSONObject response) {
-                        Intent i = new Intent(HostQuestion.this, HostVoted.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(i);
+                        if(success) {
+                            if (success) {
+                                Intent i = new Intent(HostQuestion.this, HostVoted.class);
+                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(i);
+                            }
+                        }
                     }
                 });
             } break;
@@ -140,9 +144,18 @@ public class HostQuestion extends Activity implements View.OnClickListener{
                 helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.getQuestionId(), 2, 0, new OnJSONResponseCallback() {
                     @Override
                     public void onJSONResponse(boolean success, JSONObject response) {
-                        Intent i = new Intent(HostQuestion.this, HostVoted.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(i);
+                        if(success){
+                            helper.allowCounting(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
+                                @Override
+                                public void onJSONResponse(boolean success, JSONObject response) {
+                                    if(success){
+                                        Intent i = new Intent(HostQuestion.this, HostVoted.class);
+                                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(i);
+                                    }
+                                }
+                            });
+                        }
                     }
                 });
             } break;

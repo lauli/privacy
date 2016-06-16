@@ -157,13 +157,23 @@ public class HostVoted extends Activity implements View.OnClickListener{
     public void onClick(View view) {
         timer.cancel();
         timer.purge();
+        timer = null;
 
         helper.allowStatistics(helper.userId, helper.getGameId(), new OnJSONResponseCallback() {
             @Override
             public void onJSONResponse(boolean success, JSONObject response) {
-                Intent i = new Intent(HostVoted.this, HostGuess.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(i);
+                if(success){
+                    helper.allowCounting(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
+                        @Override
+                        public void onJSONResponse(boolean success, JSONObject response) {
+                            if(success){
+                                Intent i = new Intent(HostVoted.this, HostGuess.class);
+                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(i);
+                            }
+                        }
+                    });
+                }
             }
         });
     }

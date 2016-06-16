@@ -36,7 +36,6 @@ public class ClientGuess extends Activity implements AdapterView.OnItemSelectedL
 
     AdditionalMethods helper = AdditionalMethods.getInstance();
     private ArrayAdapter<String> adapter;
-    Timer timer;
 
 
     @Override
@@ -49,36 +48,15 @@ public class ClientGuess extends Activity implements AdapterView.OnItemSelectedL
         this.adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
         list.setAdapter(this.adapter);
 
-        final Handler handler = new Handler();
-        int delay = 2000;   // delay for 2 sec.
-        int interval = 5000;  // iterate every sec.
-        timer = new Timer();
 
-        timer.scheduleAtFixedRate(new TimerTask() {
-            public void run() {
-                final AdditionalMethods helper = AdditionalMethods.getInstance();
-                helper.getAnsweredUsers(helper.getGameId(), new OnJSONResponseCallback() {
-                    @Override
-                    public void onJSONResponse(boolean success, JSONObject response) {
-                        if(success) {
-                            for (int i = 0; i < helper.getAnsweredPlayers().length; i++) {
-                                final int finalI = i;
-                                handler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        addItem(helper.getAnsweredPlayers()[finalI]);
-                                    }
-                                });
-                            }
-                        }
-                    }
-                });
-            }
-        }, delay, interval);
 
-        final int[] guess = {-1};
+        for (int i = 0; i < helper.getAnsweredPlayers().length; i++) {
+            addItem(helper.getAnsweredPlayers()[i]);
+        }
 
-        com.rey.material.widget.Slider slider = (com.rey.material.widget.Slider) findViewById(R.id.host_guess_slider);
+        final int[] guess = {helper.getAnsweredPlayers().length};
+
+        com.rey.material.widget.Slider slider = (com.rey.material.widget.Slider) findViewById(R.id.client_guess_slider);
         slider.setValueRange(0, helper.getAnsweredPlayers().length, true);
 
         slider.setOnTouchListener(new View.OnTouchListener() {
@@ -88,10 +66,35 @@ public class ClientGuess extends Activity implements AdapterView.OnItemSelectedL
                     helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.questionId, helper.getAnswer(), guess[0], new OnJSONResponseCallback() {
                         @Override
                         public void onJSONResponse(boolean success, JSONObject response) {
-                            timer.purge(); timer.cancel();
-                            Intent i = new Intent(ClientGuess.this, ClientStatistics.class);
-                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(i);
+                            Timer timerContinue = new Timer();
+                            timerContinue.scheduleAtFixedRate(new TimerTask() {
+                                public void run() {
+                                    helper.isContinueAllowed(helper.getGameId(), new OnJSONResponseCallback() {
+                                        @Override
+                                        public void onJSONResponse(boolean success, JSONObject response) {
+                                            if (success) {
+                                                helper.getStatisticsByGameId(helper.getGameId(), new OnJSONResponseCallback() {
+                                                    @Override
+                                                    public void onJSONResponse(boolean success, JSONObject response) {
+                                                        if (success) {
+                                                            helper.pushPointsToProfile(helper.getUserID(), helper.getPointsFromThisRound(), new OnJSONResponseCallback() {
+                                                                @Override
+                                                                public void onJSONResponse(boolean success, JSONObject response) {
+                                                                    if (success) {
+                                                                        Intent i = new Intent(ClientGuess.this, ClientStatistics.class);
+                                                                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                                        startActivity(i);
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                }
+                            }, 2000, 5000);
                         }
                     });
                 }

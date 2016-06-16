@@ -36,6 +36,7 @@ public class HostGuess extends Activity implements AdapterView.OnItemSelectedLis
 
     AdditionalMethods helper = AdditionalMethods.getInstance();
     private ArrayAdapter<String> adapter;
+    final int[] guess = {helper.getAnsweredPlayers().length};
 
 
     @Override
@@ -53,42 +54,40 @@ public class HostGuess extends Activity implements AdapterView.OnItemSelectedLis
             addItem(helper.getAnsweredPlayers()[i]);
         }
 
-        final int[] guess = {-1};
-
         com.rey.material.widget.Slider slider = (com.rey.material.widget.Slider) findViewById(R.id.host_guess_slider);
         slider.setValueRange(0, helper.getAnsweredPlayers().length, true);
 
-        slider.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction()==MotionEvent.ACTION_DOWN && guess[0] != -1) {
-                    helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.questionId, helper.getAnswer(), guess[0], new OnJSONResponseCallback() {
-                        @Override
-                        public void onJSONResponse(boolean success, JSONObject response) {
-                            helper.allowStatistics(helper.userId, helper.getGameId(), new OnJSONResponseCallback() {
-                                @Override
-                                public void onJSONResponse(boolean success, JSONObject response) {
-                                    helper.getStatisticsByGameId(helper.getGameId(), new OnJSONResponseCallback() {
-                                        @Override
-                                        public void onJSONResponse(boolean success, JSONObject response) {
-                                            helper.pushPointsToProfile(helper.getUserID(), helper.getPointsFromThisRound(), new OnJSONResponseCallback() {
-                                                @Override
-                                                public void onJSONResponse(boolean success, JSONObject response) {
-                                                    Intent i = new Intent(HostGuess.this, HostStatistics.class);
-                                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                    startActivity(i);
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }
-                return false;
-            }
-        });
+//        slider.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if(event.getAction()==MotionEvent.ACTION_DOWN && guess[0] != -1) {
+//                    helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.questionId, helper.getAnswer(), guess[0], new OnJSONResponseCallback() {
+//                        @Override
+//                        public void onJSONResponse(boolean success, JSONObject response) {
+//                            helper.allowStatistics(helper.userId, helper.getGameId(), new OnJSONResponseCallback() {
+//                                @Override
+//                                public void onJSONResponse(boolean success, JSONObject response) {
+//                                    helper.getStatisticsByGameId(helper.getGameId(), new OnJSONResponseCallback() {
+//                                        @Override
+//                                        public void onJSONResponse(boolean success, JSONObject response) {
+//                                            helper.pushPointsToProfile(helper.getUserID(), helper.getPointsFromThisRound(), new OnJSONResponseCallback() {
+//                                                @Override
+//                                                public void onJSONResponse(boolean success, JSONObject response) {
+//                                                    Intent i = new Intent(HostGuess.this, HostStatistics.class);
+//                                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                                                    startActivity(i);
+//                                                }
+//                                            });
+//                                        }
+//                                    });
+//                                }
+//                            });
+//                        }
+//                    });
+//                }
+//                return false;
+//            }
+//        });
         slider.setOnPositionChangeListener(new Slider.OnPositionChangeListener() {
             @Override
             public void onPositionChanged(Slider view, boolean fromUser, float oldPos, float newPos, int oldValue, int newValue) {
@@ -96,9 +95,9 @@ public class HostGuess extends Activity implements AdapterView.OnItemSelectedLis
             }
         });
 
-//        Button b = null;
-//        b = (Button) findViewById(R.id.host_guess_continue);
-//        b.setOnClickListener(this);
+        Button b = null;
+        b = (Button) findViewById(R.id.host_guess_continue);
+        b.setOnClickListener(this);
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.host_guess_drawer_layout);
@@ -210,8 +209,35 @@ public class HostGuess extends Activity implements AdapterView.OnItemSelectedLis
 
     @Override
     public void onClick(View _view) {
-        Intent i = new Intent(this, ClientStatistics.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
+        helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.questionId, helper.getAnswer(), guess[0], new OnJSONResponseCallback() {
+            @Override
+            public void onJSONResponse(boolean success, JSONObject response) {
+               if(success) helper.allowStatistics(helper.userId, helper.getGameId(), new OnJSONResponseCallback() {
+                    @Override
+                    public void onJSONResponse(boolean success, JSONObject response) {
+                        if(success) helper.getStatisticsByGameId(helper.getGameId(), new OnJSONResponseCallback() {
+                            @Override
+                            public void onJSONResponse(boolean success, JSONObject response) {
+                                if(success) helper.pushPointsToProfile(helper.getUserID(), helper.getPointsFromThisRound(), new OnJSONResponseCallback() {
+                                    @Override
+                                    public void onJSONResponse(boolean success, JSONObject response) {
+                                        if(success)  helper.allowCounting(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
+                                            @Override
+                                            public void onJSONResponse(boolean success, JSONObject response) {
+                                                if(success){
+                                                    Intent i = new Intent(HostGuess.this, HostStatistics.class);
+                                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                    startActivity(i);
+                                                }
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
     }
 }

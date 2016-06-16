@@ -5,13 +5,10 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -22,11 +19,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
-public class ClientLobby extends Activity implements View.OnClickListener{
+public class ClientLobby extends Activity{
 
     private ArrayList<String> listItems = new ArrayList<String>();
     private ListView list;
@@ -36,7 +30,8 @@ public class ClientLobby extends Activity implements View.OnClickListener{
     private boolean flipped;
     private ListView drawerList;
     private ArrayAdapter<String> adapter;
-    Timer timer;
+    Timer timerPlayer;
+    Timer timerContinue;
 
     AdditionalMethods helper = AdditionalMethods.getInstance();
 
@@ -54,9 +49,10 @@ public class ClientLobby extends Activity implements View.OnClickListener{
 
         int delay = 2000;   // delay for 5 sec.
         int interval = 5000;  // iterate every sec.
-        timer = new Timer();
+        timerPlayer = new Timer();
 
-        timer.scheduleAtFixedRate(new TimerTask() {
+
+        timerPlayer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
                 final AdditionalMethods helper = AdditionalMethods.getInstance();
                 helper.getPlayersInGame(helper.getGameId(), new OnJSONResponseCallback() {
@@ -86,14 +82,19 @@ public class ClientLobby extends Activity implements View.OnClickListener{
             return;
         }
 
-        timer.scheduleAtFixedRate(new TimerTask() {
+        timerContinue = new Timer();
+        timerContinue.scheduleAtFixedRate(new TimerTask() {
             public void run() {
-                final AdditionalMethods helper = AdditionalMethods.getInstance();
                 helper.isContinueAllowed(helper.getGameId(), new OnJSONResponseCallback() {
                     @Override
                     public void onJSONResponse(boolean success, JSONObject response) {
                         if(success) {
-                            timer.cancel();
+                            timerPlayer.cancel();
+                            timerPlayer.purge();
+                            timerPlayer = null;
+                            timerContinue.cancel();
+                            timerContinue.purge();
+                            timerContinue = null;
                             Intent i = new Intent(ClientLobby.this, ClientQuestion.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(i);
@@ -186,13 +187,15 @@ public class ClientLobby extends Activity implements View.OnClickListener{
 
     }
 
-    @Override
-    public void onClick(View view) {
-        timer.cancel();
-        Intent i = new Intent(this, ClientQuestion.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
-    }
+//    @Override
+//    public void onClick(View view) {
+//        timerPlayer.cancel();
+//        timerPlayer.purge();
+//        timerPlayer = null;
+//        Intent i = new Intent(this, ClientQuestion.class);
+//        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        startActivity(i);
+//    }
 
     public void addItem(String name){
         boolean foundEqual = false;

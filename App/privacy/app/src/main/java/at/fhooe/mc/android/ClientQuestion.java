@@ -143,18 +143,22 @@ public class ClientQuestion extends Activity implements View.OnClickListener{
                         if(success){
                             timer.scheduleAtFixedRate(new TimerTask() {
                                 public void run() {
-                                    final AdditionalMethods helper = AdditionalMethods.getInstance();
                                     helper.isContinueAllowed(helper.getGameId(), new OnJSONResponseCallback() {
                                         @Override
                                         public void onJSONResponse(boolean success, JSONObject response) {
-                                            if(success) {
+                                            if (success) {
                                                 helper.getAnsweredUsers(helper.getGameId(), new OnJSONResponseCallback() {
                                                     @Override
                                                     public void onJSONResponse(boolean success, JSONObject response) {
-                                                        timer.cancel();
-                                                        Intent i = new Intent(ClientQuestion.this, ClientGuess.class);
-                                                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                        startActivity(i);
+                                                        if (success) {
+                                                            //TODO: Datenbanken abstimmen für counter weiter, weil sonst automatisch weiter geht ohne das alle answers da sind!  -> FEHLER
+                                                            timer.cancel();
+                                                            timer.purge();
+                                                            timer = null;
+                                                            Intent i = new Intent(ClientQuestion.this, ClientGuess.class);
+                                                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                            startActivity(i);
+                                                        }
                                                     }
                                                 });
                                             }
@@ -174,18 +178,21 @@ public class ClientQuestion extends Activity implements View.OnClickListener{
                         if(success){
                             timer.scheduleAtFixedRate(new TimerTask() {
                                 public void run() {
-                                    final AdditionalMethods helper = AdditionalMethods.getInstance();
                                     helper.isContinueAllowed(helper.getGameId(), new OnJSONResponseCallback() {
                                         @Override
                                         public void onJSONResponse(boolean success, JSONObject response) {
-                                            if(success) {
+                                            if (success) {
                                                 helper.getAnsweredUsers(helper.getGameId(), new OnJSONResponseCallback() {
                                                     @Override
                                                     public void onJSONResponse(boolean success, JSONObject response) {
-                                                        timer.cancel();
-                                                        Intent i = new Intent(ClientQuestion.this, ClientGuess.class);
-                                                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                        startActivity(i);
+                                                        if (success) {
+                                                            timer.cancel();
+                                                            timer.purge();
+                                                            timer = null;
+                                                            Intent i = new Intent(ClientQuestion.this, ClientGuess.class);
+                                                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                            startActivity(i);
+                                                        }
                                                     }
                                                 });
                                             }

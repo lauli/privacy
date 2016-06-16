@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -54,9 +55,9 @@ public class HostStatistics extends Activity implements View.OnClickListener{
 
 //        int delay = 2000;   // delay for 5 sec.
 //        int interval = 5000;  // iterate every sec.
-//        timer = new Timer();
+//        timerPlayer = new Timer();
 //
-//        timer.scheduleAtFixedRate(new TimerTask() {
+//        timerPlayer.scheduleAtFixedRate(new TimerTask() {
 //            public void run() {
 //                final AdditionalMethods helper = AdditionalMethods.getInstance();
 //                helper.getPlayersInGame(helper.getGameId(), new OnJSONResponseCallback() {
@@ -171,13 +172,17 @@ public class HostStatistics extends Activity implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-//        timer.cancel();
+//        timerPlayer.cancel();
+
+        Log.i("", "onclick");
         helper.forceNextQuestion(helper.getUserID(), helper.getGameId(), helper.getQuestionId(), new OnJSONResponseCallback() {
             @Override
             public void onJSONResponse(boolean success, JSONObject response) {
-                Intent i = new Intent(HostStatistics.this, HostQuestion.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(i);
+                if(success) {
+                    Intent i = new Intent(HostStatistics.this, HostQuestion.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+                }
             }
         });
     }
