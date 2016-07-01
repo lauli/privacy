@@ -1,6 +1,7 @@
 package at.fhooe.mc.android;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,7 @@ import android.widget.TextView;
 /**
  * Created by laureenschausberger on 14.06.16.
  */
-public class MyAdapter extends BaseAdapter {
+public class MyAdapter extends BaseAdapter implements View.OnClickListener {
 
     private String[] data;
     private String[] data2;
@@ -45,11 +46,14 @@ public class MyAdapter extends BaseAdapter {
 
         TextView text1 = (TextView) rowView.findViewById(R.id.text1);
         TextView text2 = (TextView) rowView.findViewById(R.id.text2);
-//        ImageView icon = (ImageView) rowView.findViewById(R.id.icon);
 
         text1.setText(data[position]);
         text2.setText(data2[position]);
-//        icon.setImageResource(R.drawable.privacy_logo);
+
+        rowView.setOnClickListener(this);
+        text1.setOnClickListener(this);
+        text2.setOnClickListener(this);
+
 
         return rowView;
     }
@@ -57,5 +61,23 @@ public class MyAdapter extends BaseAdapter {
     @Override
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onClick(View v) {
+        Log.i("", "touched rowView");
+
+        switch(v.getId()){
+            case R.string.actionbar_lang : {}break;
+            case R.string.actionbar_skip : {}break;
+            case R.string.actionbar_quit : {
+                QuitDialogFragment dialog  = new QuitDialogFragment();
+            }break;
+            case R.string.actionbar_credits : {
+                Log.i("", "touched credits");
+                CreditDialogFragment dialog  = new CreditDialogFragment();
+            }break;
+            default : {}
+        }
     }
 }

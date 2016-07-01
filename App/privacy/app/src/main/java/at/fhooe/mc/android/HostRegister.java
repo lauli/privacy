@@ -18,12 +18,8 @@ import android.provider.ContactsContract;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,7 +30,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -277,7 +272,7 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
         if(attemptLogin()){
             final AdditionalMethods helper = AdditionalMethods.getInstance();
             // TODO: last parameter is category! -> now 3 over18
-            helper.registerClient(1, name, new OnJSONResponseCallback() {
+            helper.createUser(1, name, new OnJSONResponseCallback() {
                 @Override
                 public void onJSONResponse(boolean success, JSONObject response) {
                     // do anything here.

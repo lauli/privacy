@@ -68,13 +68,55 @@
 
 
     <!-- Strings related to ActionBar -->
-    <string name="actionbar_id">#12345679</string>
-    <string name="actionbar_name">Name: </string>
-    <string name="actionbar_points">Points: </string>
-    <string name="actionbar_lang">Language: </string>
-    <string name="actionbar_skip">Skip Q</string>
+    <string name="actionbar_id"># </string>
+    <string name="actionbar_name">Name</string>
+    <string name="actionbar_points">Points</string>
+    <string name="actionbar_lang">Language</string>
+    <string name="actionbar_skip">Skip</string>
     <string name="actionbar_quit">Quit</string>
     <string name="actionbar_credits">Credits</string>
+
+    <!-- Strings related to ActionBar -->
+    <string name="dialog_credits">Special thanks goes to ..  </string>
+    <string name="dialog_quit">Are you sure you want to leave this game?</string>
+    <string name="dialog_skip">Are you sure you want to skip this question?</string>
+    <string name="dialog_question">Are you sure you want to skip this question?</string>
+    <string name="dialog_yes">Yes</string>
+    <string name="dialog_cancel">Cancel</string>
+
+    <string name="credits_chrisrenke">
+        Copyright 2014 Chris Renke
+        \n
+        \nLicensed under the Apache License, Version 2.0 (the "License")
+        \nYou may not use this file except in compliance with the License.
+        You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+        \nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+    </string>
+
+     <string name="credits_henriksandstroem">
+         Developed By
+         \nHenrik Sandström [@heinrisch](https://twitter.com/Heinrisch)
+         \nStyled By
+         \nMarcus Gellemark [Dribbble](http://dribbble.com/Gellermark)
+         \nAdditional Credit
+        \nChris Banes [chrisbanes](https://github.com/chrisbanes)
+        \nQuentin DOMMERC [dommerq](https://github.com/dommerq)
+        \nAaron Rietschlin [@AaronRietschlin](https://twitter.com/AaronRietschlin)
+        \nGuillaume Imbert [HozakaN](https://github.com/HozakaN)
+        \n
+        \nLicensed under the Apache License, Version 2.0 (the "License")
+        \nYou may not use this file except in compliance with the License.
+        You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+        \nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+    </string>
+
+      <string name="credits_reypham">
+         Copyright 2015 Rey Pham.
+        \nLicensed under the Apache License, Version 2.0 (the "License")
+        \nYou may not use this file except in compliance with the License.
+        You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+        \nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+    </string>
 
 
 </resources>

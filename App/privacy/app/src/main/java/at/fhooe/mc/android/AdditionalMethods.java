@@ -1,6 +1,7 @@
 package at.fhooe.mc.android;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -148,7 +149,7 @@ public class AdditionalMethods {
     }
 
 
-    protected void registerClient(int language, String name, final OnJSONResponseCallback callback) {
+    protected void createUser(int language, String name, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
         this.lang = language;
@@ -171,9 +172,15 @@ public class AdditionalMethods {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                Context context = MainActivity.getContextOfApplication();
+                SharedPreferences preferences = context.getSharedPreferences("myPref", 0);
+                SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("username", getName());
+                    editor.commit();
+
                 JSONObject json;
 
-                Log.i(LOG_TAG,"registerClient was a success.");
+                Log.i(LOG_TAG,"createUser was a success.");
 
                 try {
                     json = new JSONObject(responseString);
@@ -335,7 +342,7 @@ public class AdditionalMethods {
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 JSONObject json;
 
-                Log.i(LOG_TAG, "registerClient was a success.");
+                Log.i(LOG_TAG, "createUser was a success.");
 
                 try {
                     json = new JSONObject(responseString);

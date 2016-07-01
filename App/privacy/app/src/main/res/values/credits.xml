@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="credits" >
+        <item name="DrawerArrowDrawable-master">DrawerArrowDrawable</item>
+        <item name="floatlabelededittext-master">FloatLabeledEditText</item>
+        <item name="material-master">Material</item>
+    </array>
+</resources>

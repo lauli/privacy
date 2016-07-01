@@ -1,12 +1,22 @@
 package at.fhooe.mc.android;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
-public class MainActivity extends Activity implements View.OnClickListener{
+public class MainActivity extends FragmentActivity implements View.OnClickListener{
+
+    private static Context contextForCreateUser;
+    private final String MyPREFERENCES = "myPref";
 
     @Override
     protected void onCreate(Bundle _savedInstanceState) {
@@ -16,12 +26,36 @@ public class MainActivity extends Activity implements View.OnClickListener{
         FrameLayout b = null;
         b = (FrameLayout) findViewById(R.id.main_start);
         b.setOnClickListener(this);
+
+        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, 0);
+        SharedPreferences.Editor editor = preferences.edit();
+//        if (preferences.getBoolean("firstCall", true)) {
+//            editor.putBoolean("firstCall", false);
+//            editor.commit();
+            FragmentManager fm = getFragmentManager();
+            FirstLoginDialogFragment dialog = new FirstLoginDialogFragment();
+            dialog.show(getSupportFragmentManager(), "Dialog");
+//        }
+
+        contextForCreateUser = getApplicationContext();
     }
 
     @Override
     public void onClick(View view) {
+        Log.i("", "something is happening..");
         Intent i = new Intent(this, CreateOrJoin.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
+
+//            newFragment.show(getSupportFragmentManager(), "missiles");
+//        }
+
+
     }
+
+    public static Context getContextOfApplication(){
+        return contextForCreateUser;
+    }
+
 }
+

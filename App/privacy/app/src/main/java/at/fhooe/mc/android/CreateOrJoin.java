@@ -1,7 +1,9 @@
 package at.fhooe.mc.android;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
@@ -20,6 +22,7 @@ public class CreateOrJoin extends Activity implements View.OnClickListener{
     private float offset;
     private boolean flipped;
     private ListView drawerList;
+    private final String MyPREFERENCES = "myPref";
 
 
     @Override
@@ -42,9 +45,11 @@ public class CreateOrJoin extends Activity implements View.OnClickListener{
         drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
         imageView.setImageDrawable(drawerArrowDrawable);
 
-        String[] oben = {"# SessionId", "Credits"};
+        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        String name = preferences.getString("username", "");
 
-        String[] unten = {"", "thanks for help"};
+        String[] oben = {"# SessionId", "Name", "Credits"};
+        String[] unten = {"", name, "thanks for help"};
         MyAdapter myAdapter = new MyAdapter(this, oben, unten);
         drawerList.setAdapter(myAdapter);
 

@@ -5,9 +5,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
@@ -15,11 +17,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.provider.ContactsContract;
 import android.support.v4.view.GravityCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -72,13 +72,18 @@ public class ClientRegister extends Activity implements  LoaderCallbacks<Cursor>
 
     AdditionalMethods helper;
 
+    private final String MyPREFERENCES = "myPref";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.client_register);
         // Set up the login form.
         mUsername = (EditText) findViewById(R.id.client_register_username);
-
+        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        String lastname = preferences.getString("username", "");
+        mUsername.setText(lastname);
 
         mSessionId = (EditText) findViewById(R.id.client_register_sessionID);
         mSessionId.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -122,11 +127,12 @@ public class ClientRegister extends Activity implements  LoaderCallbacks<Cursor>
 //                new String[]{"Name: -", "Points: -", "Picture", "", "Skip", "Quit"});
 //        drawerList.setAdapter(adapter);
 
-        String[] oben = {"# SessionId", "Credits"};
+        String[] oben = {"# SessionId", "Name", getString(R.string.actionbar_credits)};
 
-        String[] unten = {"", "thanks for help"};
+        String[] unten = {"", lastname, "thanks for help"};
         MyAdapter myAdapter = new MyAdapter(this, oben, unten);
         drawerList.setAdapter(myAdapter);
+
 
 
         drawer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
@@ -241,22 +247,12 @@ public class ClientRegister extends Activity implements  LoaderCallbacks<Cursor>
     }
 
     private boolean isUsernameValid(final String name, String id) {
-//        int mId = Integer.valueOf(id);
-//        final boolean[] foundEqual = {false};
-//        helper.getPlayersInGame(mId, new OnJSONResponseCallback() {
-//            @Override
-//            public void onJSONResponse(boolean success, JSONObject response) {
-//                if(success) {
-//                    for (int i = 0; i < helper.getPlayers().length; i++) {
-//                        if(helper.getPlayers()[i].equals(name))
-//                            foundEqual[0] = true;
-//                    }
-//                }
-//            }
-//        });
-//        if(foundEqual[0] == true) return false;
-//        else
-            return true;
+        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("username", name);
+        editor.commit();
+
+        return true;
     }
 
 //    private boolean isSessionIdValid(String id) {
@@ -341,16 +337,17 @@ public class ClientRegister extends Activity implements  LoaderCallbacks<Cursor>
         helper = AdditionalMethods.getInstance();
         Handler handler = new Handler();
         if(attemptLogin()) {
-            helper.registerClient(1, name, new OnJSONResponseCallback() {
-                @Override
-                public void onJSONResponse(boolean success, JSONObject response) {
-                    if (success) {
+//            helper.createUser(1, name, new OnJSONResponseCallback() {
+//                @Override
+//                public void onJSONResponse(boolean success, JSONObject response) {
+//                    if (success) {
                         helper.joinGame(helper.getUserID(), sessionId, new OnJSONResponseCallback() {
                             @Override
                             public void onJSONResponse(boolean success, JSONObject response) {
                                 if(success) {
                                     if (helper.getGameId() != -1) {
-                                        Intent i = new Intent(ClientRegister.this, ClientLobby.class);
+//                                        Intent i = new Intent(ClientRegister.this, ClientLobby.class);
+                                        Intent i = new Intent(ClientRegister.this, ClientQuestion.class);
                                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         startActivity(i);
                                     } else {
@@ -359,9 +356,9 @@ public class ClientRegister extends Activity implements  LoaderCallbacks<Cursor>
                                 }
                             }
                         });
-                    }
-                }
-            });
+//                    }
+//                }
+//            });
 
 
         }
@@ -426,7 +423,7 @@ public class ClientRegister extends Activity implements  LoaderCallbacks<Cursor>
 //            Looper.prepare();
 //            AdditionalMethods helper = AdditionalMethods.getInstance();
 //            try {
-//                helper.registerClient(1, mName, false);
+//                helper.createUser(1, mName, false);
 //                //Thread.sleep(5000);
 //            } catch (RuntimeException _e) {
 //                    Log.i("", "A failure accured while trying to register. Plz try again");

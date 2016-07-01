@@ -27,19 +27,30 @@
             android:name=".ClientRegister"
             android:label="@string/title_activity_client_register"/>
         <activity
+            android:name=".CreateOrJoin"/>
+        <activity
             android:name=".ClientLobby"
-            android:label="@string/title_activity_client_lobby"/>
-        <activity android:name=".CreateOrJoin"/>
-        <activity android:name=".ClientQuestion">
-        </activity>
-        <activity android:name=".ClientGuess"/>
-        <activity android:name=".ClientStatistics"/>
+            android:label="@string/title_activity_client_lobby"
+            android:noHistory="true" />
+
+        <activity
+            android:name=".ClientQuestion"
+            android:noHistory="true" />
+        <activity android:name=".ClientGuess"
+                  android:noHistory="true"/>
+        <activity android:name=".ClientStatistics"
+                  android:noHistory="true"/>
         <activity android:name=".HostRegister"/>
-        <activity android:name=".HostLobby"/>
-        <activity android:name=".HostQuestion"/>
-        <activity android:name=".HostVoted"/>
-        <activity android:name=".HostGuess"/>
-        <activity android:name=".HostStatistics">
+        <activity android:name=".HostLobby"
+                  android:noHistory="true"/>
+        <activity android:name=".HostQuestion"
+                  android:noHistory="true"/>
+        <activity android:name=".HostVoted"
+                  android:noHistory="true"/>
+        <activity android:name=".HostGuess"
+                  android:noHistory="true"/>
+        <activity android:name=".HostStatistics"
+                  android:noHistory="true">
         </activity>
     </application>
 
