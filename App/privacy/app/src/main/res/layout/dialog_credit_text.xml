@@ -3,7 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="55dip"
               android:orientation="vertical"
-                android:background="@+color/blackboard">
+                android:background="@color/blackboard">
 
     <TextView
         android:id="@+id/dialog_credit_text"

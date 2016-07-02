@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
@@ -37,8 +38,11 @@ public class CreditDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
+        LayoutInflater factory = LayoutInflater.from(getActivity());
+        View dialogLayout = factory.inflate(R.layout.dialog_fragment, null);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setView(R.layout.dialog_fragment);
+        builder.setView(dialogLayout);
         builder.setTitle("Credits");
         builder.setMessage(R.string.dialog_credits)
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
@@ -47,71 +51,12 @@ public class CreditDialogFragment extends DialogFragment {
                     }
                 });
 
-        // get the listview
-        expListView = (ExpandableListView) getView().findViewById(R.id.dialog_listview);
+        expListView = (ExpandableListView) dialogLayout.findViewById(R.id.dialog_list);
 
-        // preparing list data
         prepareListData();
 
-        listAdapter = new ExpandableListAdapter(getContext(), listDataHeader, listDataChild);
-
-        // setting list adapter
+        listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild);
         expListView.setAdapter(listAdapter);
-
-        // Listview Group click listener
-        expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v,
-                                        int groupPosition, long id) {
-                // Toast.makeText(getApplicationContext(),
-                // "Group Clicked " + listDataHeader.get(groupPosition),
-                // Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
-
-        // Listview Group expanded listener
-        expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                Toast.makeText(getContext(),
-                        listDataHeader.get(groupPosition) + " Expanded",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Listview Group collasped listener
-        expListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-
-            @Override
-            public void onGroupCollapse(int groupPosition) {
-                Toast.makeText(getContext(),
-                        listDataHeader.get(groupPosition) + " Collapsed",
-                        Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-        // Listview on child click listener
-        expListView.setOnChildClickListener(new OnChildClickListener() {
-
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v,
-                                        int groupPosition, int childPosition, long id) {
-                // TODO Auto-generated method stub
-                Toast.makeText(
-                        getContext(),
-                        listDataHeader.get(groupPosition)
-                                + " : "
-                                + listDataChild.get(
-                                listDataHeader.get(groupPosition)).get(
-                                childPosition), Toast.LENGTH_SHORT)
-                        .show();
-                return false;
-            }
-        });
 
         return builder.create();
     }
@@ -130,13 +75,13 @@ public class CreditDialogFragment extends DialogFragment {
 
         // Adding child data
         List<String> DrawerArrowDrawable = new ArrayList<String>();
-        DrawerArrowDrawable.add(String.valueOf(R.string.credits_chrisrenke));
+        DrawerArrowDrawable.add("ene mene muh");
 
         List<String> FloatLabeledEditText = new ArrayList<String>();
-        DrawerArrowDrawable.add(String.valueOf(R.string.credits_chrisrenke));
+        FloatLabeledEditText.add(getString(R.string.credits_henriksandstroem));
 
         List<String> Material = new ArrayList<String>();
-        DrawerArrowDrawable.add(String.valueOf(R.string.credits_chrisrenke));
+        Material.add(getString(R.string.credits_reypham));
 
         listDataChild.put(listDataHeader.get(0), DrawerArrowDrawable); // Header, Child data
         listDataChild.put(listDataHeader.get(1), FloatLabeledEditText);

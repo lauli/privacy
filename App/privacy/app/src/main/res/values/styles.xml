@@ -67,4 +67,9 @@
         <item name="android:textColor">@color/oxblood</item>
     </style>
 
+    <!-- Splashscreen -->
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/startdisplay</item>
+    </style>
+
 </resources>

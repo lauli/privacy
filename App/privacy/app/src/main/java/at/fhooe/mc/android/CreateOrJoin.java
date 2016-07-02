@@ -1,29 +1,50 @@
 package at.fhooe.mc.android;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class CreateOrJoin extends Activity implements View.OnClickListener{
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+
+public class CreateOrJoin extends FragmentActivity implements View.OnClickListener{
 
 
     private DrawerArrowDrawable drawerArrowDrawable;
     private float offset;
     private boolean flipped;
     private ListView drawerList;
-    private final String MyPREFERENCES = "myPref";
     AdditionalMethods helper = AdditionalMethods.getInstance();
+    ListView mDrawerList;
+    RelativeLayout mDrawerPane;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout mDrawerLayout;
+
+    ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
+
+    private static Context contextForCreateUser;
+    private final String MyPREFERENCES = "myPref";
+
 
 
     @Override
@@ -36,23 +57,63 @@ public class CreateOrJoin extends Activity implements View.OnClickListener{
         b = (Button) findViewById(R.id.create_or_join_join);
         b.setOnClickListener(this);
 
+
+        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        if (preferences.getBoolean("firstCall", true)) {
+            editor.putBoolean("firstCall", false);
+            editor.commit();
+            FragmentManager fm = getFragmentManager();
+            FirstLoginDialogFragment dialog = new FirstLoginDialogFragment();
+            dialog.show(getSupportFragmentManager(), "Dialog");
+        }
+        else{
+            AdditionalMethods helper = AdditionalMethods.getInstance();
+            helper.setName(preferences.getString("username", ""));
+            helper.setUserID(preferences.getInt("userId", -1));
+            helper.setPoints(preferences.getInt("points", -1));
+        }
+
+        contextForCreateUser = getApplicationContext();
+
+
         // --------------------------------------------------------------------------------------------  actionbar Start!
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.create_or_join_drawer_layout);
         final ImageView imageView = (ImageView) findViewById(R.id.create_or_join_drawer_indicator);
         final Resources resources = getResources();
-        final ListView drawerList = (ListView) findViewById(R.id.create_or_join_drawer_list);
 
         drawerArrowDrawable = new DrawerArrowDrawable(resources);
         drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
         imageView.setImageDrawable(drawerArrowDrawable);
 
-        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        String name = preferences.getString("username", "");
 
-        String[] oben = {"User ID", "Name", "Credits"};
-        String[] unten = {Integer.toString(helper.getUserID()), name, "thanks for help"};
-        MyAdapter myAdapter = new MyAdapter(this, oben, unten);
-        drawerList.setAdapter(myAdapter);
+        String username = preferences.getString("username", "");
+        int punkte = preferences.getInt("points", -1);
+
+        TextView name = (TextView) findViewById(R.id.user_name);
+        name.setText(username);
+        TextView points = (TextView) findViewById(R.id.user_points);
+        points.setText("Points: " + punkte);
+        mNavItems.add(new NavItem("Skip", "skip this question", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
+        mNavItems.add(new NavItem("Quit", "Quit the game", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
+        mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
+
+        // DrawerLayout
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.create_or_join_drawer_layout);
+
+        // Populate the Navigtion Drawer with options
+        mDrawerPane = (RelativeLayout) findViewById(R.id.drawerPane);
+        mDrawerList = (ListView) findViewById(R.id.navList);
+        DrawerListAdapter adapter = new DrawerListAdapter(this, mNavItems);
+        mDrawerList.setAdapter(adapter);
+
+        // Drawer Item click listeners
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectItemFromDrawer(position);
+            }
+        });
 
 
         drawer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
@@ -125,14 +186,81 @@ public class CreateOrJoin extends Activity implements View.OnClickListener{
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("userId", helper.getUserID());
-        editor.commit();
-        editor.putInt("points", helper.getPoints());
-        editor.commit();
+    class NavItem {
+        String mTitle;
+        String mSubtitle;
+        int mIcon;
+
+        public NavItem(String title, String subtitle, int icon) {
+            mTitle = title;
+            mSubtitle = subtitle;
+            mIcon = icon;
+        }
+    }
+
+    class DrawerListAdapter extends BaseAdapter {
+
+        Context mContext;
+        ArrayList<NavItem> mNavItems;
+
+        public DrawerListAdapter(Context context, ArrayList<NavItem> navItems) {
+            mContext = context;
+            mNavItems = navItems;
+        }
+
+        @Override
+        public int getCount() {
+            return mNavItems.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return mNavItems.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view;
+
+            if (convertView == null) {
+                LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.drawer_item, null);
+            }
+            else {
+                view = convertView;
+            }
+
+            TextView titleView = (TextView) view.findViewById(R.id.title);
+            TextView subtitleView = (TextView) view.findViewById(R.id.subTitle);
+            ImageView iconView = (ImageView) view.findViewById(R.id.icon);
+
+            titleView.setText( mNavItems.get(position).mTitle );
+            subtitleView.setText( mNavItems.get(position).mSubtitle );
+            iconView.setImageResource(mNavItems.get(position).mIcon);
+
+            return view;
+        }
+    }
+
+    private void selectItemFromDrawer(int position) {
+
+        FragmentManager fm = getFragmentManager();
+        CreditDialogFragment credit = new CreditDialogFragment();
+        credit.show(getSupportFragmentManager(), "Dialog");
+
+        mDrawerList.setItemChecked(position, true);
+        setTitle(mNavItems.get(position).mTitle);
+
+        // Close the drawer
+        mDrawerLayout.closeDrawer(mDrawerPane);
+    }
+
+    public static Context getContextOfApplication(){
+        return contextForCreateUser;
     }
 }

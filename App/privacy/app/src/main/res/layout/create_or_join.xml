@@ -123,14 +123,14 @@
                 android:id="@+id/profileBox"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:background="@color/material_blue_grey_800"
+                android:background="@color/blackboard"
                 android:padding="8dp" >
 
                 <ImageView
                     android:id="@+id/avatar"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/ic_launcher"
+                    android:src="@drawable/privacy_icon"
                     android:layout_marginTop="15dp" />
 
                 <LinearLayout
@@ -142,21 +142,19 @@
                     android:orientation="vertical" >
 
                     <TextView
-                        android:id="@+id/userName"
+                        android:id="@+id/user_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Rishabh"
                         android:textColor="#fff"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/desc"
+                        android:id="@+id/user_points"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
                         android:layout_marginTop="4dp"
-                        android:text="View Profile"
                         android:textColor="#fff"
                         android:textSize="12sp" />
                 </LinearLayout>

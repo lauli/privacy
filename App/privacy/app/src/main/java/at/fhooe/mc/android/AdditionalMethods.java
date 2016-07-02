@@ -186,7 +186,7 @@ public class AdditionalMethods {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                Context context = MainActivity.getContextOfApplication();
+                Context context = CreateOrJoin.getContextOfApplication();
                 SharedPreferences preferences = context.getSharedPreferences("myPref", context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
                     editor.putString("username", getName());
@@ -498,7 +498,7 @@ public class AdditionalMethods {
                     pointsFromThisRound = getAnsweredPlayers().length - Math.abs(getHowManyYes() - getGuess());
                     points += pointsFromThisRound;
 
-                    Context context = MainActivity.getContextOfApplication();
+                    Context context = CreateOrJoin.getContextOfApplication();
                     SharedPreferences preferences = context.getSharedPreferences("myPref", context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putInt("points", points);

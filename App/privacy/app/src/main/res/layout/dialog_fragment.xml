@@ -7,10 +7,10 @@
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:scaleType="center"
-        android:background="@+color/blackboard" />
+        android:background="@color/blackboard" />
 
     <ExpandableListView
-        android:id="@+id/dialog_listview"
+        android:id="@+id/dialog_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
