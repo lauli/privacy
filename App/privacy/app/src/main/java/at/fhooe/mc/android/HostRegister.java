@@ -5,9 +5,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
@@ -58,12 +60,15 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
     private float offset;
     private boolean flipped;
     private ListView drawerList;
+    AdditionalMethods helper = AdditionalMethods.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.host_register);
         // Set up the login form.
         mUsername = (EditText) findViewById(R.id.host_register_username);
+        mUsername.setText(helper.getName());
 
         Button mName = (Button) findViewById(R.id.host_register_join_button);
         mName.setOnClickListener(new OnClickListener() {
@@ -88,9 +93,9 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
         drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
         imageView.setImageDrawable(drawerArrowDrawable);
 
-        String[] oben = {"# SessionId", "Credits"};
+        String[] oben = {"Name", "Credits"};
 
-        String[] unten = {"", "thanks for help"};
+        String[] unten = {helper.getName(), "thanks for help"};
         MyAdapter myAdapter = new MyAdapter(this, oben, unten);
         drawerList.setAdapter(myAdapter);
 
@@ -269,36 +274,19 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
 
     @Override
     public void onClick(View view) {
-        if(attemptLogin()){
+        if(attemptLogin()) {
             final AdditionalMethods helper = AdditionalMethods.getInstance();
-            // TODO: last parameter is category! -> now 3 over18
-            helper.createUser(1, name, new OnJSONResponseCallback() {
+            helper.newGame(helper.userId, helper.questionId, new OnJSONResponseCallback() {
                 @Override
                 public void onJSONResponse(boolean success, JSONObject response) {
-                    // do anything here.
                     if (success) {
-                        helper.getQuestionIdsByGroupId(3, new OnJSONResponseCallback() {
-                            @Override
-                            public void onJSONResponse(boolean success, JSONObject response) {
-                                if (success) {
-                                    helper.newGame(helper.userId, helper.questionId, new OnJSONResponseCallback() {
-                                        @Override
-                                        public void onJSONResponse(boolean success, JSONObject response) {
-                                            if (success) {
-                                                Intent i = new Intent(HostRegister.this, HostLobby.class);
-                                               i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                startActivity(i);
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                        });
+                        Intent i = new Intent(HostRegister.this, HostLobby.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
                     }
                 }
             });
-        };
-
+        }
     }
 
 
@@ -353,6 +341,17 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
             showProgress(false);
         }
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AdditionalMethods helper = AdditionalMethods.getInstance();
+        SharedPreferences preferences = getSharedPreferences("myPref", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("userId", helper.getUserID());
+        editor.putInt("points", helper.getPoints());
+        editor.commit();
     }
 }
 

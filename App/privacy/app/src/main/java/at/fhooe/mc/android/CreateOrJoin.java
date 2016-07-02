@@ -23,6 +23,7 @@ public class CreateOrJoin extends Activity implements View.OnClickListener{
     private boolean flipped;
     private ListView drawerList;
     private final String MyPREFERENCES = "myPref";
+    AdditionalMethods helper = AdditionalMethods.getInstance();
 
 
     @Override
@@ -48,8 +49,8 @@ public class CreateOrJoin extends Activity implements View.OnClickListener{
         SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         String name = preferences.getString("username", "");
 
-        String[] oben = {"# SessionId", "Name", "Credits"};
-        String[] unten = {"", name, "thanks for help"};
+        String[] oben = {"User ID", "Name", "Credits"};
+        String[] unten = {Integer.toString(helper.getUserID()), name, "thanks for help"};
         MyAdapter myAdapter = new MyAdapter(this, oben, unten);
         drawerList.setAdapter(myAdapter);
 
@@ -110,7 +111,7 @@ public class CreateOrJoin extends Activity implements View.OnClickListener{
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.create_or_join_create : {
-                Intent i = new Intent(this, HostRegister.class);
+                Intent i = new Intent(this, HostCategory.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i);
             }break;
@@ -122,5 +123,16 @@ public class CreateOrJoin extends Activity implements View.OnClickListener{
             default :
         }
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("userId", helper.getUserID());
+        editor.commit();
+        editor.putInt("points", helper.getPoints());
+        editor.commit();
     }
 }

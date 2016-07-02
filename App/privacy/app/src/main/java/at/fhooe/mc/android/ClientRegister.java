@@ -70,7 +70,7 @@ public class ClientRegister extends Activity implements  LoaderCallbacks<Cursor>
     private boolean flipped;
     private ListView drawerList;
 
-    AdditionalMethods helper;
+    AdditionalMethods helper = AdditionalMethods.getInstance();
 
     private final String MyPREFERENCES = "myPref";
 
@@ -82,8 +82,8 @@ public class ClientRegister extends Activity implements  LoaderCallbacks<Cursor>
         // Set up the login form.
         mUsername = (EditText) findViewById(R.id.client_register_username);
         SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        String lastname = preferences.getString("username", "");
-        mUsername.setText(lastname);
+        String name = preferences.getString("username", "");
+        mUsername.setText(name);
 
         mSessionId = (EditText) findViewById(R.id.client_register_sessionID);
         mSessionId.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -129,7 +129,7 @@ public class ClientRegister extends Activity implements  LoaderCallbacks<Cursor>
 
         String[] oben = {"# SessionId", "Name", getString(R.string.actionbar_credits)};
 
-        String[] unten = {"", lastname, "thanks for help"};
+        String[] unten = {"", helper.getName(), "thanks for help"};
         MyAdapter myAdapter = new MyAdapter(this, oben, unten);
         drawerList.setAdapter(myAdapter);
 
@@ -467,6 +467,16 @@ public class ClientRegister extends Activity implements  LoaderCallbacks<Cursor>
             showProgress(false);
         }
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AdditionalMethods helper = AdditionalMethods.getInstance();
+        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("userID", helper.getUserID());
+        editor.commit();
     }
 }
 

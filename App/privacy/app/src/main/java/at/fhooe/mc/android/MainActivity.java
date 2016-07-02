@@ -27,15 +27,21 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         b = (FrameLayout) findViewById(R.id.main_start);
         b.setOnClickListener(this);
 
-        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, 0);
+        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-//        if (preferences.getBoolean("firstCall", true)) {
-//            editor.putBoolean("firstCall", false);
-//            editor.commit();
+        if (preferences.getBoolean("firstCall", true)) {
+            editor.putBoolean("firstCall", false);
+            editor.commit();
             FragmentManager fm = getFragmentManager();
             FirstLoginDialogFragment dialog = new FirstLoginDialogFragment();
             dialog.show(getSupportFragmentManager(), "Dialog");
-//        }
+        }
+        else{
+            AdditionalMethods helper = AdditionalMethods.getInstance();
+            helper.setName(preferences.getString("username", ""));
+            helper.setUserID(preferences.getInt("userId", -1));
+            helper.setPoints(preferences.getInt("points", -1));
+        }
 
         contextForCreateUser = getApplicationContext();
     }
@@ -46,11 +52,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         Intent i = new Intent(this, CreateOrJoin.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
-
-//            newFragment.show(getSupportFragmentManager(), "missiles");
-//        }
-
-
     }
 
     public static Context getContextOfApplication(){

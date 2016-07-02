@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:float="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/actionbar_dimen"
+        android:background="@color/oxblood"
+        android:focusableInTouchMode="true"
+        >
+
+        <ImageView
+            android:id="@+id/host_category_drawer_indicator"
+            android:layout_width="@dimen/actionbar_dimen"
+            android:layout_height="@dimen/actionbar_dimen"
+            android:scaleType="centerInside"
+            android:background="@drawable/drawer_selector"
+            android:layout_gravity="start"
+            />
+
+        <TextView
+            android:id="@+id/host_category_indicator_style"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/actionbar_dimen"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:layout_gravity="end"
+            android:text="@string/category"
+            android:textStyle="bold"
+            android:textColor="@color/grain"
+            android:gravity="center"
+            android:background="@drawable/drawer_selector"
+            />
+
+    </FrameLayout>
+
+    <android.support.v4.widget.DrawerLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/host_category_drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            tools:context=".HostCategory"
+            android:background="@color/tan">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/host_category_information"
+                android:id="@+id/textView"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:layout_marginBottom="50dp"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    style="@style/Category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="private"
+                    android:id="@+id/host_category_private"
+                    android:layout_weight="0.5"
+                    android:background="@color/oxblood"/>
+
+                <Button
+                    style="@style/Category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="under18"
+                    android:id="@+id/host_category_under18"
+                    android:layout_weight="0.5"
+                    android:shadowColor="@color/oxblood"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <Button
+                    style="@style/Category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="over18"
+                    android:id="@+id/host_category_over18"
+                    android:layout_weight="0.5"/>
+
+                <Button
+                    style="@style/Category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="others..."
+                    android:id="@+id/host_category_others"
+                    android:layout_weight="0.5"
+                    android:background="@color/oxblood"
+                    android:clickable="false"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:tools="http://schemas.android.com/tools"
+                  android:id="@+id/host_category_drawer_list"
+                  android:layout_width="120dp"
+                  android:layout_height="match_parent"
+                  android:background="#cccc"
+                  android:choiceMode="singleChoice"
+                  android:divider="@android:color/transparent"
+                  android:dividerHeight="0dp"
+                  android:layout_gravity="left"/>
+
+    </android.support.v4.widget.DrawerLayout>
+
+</LinearLayout>

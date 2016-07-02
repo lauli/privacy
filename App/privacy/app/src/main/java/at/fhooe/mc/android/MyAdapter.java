@@ -50,9 +50,9 @@ public class MyAdapter extends BaseAdapter implements View.OnClickListener {
         text1.setText(data[position]);
         text2.setText(data2[position]);
 
-        rowView.setOnClickListener(this);
+//        rowView.setOnClickListener(this);
         text1.setOnClickListener(this);
-        text2.setOnClickListener(this);
+//        text2.setOnClickListener(this);
 
 
         return rowView;

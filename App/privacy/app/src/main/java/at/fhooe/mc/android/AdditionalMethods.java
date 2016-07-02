@@ -85,6 +85,10 @@ public class AdditionalMethods {
         return userId;
     }
 
+    public void setUserID(int id){
+        this.userId = id;
+    }
+
     public int getGameId(){
         return gameId;
     }
@@ -97,10 +101,18 @@ public class AdditionalMethods {
         return name;
     }
 
+    public void setName(String name){
+        this.name = name;
+    }
+
     public String getLanguage(){
         if(lang == 1) return "eng";
         if(lang == 2) return "de";
         else return null;
+    }
+
+    public int getLang(){
+        return lang;
     }
 
     public String[] getPlayers(){ return players;}
@@ -110,6 +122,8 @@ public class AdditionalMethods {
     public String getQuestion(){ return question;}
 
     public int getPoints(){ return points;}
+
+    public void setPoints(int points){ this.points = points;}
 
     public int getPointsFromThisRound(){ return pointsFromThisRound;}
 
@@ -173,9 +187,13 @@ public class AdditionalMethods {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 Context context = MainActivity.getContextOfApplication();
-                SharedPreferences preferences = context.getSharedPreferences("myPref", 0);
+                SharedPreferences preferences = context.getSharedPreferences("myPref", context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
                     editor.putString("username", getName());
+                    editor.commit();
+                    editor.putInt("language", getLang());
+                    editor.commit();
+                    editor.putInt("points", 0);
                     editor.commit();
 
                 JSONObject json;
@@ -185,6 +203,8 @@ public class AdditionalMethods {
                 try {
                     json = new JSONObject(responseString);
                     userId = json.getInt("id");
+                    editor.putInt("userId", userId);
+                    editor.commit();
                     callback.onJSONResponse(true, null);
 
                 } catch (JSONException _e) {
@@ -222,8 +242,6 @@ public class AdditionalMethods {
 
     protected void getQuestionGroupsByUserId(int userId, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
-
-        userId = 1;
 
         RequestParams params = new RequestParams();
         params.put("user_id", userId);
@@ -480,6 +498,11 @@ public class AdditionalMethods {
                     pointsFromThisRound = getAnsweredPlayers().length - Math.abs(getHowManyYes() - getGuess());
                     points += pointsFromThisRound;
 
+                    Context context = MainActivity.getContextOfApplication();
+                    SharedPreferences preferences = context.getSharedPreferences("myPref", context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putInt("points", points);
+                    editor.commit();
 
                     //TODO: implement statistic form all users with Player[] statistic
                     statistic = new Player[array.length()];

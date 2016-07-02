@@ -7,6 +7,7 @@
     <string name="content_hint">Content</string>
     <string name="drawer_hint">Drawer</string>
     <string name="create_or_join">Create Or Join A Session</string>
+    <string name="category">Category</string>
     <string name="create">Create Session</string>
     <string name="join">Join Session</string>
     <string name="lobby">Lobby</string>
@@ -15,6 +16,7 @@
     <string name="guess">Guess</string>
     <string name="score">Score</string>
     <string name="amazing">You are amazing</string>
+    <string name="choose">Choose wisely</string>
     <string name="fantastic">You are fantastic</string>
     <string name="handsome">You are handsome</string>
     <string name="nice">You are looking nice today</string>
@@ -50,9 +52,13 @@
     <string name="host_register_informationText">Please enter your name. \nIt will be used for identification during the game. \nThe session ID is for other players to join your game.</string>
 
 
+    <!-- Strings related to category -->
+    <string name="host_category_information">Here you can choose from which category the questions will be asked.</string>
+
     <!-- Strings related to lobby -->
     <string name="client_lobby_information">Please wait while other players join your session.\nThe game will start as soon as your host agrees to.</string>
     <string name="host_lobby_information">Please wait while other players join your session.\nWhen all players joined your game, you can start it by clicking continue.\nDon\'t forget: Others will be able to join even during an already started game via the session ID. </string>
+
 
     <!-- Strings related to question -->
     <string name="sample_question">Have you ever wanted to.. ?</string>

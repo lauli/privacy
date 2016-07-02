@@ -24,14 +24,14 @@ import org.json.JSONObject;
 public class FirstLoginDialogFragment extends DialogFragment {
 
     private final String MyPREFERENCES = "myPref";
-    AdditionalMethods helper;
     Handler handler = new Handler();
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
 
-        final EditText edittext = new EditText(this.getContext());
+        final EditText edittext = new EditText(getActivity());
+        edittext.setSingleLine(true);
         View view = View.inflate(getActivity(),R.layout.dialog_first_login_fragment, null);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -41,7 +41,7 @@ public class FirstLoginDialogFragment extends DialogFragment {
                 .setPositiveButton("register", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         String name = edittext.getText().toString();
-                        helper = AdditionalMethods.getInstance();
+                        AdditionalMethods helper = AdditionalMethods.getInstance();
                         helper.createUser(1, name, new OnJSONResponseCallback() {
                             @Override
                             public void onJSONResponse(boolean success, JSONObject response) {
@@ -52,7 +52,6 @@ public class FirstLoginDialogFragment extends DialogFragment {
                     }
                 })
                 .setIcon(R.drawable.privacy_icon)
-                .setView(view)
                 .create();
         return  builder.create();
     }
