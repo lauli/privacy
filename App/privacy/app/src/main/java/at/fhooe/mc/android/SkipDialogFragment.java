@@ -15,7 +15,7 @@ import org.json.JSONObject;
 public class SkipDialogFragment extends DialogFragment {
 
     AdditionalMethods helper = new AdditionalMethods();
-    Intent i = new Intent(getContext(), HostQuestion.class);
+    Intent i = new Intent(CreateOrJoin.getContextOfApplication(), CreateOrJoin.class);
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

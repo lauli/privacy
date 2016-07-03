@@ -190,6 +190,8 @@ public class AdditionalMethods {
                 Context context = CreateOrJoin.getContextOfApplication();
                 SharedPreferences preferences = context.getSharedPreferences("myPref", context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
+                    editor.putBoolean("firstCall", false);
+                    editor.commit();
                     editor.putString("username", getName());
                     editor.commit();
                     editor.putInt("language", getLang());

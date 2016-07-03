@@ -1,10 +1,13 @@
 package at.fhooe.mc.android;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MotionEvent;
@@ -13,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -24,18 +28,58 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ClientGuess extends Activity implements AdapterView.OnItemSelectedListener{
+public class ClientGuess extends FragmentActivity implements AdapterView.OnItemSelectedListener{
 
     private ArrayList<String> listItems = new ArrayList<String>();
     private ListView list;
-
-    private DrawerArrowDrawable drawerArrowDrawable;
-    private float offset;
-    private boolean flipped;
-    private ListView drawerList;
-
-    AdditionalMethods helper = AdditionalMethods.getInstance();
     private ArrayAdapter<String> adapter;
+
+    /**
+     * menu and actionbar
+     */
+    private DrawerArrowDrawable drawerArrowDrawable;
+
+    /**
+     * for drawerArrowDrawable
+     */
+    private float offset;
+
+    /**
+     * for drawerArrowDrawable
+     * used to show two different messages in menu
+     */
+    private boolean flipped;
+
+    /**
+     * Instance of AdditionalMethods
+     * with this Instance it's possible to save data and call methods in AdditionalMethods that will be the same in every activity
+     */
+    AdditionalMethods helper = AdditionalMethods.getInstance();
+
+    /**
+     * Items in Actionbar
+     */
+    ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
+
+    /**
+     * SharedPreferences name
+     */
+    private final String MyPREFERENCES = "myPref";
+
+    /**
+     * ListView for Actionbar
+     */
+    ListView mDrawerList;
+
+    /**
+     * RelativeLayout for Actionbar
+     */
+    RelativeLayout mDrawerPane;
+
+    /**
+     * DrawerLayout for Actionbar
+     */
+    private DrawerLayout mDrawerLayout;
 
 
     @Override
@@ -113,25 +157,41 @@ public class ClientGuess extends Activity implements AdapterView.OnItemSelectedL
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.client_guess_drawer_layout);
         final ImageView imageView = (ImageView) findViewById(R.id.client_guess_drawer_indicator);
         final Resources resources = getResources();
-        final ListView drawerList = (ListView) findViewById(R.id.client_guess_drawer_list);
 
         drawerArrowDrawable = new DrawerArrowDrawable(resources);
         drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
         imageView.setImageDrawable(drawerArrowDrawable);
 
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-//                this,
-//                android.R.layout.simple_list_item_1,
-//                new String[]{"Name", "Points", "Picture", "", "Skip", "Quit"});
-//        drawerList.setAdapter(adapter);
+        //------------------------------------------------------------------------ ListView in Actionbar
+        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
+        String username = preferences.getString("username", "");
+        int punkte = preferences.getInt("points", -1);
 
+        TextView name = (TextView) findViewById(R.id.user_name);
+        name.setText(username);
+        TextView points = (TextView) findViewById(R.id.user_points);
+        points.setText("Points: " + punkte);
+        mNavItems.add(new NavItem("Quit", "quit game", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
+        mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
 
-        String[] oben = {"# " + helper.getGameIdString(), "Name", "Points",
-                "Language", "Quit", "Credits"};
+        // DrawerLayout
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.client_guess_drawer_layout);
 
-        String[] unten = {"", helper.getName(),  helper.getPointsString(), helper.getLanguage(), "quit this game", "thanks for help"};
-        MyAdapter myAdapter = new MyAdapter(this, oben, unten);
-        drawerList.setAdapter(myAdapter);
+        // Populate the Navigtion Drawer with options
+        mDrawerPane = (RelativeLayout) findViewById(R.id.drawerPane);
+        mDrawerList = (ListView) findViewById(R.id.navList);
+        final DrawerListAdapter adapter = new DrawerListAdapter(this, mNavItems);
+        mDrawerList.setAdapter(adapter);
+
+        // Drawer Item click listeners
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String title = (adapter.getTitleFromItemAtPosition(position));
+                selectItemFromDrawer(position, title);
+            }
+        });
+        //------------------------------------------------------------------------ End ListView
 
         drawer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
@@ -214,5 +274,24 @@ public class ClientGuess extends Activity implements AdapterView.OnItemSelectedL
             adapter.add(name);
             adapter.notifyDataSetChanged();
         }
+    }
+
+    private void selectItemFromDrawer(int position, String title) {
+
+        FragmentManager fm = getFragmentManager();
+        if(title == "Credit") {
+            CreditDialogFragment fragment = new CreditDialogFragment();
+            fragment.show(getSupportFragmentManager(), "Dialog");
+        }
+        else { //Quit
+            QuitDialogFragment fragment = new QuitDialogFragment();
+            fragment.show(getSupportFragmentManager(), "Dialog");
+        }
+
+        mDrawerList.setItemChecked(position, true);
+        setTitle(mNavItems.get(position).mTitle);
+
+        // Close the drawer
+        mDrawerLayout.closeDrawer(mDrawerPane);
     }
 }

@@ -86,7 +86,7 @@ public class CreateOrJoin extends FragmentActivity implements View.OnClickListen
         drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
         imageView.setImageDrawable(drawerArrowDrawable);
 
-
+        //------------------------------------------------------------------------ ListView in Actionbar
         String username = preferences.getString("username", "");
         int punkte = preferences.getInt("points", -1);
 
@@ -104,16 +104,18 @@ public class CreateOrJoin extends FragmentActivity implements View.OnClickListen
         // Populate the Navigtion Drawer with options
         mDrawerPane = (RelativeLayout) findViewById(R.id.drawerPane);
         mDrawerList = (ListView) findViewById(R.id.navList);
-        DrawerListAdapter adapter = new DrawerListAdapter(this, mNavItems);
+        final DrawerListAdapter adapter = new DrawerListAdapter(this, mNavItems);
         mDrawerList.setAdapter(adapter);
 
         // Drawer Item click listeners
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectItemFromDrawer(position);
+                String title = (adapter.getTitleFromItemAtPosition(position));
+                selectItemFromDrawer(position, title);
             }
         });
+        //------------------------------------------------------------------------ ListView in Actionbar
 
 
         drawer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
@@ -186,72 +188,22 @@ public class CreateOrJoin extends FragmentActivity implements View.OnClickListen
 
     }
 
-    class NavItem {
-        String mTitle;
-        String mSubtitle;
-        int mIcon;
-
-        public NavItem(String title, String subtitle, int icon) {
-            mTitle = title;
-            mSubtitle = subtitle;
-            mIcon = icon;
-        }
-    }
-
-    class DrawerListAdapter extends BaseAdapter {
-
-        Context mContext;
-        ArrayList<NavItem> mNavItems;
-
-        public DrawerListAdapter(Context context, ArrayList<NavItem> navItems) {
-            mContext = context;
-            mNavItems = navItems;
-        }
-
-        @Override
-        public int getCount() {
-            return mNavItems.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return mNavItems.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View view;
-
-            if (convertView == null) {
-                LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.drawer_item, null);
-            }
-            else {
-                view = convertView;
-            }
-
-            TextView titleView = (TextView) view.findViewById(R.id.title);
-            TextView subtitleView = (TextView) view.findViewById(R.id.subTitle);
-            ImageView iconView = (ImageView) view.findViewById(R.id.icon);
-
-            titleView.setText( mNavItems.get(position).mTitle );
-            subtitleView.setText( mNavItems.get(position).mSubtitle );
-            iconView.setImageResource(mNavItems.get(position).mIcon);
-
-            return view;
-        }
-    }
-
-    private void selectItemFromDrawer(int position) {
+    private void selectItemFromDrawer(int position, String title) {
 
         FragmentManager fm = getFragmentManager();
-        CreditDialogFragment credit = new CreditDialogFragment();
-        credit.show(getSupportFragmentManager(), "Dialog");
+
+        if(title == "Credit") {
+            CreditDialogFragment fragment = new CreditDialogFragment();
+            fragment.show(getSupportFragmentManager(), "Dialog");
+        }
+//        else if(title == "Skip") {
+//            SkipDialogFragment fragment = new SkipDialogFragment();
+//            fragment.show(getSupportFragmentManager(), "Dialog");
+//        }
+//        else { //Quit
+//            QuitDialogFragment fragment = new QuitDialogFragment();
+//            fragment.show(getSupportFragmentManager(), "Dialog");
+//        }
 
         mDrawerList.setItemChecked(position, true);
         setTitle(mNavItems.get(position).mTitle);

@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -17,15 +18,19 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.json.JSONObject;
@@ -37,7 +42,7 @@ import java.util.List;
 /**
  * A login screen that offers login via name/ID.
  */
-public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, OnClickListener  {
+public class HostRegister extends FragmentActivity implements  LoaderCallbacks<Cursor>, OnClickListener  {
 
     /**
      * saves the username, which the user can put into the edittext field
@@ -61,6 +66,7 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
      */
     private DrawerArrowDrawable drawerArrowDrawable;
 
+
     /**
      * for drawerArrowDrawable
      */
@@ -77,6 +83,31 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
      * with this Instance it's possible to save data and call methods in AdditionalMethods that will be the same in every activity
      */
     AdditionalMethods helper = AdditionalMethods.getInstance();
+
+    /**
+     * Items in Actionbar
+     */
+    ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
+
+    /**
+     * SharedPreferences name
+     */
+    private final String MyPREFERENCES = "myPref";
+
+    /**
+     * ListView for Actionbar
+     */
+    ListView mDrawerList;
+
+    /**
+     * RelativeLayout for Actionbar
+     */
+    RelativeLayout mDrawerPane;
+
+    /**
+     * DrawerLayout for Actionbar
+     */
+    private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,17 +134,40 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.host_register_drawer_layout);
         final ImageView imageView = (ImageView) findViewById(R.id.host_register_drawer_indicator);
         final Resources resources = getResources();
-        final ListView drawerList = (ListView) findViewById(R.id.host_register_drawer_list);
 
         drawerArrowDrawable = new DrawerArrowDrawable(resources);
         drawerArrowDrawable.setStrokeColor(resources.getColor(R.color.light_gray));
         imageView.setImageDrawable(drawerArrowDrawable);
 
-        String[] oben = {"Name", "Credits"};
+        //------------------------------------------------------------------------ ListView in Actionbar
+        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
+        String username = preferences.getString("username", "");
+        int punkte = preferences.getInt("points", -1);
 
-        String[] unten = {helper.getName(), "thanks for help"};
-        MyAdapter myAdapter = new MyAdapter(this, oben, unten);
-        drawerList.setAdapter(myAdapter);
+        TextView name = (TextView) findViewById(R.id.user_name);
+        name.setText(username);
+        TextView points = (TextView) findViewById(R.id.user_points);
+        points.setText("Points: " + punkte);
+        mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
+
+        // DrawerLayout
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.host_register_drawer_layout);
+
+        // Populate the Navigtion Drawer with options
+        mDrawerPane = (RelativeLayout) findViewById(R.id.drawerPane);
+        mDrawerList = (ListView) findViewById(R.id.navList);
+        DrawerListAdapter adapter = new DrawerListAdapter(this, mNavItems);
+        mDrawerList.setAdapter(adapter);
+
+        // Drawer Item click listeners
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectItemFromDrawer(position);
+            }
+        });
+        //------------------------------------------------------------------------ End ListView
+
 
         drawer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
@@ -216,7 +270,7 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
             cancel = true;
         }
         else{
-            if(helper.getName() != mName){
+            if(!helper.name.equals(mName)){
                 helper.changeUserName(helper.userId, mName, new OnJSONResponseCallback() {
                     @Override
                     public void onJSONResponse(boolean success, JSONObject response) {
@@ -335,6 +389,19 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
 
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
+    }
+
+    private void selectItemFromDrawer(int position) {
+
+        FragmentManager fm = getFragmentManager();
+        CreditDialogFragment credit = new CreditDialogFragment();
+        credit.show(getSupportFragmentManager(), "Dialog");
+
+        mDrawerList.setItemChecked(position, true);
+        setTitle(mNavItems.get(position).mTitle);
+
+        // Close the drawer
+        mDrawerLayout.closeDrawer(mDrawerPane);
     }
 }
 
