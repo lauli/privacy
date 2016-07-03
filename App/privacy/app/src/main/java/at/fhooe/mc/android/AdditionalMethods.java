@@ -42,6 +42,7 @@ public class AdditionalMethods {
 
     public String createUserURL()                   {return "http://privacygame.soft-tec.net/create_user.php";}
     public String changeLanguageURL()               {return "http://privacygame.soft-tec.net/change_language.php";}
+    public String changeUserName()                  {return "http://privacygame.soft-tec.net/change_user_name.php";}
     public String getQuestionGroupsByUserIdURL()    {return "http://privacygame.soft-tec.net/get_question_groups_by_user_id.php";}
     public String getQuestionsIdsByGrpIdURL ()      {return "http://privacygame.soft-tec.net/get_question_ids_by_grp_id.php";}
     public String getQuestionByUserAndGameIdURL ()  {return "http://privacygame.soft-tec.net/get_question_by_user_and_game_id.php";}
@@ -235,6 +236,28 @@ public class AdditionalMethods {
                 Log.i(LOG_TAG,"changeLanguage was a success.");
                 String firstEvent = responseString;
 
+                callback.onJSONResponse(true, null);
+            }
+        });
+    }
+
+    protected void changeUserName (int userId, final String name, final OnJSONResponseCallback callback) {
+        AsyncHttpClient client = new AsyncHttpClient();
+
+        RequestParams params = new RequestParams();
+        params.put("user_id", userId);
+        params.put("name", name);
+        client.post(changeLanguageURL(), params, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
+                callback.onJSONResponse(false, null);
+                Log.i(LOG_TAG,"changeName was a failure.");
+            }
+
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
+                Log.i(LOG_TAG,"changeName was a success.");
+                setName(name);
                 callback.onJSONResponse(true, null);
             }
         });

@@ -75,7 +75,7 @@
                 app:pv_circular="false"
                 app:pv_progressStyle="@style/Material.Drawable.CircularProgress"
                 app:pv_progressMode="indeterminate"
-                app:lpd_strokeColors="@array/progress"
+                app:lpd_strokeColors="@color/oxblood"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"/>
 
@@ -83,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/host_register_informationText"
-                android:id="@+id/textView5"
+                android:id="@+id/host_register_textview"
                 android:layout_gravity="top"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"/>

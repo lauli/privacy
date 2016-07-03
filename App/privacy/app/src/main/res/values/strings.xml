@@ -33,7 +33,7 @@
     <string name="prompt_password">session ID</string>
     <string name="action_sign_in">join</string>
     <string name="action_sign_in_short">close</string>
-    <string name="error_invalid_email">This name is already used</string>
+    <string name="error_invalid_name">This name is too long</string>
     <string name="error_invalid_password">This ID is not known</string>
     <string name="error_incorrect_password">This ID is incorrect</string>
     <string name="error_field_required">This field is required</string>

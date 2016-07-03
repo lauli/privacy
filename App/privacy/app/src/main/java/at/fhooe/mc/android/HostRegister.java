@@ -40,26 +40,42 @@ import java.util.List;
 public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, OnClickListener  {
 
     /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
+     * saves the username, which the user can put into the edittext field
      */
-
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask mAuthTask = null;
-    protected String name;
-
-    // UI references.
     private EditText mUsername;
 
+    /**
+     * shows progress of login via progressview
+     * will be shown as soon as user clicks host button
+     */
     private View mProgressView;
+
+    /**
+     * login form and button for user interaction
+     * will be hidden when login tasks are running
+     */
     private View mJoinFormView;
 
+    /**
+     * menu and actionbar
+     */
     private DrawerArrowDrawable drawerArrowDrawable;
+
+    /**
+     * for drawerArrowDrawable
+     */
     private float offset;
+
+    /**
+     * for drawerArrowDrawable
+     * used to show two different messages in menu
+     */
     private boolean flipped;
-    private ListView drawerList;
+
+    /**
+     * Instance of AdditionalMethods
+     * with this Instance it's possible to save data and call methods in AdditionalMethods that will be the same in every activity
+     */
     AdditionalMethods helper = AdditionalMethods.getInstance();
 
     @Override
@@ -151,34 +167,69 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
 
 
     /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
+     * Onclicklistener, which attempts Logintask as soon as you click the host Button
+     * @param view
+     */
+    @Override
+    public void onClick(View view) {
+        if (attemptLogin()) {
+            final AdditionalMethods helper = AdditionalMethods.getInstance();
+            helper.newGame(helper.userId, helper.questionId, new OnJSONResponseCallback() {
+                @Override
+                public void onJSONResponse(boolean success, JSONObject response) {
+                    if (success) {
+                        Intent i = new Intent(HostRegister.this, HostLobby.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+                        finish();
+                    }
+                }
+            });
+        }
+    }
+
+
+    /**
+     * Attempts to create a new session.
+     * If there are form errors (missing fields, too long name etc.), the
      * errors are presented and no actual login attempt is made.
      */
     private boolean attemptLogin() {
-        if (mAuthTask != null) {
-            return true;
-        }
-
         // Reset errors.
         mUsername.setError(null);
 
         // Store values at the time of the login attempt.
-        String mName = mUsername.getText().toString();
+        final String mName = mUsername.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
 
-        // Check for a valid email address.
+        // Checks for a valid input/name
         if (TextUtils.isEmpty(mName)) {
             mUsername.setError(getString(R.string.error_field_required));
             focusView = mUsername;
             cancel = true;
         } else if (!isUsernameValid(mName)) {
-            mUsername.setError(getString(R.string.error_invalid_email));
+            mUsername.setError(getString(R.string.error_invalid_name));
             focusView = mUsername;
             cancel = true;
+        }
+        else{
+            if(helper.getName() != mName){
+                helper.changeUserName(helper.userId, mName, new OnJSONResponseCallback() {
+                    @Override
+                    public void onJSONResponse(boolean success, JSONObject response) {
+                        if (success) {
+                            SharedPreferences preferences = getSharedPreferences("myPref", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putString("username", mName);
+                            editor.commit();
+                        }
+                    }
+                });
+
+            }
         }
 
         if (cancel) {
@@ -187,18 +238,20 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
             focusView.requestFocus();
             return false;
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
+            // Show a progress spinner, and kick off a background task to perform the user login attempt.
             showProgress(true);
-            name = mName;
-            mAuthTask = new UserLoginTask(mName);
-//            mAuthTask.execute((Void) null);
             return true;
         }
     }
 
+    /**
+     *
+     * Checks if name is valid (no more than 25 chars)
+     * @param name  name that needs to be checked if valid
+     * @return
+     */
     private boolean isUsernameValid(String name) {
-        //TODO: Replace this with your own logic
+        if(name.length() > 25) return false;
         return true;
     }
 
@@ -231,6 +284,8 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
                     mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
                 }
             });
+            TextView view = (TextView) findViewById(R.id.host_register_textview);
+            view.setText("Please wait.\nWe are currently trying to create your game.");
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
@@ -272,24 +327,6 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
 
     }
 
-    @Override
-    public void onClick(View view) {
-        if(attemptLogin()) {
-            final AdditionalMethods helper = AdditionalMethods.getInstance();
-            helper.newGame(helper.userId, helper.questionId, new OnJSONResponseCallback() {
-                @Override
-                public void onJSONResponse(boolean success, JSONObject response) {
-                    if (success) {
-                        Intent i = new Intent(HostRegister.this, HostLobby.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(i);
-                    }
-                }
-            });
-        }
-    }
-
-
     private interface ProfileQuery {
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
@@ -298,60 +335,6 @@ public class HostRegister extends Activity implements  LoaderCallbacks<Cursor>, 
 
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
-    }
-
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mName;
-
-        UserLoginTask(String name) {
-            mName = name;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            finish();
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        AdditionalMethods helper = AdditionalMethods.getInstance();
-        SharedPreferences preferences = getSharedPreferences("myPref", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("userId", helper.getUserID());
-        editor.putInt("points", helper.getPoints());
-        editor.commit();
     }
 }
 

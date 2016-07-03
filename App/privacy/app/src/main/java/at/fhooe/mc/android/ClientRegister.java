@@ -226,7 +226,7 @@ public class ClientRegister extends Activity implements  LoaderCallbacks<Cursor>
             cancel = true;
         }
         else if (!isUsernameValid(mName, mID)) {
-            mUsername.setError(getString(R.string.error_invalid_email));
+            mUsername.setError(getString(R.string.error_invalid_name));
             focusView = mUsername;
             cancel = true;
         }
