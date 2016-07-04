@@ -97,7 +97,8 @@ public class HostQuestion extends FragmentActivity implements View.OnClickListen
         b.setOnClickListener(this);
 
         question = (TextView) findViewById(R.id.question);
-        question.setText(helper.getQuestion());
+        String quest = helper.getQuestion();
+        question.setText(quest);
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.host_question_drawer_layout);

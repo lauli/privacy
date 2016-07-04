@@ -260,7 +260,7 @@ public class HostCategory extends FragmentActivity implements View.OnClickListen
                 }
             });
             TextView view = (TextView) findViewById(R.id.textView);
-            view.setText("Please wait.\nWe are currently trying to fetch your question.");
+            view.setText("Please wait.\nWe are currently trying to fetch the right questionpool.");
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.

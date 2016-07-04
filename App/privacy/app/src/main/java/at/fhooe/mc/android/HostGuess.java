@@ -277,10 +277,12 @@ public class HostGuess extends FragmentActivity implements AdapterView.OnItemSel
         helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.getQuestionId(), helper.getAnswer(), guess[0], new OnJSONResponseCallback() {
             @Override
             public void onJSONResponse(boolean success, JSONObject response) {
-               if(success) helper.allowStatistics(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
+               if(success)
+                   helper.allowStatistics(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
                     @Override
                     public void onJSONResponse(boolean success, JSONObject response) {
-                        if(success) helper.getStatisticsByGameId(helper.getGameId(), new OnJSONResponseCallback() {
+                        if(success)
+                            helper.getStatisticsByGameId(helper.getGameId(), new OnJSONResponseCallback() {
                             @Override
                             public void onJSONResponse(boolean success, JSONObject response) {
                                 if(success) helper.pushPointsToProfile(helper.getUserID(), helper.getPointsFromThisRound(), new OnJSONResponseCallback() {

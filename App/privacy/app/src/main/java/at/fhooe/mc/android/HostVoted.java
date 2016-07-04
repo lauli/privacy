@@ -1,10 +1,14 @@
 package at.fhooe.mc.android;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
@@ -105,7 +109,6 @@ public class HostVoted extends FragmentActivity implements View.OnClickListener{
         final Button finalB = b;
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
-                final AdditionalMethods helper = AdditionalMethods.getInstance();
                 helper.getAnsweredUsers(helper.getGameId(), new OnJSONResponseCallback() {
                     @Override
                     public void onJSONResponse(boolean success, JSONObject response) {
@@ -122,15 +125,27 @@ public class HostVoted extends FragmentActivity implements View.OnClickListener{
                             }
 
                             if(helper.getAnsweredPlayers().length == helper.getPlayers().length){
-                                tv.setText( "every player has voted. you can continue");
-                                tv.setTextSize(12);
-                                finalB.setTextColor(getResources().getColor(R.color.oxblood));
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        tv.setText( "every player has voted. you can continue");
+                                        tv.setTextSize(12);
+                                        finalB.setTextColor(getResources().getColor(R.color.oxblood));
+                                    }
+                                });
+                                setVisibilityOfButton();
                             }
                             else{
-                                tv.setText( "note that only " + helper.getAnsweredPlayers().length +
-                                            " from " + helper.getPlayers().length + " players have answered" +
-                                            "\nMaybe you should wait for the others. ;)");
-                                tv.setTextSize(12);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        tv.setText( "note that only " + helper.getAnsweredPlayers().length +
+                                                " from " + helper.getPlayers().length + " players have answered" +
+                                                "\nMaybe you should wait for the others. ;)");
+                                        tv.setTextSize(12);
+                                    }
+                                });
+                                setVisibilityOfButton();
                             }
                         }
                     }
@@ -235,22 +250,16 @@ public class HostVoted extends FragmentActivity implements View.OnClickListener{
         timer.purge();
         timer = null;
 
-        helper.allowStatistics(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
-            @Override
-            public void onJSONResponse(boolean success, JSONObject response) {
-                if(success){
-                    helper.allowCounting(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
-                        @Override
-                        public void onJSONResponse(boolean success, JSONObject response) {
-                            if(success){
-                                Intent i = new Intent(HostVoted.this, HostGuess.class);
-                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(i);
-                            }
-                        }
-                    });
+        showProgress(true);
+        helper.allowCounting(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
+           @Override
+           public void onJSONResponse(boolean success, JSONObject response) {
+               if(success){
+                   Intent i = new Intent(HostVoted.this, HostGuess.class);
+                   i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                   startActivity(i);
                 }
-            }
+           }
         });
     }
 
@@ -288,6 +297,50 @@ public class HostVoted extends FragmentActivity implements View.OnClickListener{
 
         // Close the drawer
         mDrawerLayout.closeDrawer(mDrawerPane);
+    }
+
+    /**
+     * Shows the progress UI and hides form to continue
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+
+        final View mProgressView = (View) findViewById(R.id.host_voted_progress);
+        Button b = (Button) findViewById(R.id.host_voted_continue);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+            b.setVisibility(View.GONE);
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+            TextView view = (TextView) findViewById(R.id.textView);
+            view.setText("Please wait.\nWe are currently trying to fetch the answers.");
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            b.setVisibility(View.GONE);
+
+        }
+    }
+
+    public void setVisibilityOfButton() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Button b = (Button) findViewById(R.id.host_voted_continue);
+                b.setVisibility(View.VISIBLE);
+            }
+        });
     }
 }
 

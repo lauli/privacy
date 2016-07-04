@@ -94,7 +94,7 @@ public class HostStatistics extends FragmentActivity implements View.OnClickList
 
         TextView score = (TextView) findViewById(R.id.host_statistic_score_view);
         score.setText("guess/total = " + helper.getGuess() + "/" + helper.getHowManyYes());
-        score.append("\ndifference: " + (helper.getAnsweredPlayers().length - helper.getPointsFromThisRound()));
+        score.append("\n\ndifference: " + (helper.getAnsweredPlayers().length - helper.getPointsFromThisRound()));
 
 //        list = (ListView) findViewById(R.id.host_statistics_players_list);
 //        this.adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
@@ -243,9 +243,16 @@ public class HostStatistics extends FragmentActivity implements View.OnClickList
             @Override
             public void onJSONResponse(boolean success, JSONObject response) {
                 if(success) {
-                    Intent i = new Intent(HostStatistics.this, HostQuestion.class);
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(i);
+                    helper.getQuestionByUserAndGameId(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
+                        @Override
+                        public void onJSONResponse(boolean success, JSONObject response) {
+                            if(success) {
+                                Intent i = new Intent(HostStatistics.this, HostQuestion.class);
+                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(i);
+                            }
+                        }
+                    });
                 }
             }
         });

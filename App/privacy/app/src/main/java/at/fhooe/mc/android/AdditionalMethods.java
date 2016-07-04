@@ -265,7 +265,7 @@ public class AdditionalMethods {
 
     protected void getQuestionGroupsByUserId(int userId, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
-
+        counter = 0;
         RequestParams params = new RequestParams();
         params.put("user_id", userId);
         client.post(getQuestionGroupsByUserIdURL(), params, new TextHttpResponseHandler() {
@@ -311,8 +311,6 @@ public class AdditionalMethods {
                         JSONObject obj = array.getJSONObject(i);
                         ids[i] = obj.getInt("id");
                     }
-
-                    counter = 0;
                     questionId = ids[counter];
 
                     callback.onJSONResponse(true, null);
@@ -444,7 +442,7 @@ public class AdditionalMethods {
     }
 
     protected void allowStatistics(int userId, int gameId,  final OnJSONResponseCallback callback) {
-        SyncHttpClient client = new SyncHttpClient();
+        AsyncHttpClient client = new AsyncHttpClient();
 
         RequestParams params = new RequestParams();
         params.put("user_id", userId);
