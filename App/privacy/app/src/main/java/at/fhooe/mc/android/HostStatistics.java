@@ -1,10 +1,14 @@
 package at.fhooe.mc.android;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
@@ -233,7 +237,7 @@ public class HostStatistics extends FragmentActivity implements View.OnClickList
     @Override
     public void onClick(View view) {
 //        timerPlayer.cancel();
-
+        showProgress(true);
         Log.i("", "onclick");
         helper.forceNextQuestion(helper.getUserID(), helper.getGameId(), helper.getQuestionId(), new OnJSONResponseCallback() {
             @Override
@@ -298,5 +302,40 @@ public class HostStatistics extends FragmentActivity implements View.OnClickList
         // Close the drawer
         mDrawerLayout.closeDrawer(mDrawerPane);
     }
+
+    /**
+     * Shows the progress UI and hides form to continue
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+
+        final View mProgressView = (View) findViewById(R.id.host_statistics_progress);
+        Button b = (Button) findViewById(R.id.host_statistics_continue);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+            b.setVisibility(View.GONE);
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+            TextView view = (TextView) findViewById(R.id.textView);
+            view.setText("Please wait.");
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            b.setVisibility(View.GONE);
+
+        }
+    }
+
 }
 

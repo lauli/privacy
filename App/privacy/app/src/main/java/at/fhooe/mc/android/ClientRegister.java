@@ -47,10 +47,6 @@ import java.util.List;
  */
 public class ClientRegister extends FragmentActivity implements  LoaderCallbacks<Cursor>, OnClickListener  {
 
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask mAuthTask = null;
 
     // UI references.
     private EditText mUsername;
@@ -242,29 +238,20 @@ public class ClientRegister extends FragmentActivity implements  LoaderCallbacks
      * errors are presented and no actual login attempt is made.
      */
     private boolean attemptLogin() {
-        if (mAuthTask != null) {
-            return true;
-        }
 
         // Reset errors.
         mUsername.setError(null);
         mSessionId.setError(null);
 
         // Store values at the time of the login attempt.
-        String mName = mUsername.getText().toString();
+        final String mName = mUsername.getText().toString();
         String mID = mSessionId.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid password, if the user entered one.
-//        if (!TextUtils.isEmpty(mID) && !isSessionIdValid(mID)) {
-//            mSessionId.setError(getString(R.string.error_invalid_password));
-//            focusView = mSessionId;
-//            cancel = true;
-//        }
 
-        // Check for a valid email address.
+        // Check for a valid name.
         if (TextUtils.isEmpty(mName)) {
             mUsername.setError(getString(R.string.error_field_required));
             focusView = mUsername;
@@ -280,6 +267,22 @@ public class ClientRegister extends FragmentActivity implements  LoaderCallbacks
             focusView = mUsername;
             cancel = true;
         }
+        else{
+            if(!helper.getName().equals(mName)){
+                helper.changeUserName(helper.getUserID(), mName, new OnJSONResponseCallback() {
+                    @Override
+                    public void onJSONResponse(boolean success, JSONObject response) {
+                        if (success) {
+                            SharedPreferences preferences = getSharedPreferences("myPref", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putString("username", mName);
+                            editor.commit();
+                        }
+                    }
+                });
+
+            }
+        }
 
         if (cancel) {
             focusView.requestFocus();
@@ -290,28 +293,15 @@ public class ClientRegister extends FragmentActivity implements  LoaderCallbacks
             name = mName;
             sessionId = Integer.parseInt(mID);
             showProgress(true);
-            mAuthTask = new UserLoginTask(mName, mID);
-//            mAuthTask.execute((Void) null);
             return true;
         }
     }
 
     private boolean isUsernameValid(final String name, String id) {
-        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("username", name);
-        editor.commit();
-
+        if(name.length() > 25) return false;
         return true;
     }
 
-//    private boolean isSessionIdValid(String id) {
-//        //TODO: Replace this with your own logic
-//        for(int i = 0; i < DUMMY_CREDENTIALS.length; i++){
-//            if(id.equals(DUMMY_CREDENTIALS[i])) return true;
-//        }
-//        return false;
-//    }
 
     /**
      * Shows the progress UI and hides the login form.
@@ -387,39 +377,24 @@ public class ClientRegister extends FragmentActivity implements  LoaderCallbacks
         helper = AdditionalMethods.getInstance();
         Handler handler = new Handler();
         if(attemptLogin()) {
-//            helper.createUser(1, name, new OnJSONResponseCallback() {
-//                @Override
-//                public void onJSONResponse(boolean success, JSONObject response) {
-//                    if (success) {
-                        helper.joinGame(helper.getUserID(), sessionId, new OnJSONResponseCallback() {
-                            @Override
-                            public void onJSONResponse(boolean success, JSONObject response) {
-                                if(success) {
-                                    if (helper.getGameId() != -1) {
-//                                        Intent i = new Intent(ClientRegister.this, ClientLobby.class);
-                                        Intent i = new Intent(ClientRegister.this, ClientQuestion.class);
-                                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        startActivity(i);
-                                    } else {
-                                        Toast.makeText(ClientRegister.this, "Oops. That did not work.\n Your Session ID was wrong.", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            }
-                        });
-//                    }
-//                }
-//            });
-
-
+            helper.joinGame(helper.getUserID(), sessionId, new OnJSONResponseCallback() {
+                @Override
+                public void onJSONResponse(boolean success, JSONObject response) {
+                    if(success) {
+                        if (helper.getGameId() != -1) {
+                            Intent i = new Intent(ClientRegister.this, ClientQuestion.class);
+                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(i);
+                        } else {
+                            Toast.makeText(ClientRegister.this, "Oops. That did not work.\n Your Session ID was wrong.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    else {
+                        Toast.makeText(ClientRegister.this, "Oops. That did not work.\n Your Session ID was wrong.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         }
-        /*
-        if(attemptLogin()){
-            Intent i = new Intent(this, ClientLobby.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(i);
-        };
-        */
-
     }
 
 
@@ -433,91 +408,6 @@ public class ClientRegister extends FragmentActivity implements  LoaderCallbacks
         int IS_PRIMARY = 1;
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mName;
-        private final String mSessionID;
-
-        UserLoginTask(String name, String id) {
-            mName = name;
-            mSessionID = id;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-
-/*
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-*/
-//            for (String credential : DUMMY_CREDENTIALS) {
-//                String[] pieces = credential.split(":");
-//                if (pieces[0].equals(mName)) {
-//                    // Account exists, return true if the password matches.
-//                    return pieces[1].equals(mSessionID);
-//                }
-//            }
-//
-//
-//            Looper.prepare();
-//            AdditionalMethods helper = AdditionalMethods.getInstance();
-//            try {
-//                helper.createUser(1, mName, false);
-//                //Thread.sleep(5000);
-//            } catch (RuntimeException _e) {
-//                    Log.i("", "A failure accured while trying to register. Plz try again");
-//            }
-//            /*catch (InterruptedException _e){
-//                Log.i("", "A failure accured while trying to register. Plz try again");
-//            } */
-//
-//            try {
-//                helper.joinGame(helper.getUserID(), mSessionID);
-//                //Thread.sleep(5000);
-//            }
-//            catch(RuntimeException _e){
-//                    Log.i("", "A failure accured while trying to join a session. Plz try again");
-//            }
-//            /*catch (InterruptedException _e){
-//                Log.i("", "A failure accured while trying to register. Plz try again");
-//            }
-//            */
-//
-//
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                finish();
-            } else {
-                mSessionId.setError(getString(R.string.error_incorrect_password));
-                mSessionId.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
-
-    }
 
     @Override
     protected void onDestroy() {

@@ -44,6 +44,7 @@ public class CreateOrJoin extends FragmentActivity implements View.OnClickListen
 
     private static Context contextForCreateUser;
     private final String MyPREFERENCES = "myPref";
+    FirstLoginDialogFragment dialog;
 
 
 
@@ -57,14 +58,13 @@ public class CreateOrJoin extends FragmentActivity implements View.OnClickListen
         b = (Button) findViewById(R.id.create_or_join_join);
         b.setOnClickListener(this);
 
-
         SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         if (preferences.getBoolean("firstCall", true)) {
             editor.putBoolean("firstCall", false);
             editor.commit();
             FragmentManager fm = getFragmentManager();
-            FirstLoginDialogFragment dialog = new FirstLoginDialogFragment();
+            dialog = new FirstLoginDialogFragment();
             dialog.show(getSupportFragmentManager(), "Dialog");
         }
         else{
@@ -214,5 +214,24 @@ public class CreateOrJoin extends FragmentActivity implements View.OnClickListen
 
     public static Context getContextOfApplication(){
         return contextForCreateUser;
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
+
+        if (getFragmentManager().getBackStackEntryCount() == 0) {
+            super.onBackPressed();
+        } else {
+            getFragmentManager().popBackStack();
+            String username = preferences.getString("username", "");
+            int punkte = preferences.getInt("points", -1);
+
+            TextView name = (TextView) findViewById(R.id.user_name);
+            name.setText(username);
+            TextView points = (TextView) findViewById(R.id.user_points);
+            points.setText("Points: " + punkte);
+        }
     }
 }

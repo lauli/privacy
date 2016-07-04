@@ -59,21 +59,22 @@ public class AdditionalMethods {
     public String allowCountingURL()                {return "http://privacygame.soft-tec.net/allow_counting.php";}
     public String isCountinueAllowedURL()             {return "http://privacygame.soft-tec.net/is_continue_allowed.php";}
 
-    protected int lang;
-    protected String name;
-    protected int userId;
-    protected int gameId;
-    protected int questionId;
-    protected String[] players;
-    protected String[] answeredPlayers;
-    protected Player[] statistic;
-    protected String question;
-    protected int points = 0;
-    protected int pointsFromThisRound;
-    protected int answer;
-    protected int guess;
-    protected int howManyYes;
-    protected int[] ids;
+    private int lang;
+    private String name;
+    private int userId;
+    private int gameId;
+    private int questionId;
+    private int counter;
+    private String[] players;
+    private String[] answeredPlayers;
+    private Player[] statistic;
+    private String question;
+    private int points = 0;
+    private int pointsFromThisRound;
+    private int answer;
+    private int guess;
+    private int howManyYes;
+    private int[] ids;
 
 
     public static AdditionalMethods getInstance() {
@@ -221,9 +222,6 @@ public class AdditionalMethods {
     protected void changeLanguage (int userId, int language,  final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
-        language = 1;
-        userId = 10;
-
         RequestParams params = new RequestParams();
         params.put("user_id", userId);
         params.put("lang_id", language);
@@ -314,8 +312,8 @@ public class AdditionalMethods {
                         ids[i] = obj.getInt("id");
                     }
 
-                    int index = 0 + (int)(Math.random() * ((array.length()-1 - 0) + 1));
-                    questionId = ids[index];
+                    counter = 0;
+                    questionId = ids[counter];
 
                     callback.onJSONResponse(true, null);
                 } catch (JSONException _e) {
@@ -446,10 +444,7 @@ public class AdditionalMethods {
     }
 
     protected void allowStatistics(int userId, int gameId,  final OnJSONResponseCallback callback) {
-        AsyncHttpClient client = new AsyncHttpClient();
-
-        userId = 1;
-        gameId = 1;
+        SyncHttpClient client = new SyncHttpClient();
 
         RequestParams params = new RequestParams();
         params.put("user_id", userId);
@@ -573,7 +568,11 @@ public class AdditionalMethods {
     protected void forceNextQuestion(int userId, int gameId, int questionId,  final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
-        questionId = ids[(0 + (int)(Math.random() * ((ids.length-1 - 0) + 1)))];
+        counter++;
+        if(counter >= ids.length){
+            //TODO: endGame Funktion
+        }
+        questionId = ids[counter];
 
         RequestParams params = new RequestParams();
         params.put("user_id", userId);

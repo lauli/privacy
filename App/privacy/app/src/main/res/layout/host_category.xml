@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:float="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     >
 
@@ -58,6 +59,19 @@
             tools:context=".HostCategory"
             android:background="@color/tan">
 
+            <com.rey.material.widget.ProgressView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:id="@+id/host_category_progress"
+                android:visibility="gone"
+                app:pv_autostart="true"
+                app:pv_circular="false"
+                app:pv_progressStyle="@style/Material.Drawable.CircularProgress"
+                app:pv_progressMode="indeterminate"
+                app:lpd_strokeColors="@color/oxblood"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"/>
+
 
             <TextView
                 android:layout_width="wrap_content"
@@ -69,51 +83,58 @@
                 android:layout_marginBottom="50dp"/>
 
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+                android:id="@+id/host_category_view">
 
-                <Button
-                    style="@style/Category"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="private"
-                    android:id="@+id/host_category_private"
-                    android:layout_weight="0.5"
-                    android:background="@color/oxblood"/>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <Button
-                    style="@style/Category"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="under18"
-                    android:id="@+id/host_category_under18"
-                    android:layout_weight="0.5"
-                    android:shadowColor="@color/oxblood"/>
-            </LinearLayout>
+                    <Button
+                        style="@style/Category"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="private"
+                        android:id="@+id/host_category_private"
+                        android:layout_weight="0.5"
+                        android:background="@color/oxblood"/>
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                    <Button
+                        style="@style/Category"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="under18"
+                        android:id="@+id/host_category_under18"
+                        android:layout_weight="0.5"
+                        android:shadowColor="@color/oxblood"/>
+                </LinearLayout>
 
-                <Button
-                    style="@style/Category"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="over18"
-                    android:id="@+id/host_category_over18"
-                    android:layout_weight="0.5"/>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                <Button
-                    style="@style/Category"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="others..."
-                    android:id="@+id/host_category_others"
-                    android:layout_weight="0.5"
-                    android:background="@color/oxblood"
-                    android:clickable="false"/>
+                    <Button
+                        style="@style/Category"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="over18"
+                        android:id="@+id/host_category_over18"
+                        android:layout_weight="0.5"/>
+
+                    <Button
+                        style="@style/Category"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="others..."
+                        android:id="@+id/host_category_others"
+                        android:layout_weight="0.5"
+                        android:background="@color/oxblood"
+                        android:clickable="false"/>
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>

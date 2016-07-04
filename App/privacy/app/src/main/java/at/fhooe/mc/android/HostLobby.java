@@ -1,10 +1,14 @@
 package at.fhooe.mc.android;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
@@ -116,6 +120,7 @@ public class HostLobby extends FragmentActivity implements View.OnClickListener{
         int delay = 0;   // delay for 0 sec.
         int interval = 3000;  // iterate every 3rd sec.
         timer = new Timer();
+        final Button b = (Button) findViewById(R.id.host_lobby_continue);
 
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
@@ -133,15 +138,13 @@ public class HostLobby extends FragmentActivity implements View.OnClickListener{
                                     }
                                 });
                             }
+                            setVisibilityOfButton();
                         }
                     }
                 });
             }
         }, delay, interval);
 
-
-        Button b = null;
-        b = (Button) findViewById(R.id.host_lobby_continue);
         b.setOnClickListener(this);
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
@@ -242,11 +245,18 @@ public class HostLobby extends FragmentActivity implements View.OnClickListener{
                 timer.cancel();
                 timer.purge();
                 timer = null;
-                        Intent i = new Intent(HostLobby.this, HostQuestion.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(i);
-                break;
-            }
+                showProgress(true);
+                helper.getQuestionByUserAndGameId(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
+                    @Override
+                    public void onJSONResponse(boolean success, JSONObject response) {
+                        if (success) {
+                            Intent i = new Intent(HostLobby.this, HostQuestion.class);
+                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(i);
+                        }
+                    }
+                });
+            } break;
             default : {
                 break;
             }
@@ -287,6 +297,50 @@ public class HostLobby extends FragmentActivity implements View.OnClickListener{
 
         // Close the drawer
         mDrawerLayout.closeDrawer(mDrawerPane);
+    }
+
+    /**
+     * Shows the progress UI and hides form to continue
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+
+        final View mProgressView = (View) findViewById(R.id.host_lobby_progress);
+        Button b = (Button) findViewById(R.id.host_lobby_continue);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+            b.setVisibility(View.GONE);
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+            TextView view = (TextView) findViewById(R.id.textView);
+            view.setText("Please wait.");
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            b.setVisibility(View.GONE);
+
+        }
+    }
+
+    public void setVisibilityOfButton() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Button b = (Button) findViewById(R.id.host_lobby_continue);
+                b.setVisibility(View.VISIBLE);
+            }
+        });
     }
 }
 

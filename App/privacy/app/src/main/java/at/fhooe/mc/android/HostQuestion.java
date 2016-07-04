@@ -1,10 +1,14 @@
 package at.fhooe.mc.android;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -93,19 +97,7 @@ public class HostQuestion extends FragmentActivity implements View.OnClickListen
         b.setOnClickListener(this);
 
         question = (TextView) findViewById(R.id.question);
-        question.setText("Here you will see your question, as soon as it is loaded.. :) ");
-
-        helper.getQuestionByUserAndGameId(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
-            @Override
-            public void onJSONResponse(boolean success, JSONObject response) {
-                if(success) {
-                    showQuestion(helper.getQuestion());
-                    Log.i("", "getQuestionByUserAndGameId was a success");
-                }
-                    else
-                    Log.i("", "getQuestionByUserAndGameId was a failure");
-            }
-        });
+        question.setText(helper.getQuestion());
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.host_question_drawer_layout);
@@ -200,17 +192,23 @@ public class HostQuestion extends FragmentActivity implements View.OnClickListen
 
     @Override
     public void onClick(View view) {
+        showProgress(true);
         switch (view.getId()){
             case R.id.host_question_yes : {
                 helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.getQuestionId(), 1, 0, new OnJSONResponseCallback() {
                     @Override
                     public void onJSONResponse(boolean success, JSONObject response) {
-                        if(success) {
-                            if (success) {
-                                Intent i = new Intent(HostQuestion.this, HostVoted.class);
-                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(i);
-                            }
+                        if(success){
+                            helper.allowCounting(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
+                                @Override
+                                public void onJSONResponse(boolean success, JSONObject response) {
+                                    if(success){
+                                        Intent i = new Intent(HostQuestion.this, HostVoted.class);
+                                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(i);
+                                    }
+                                }
+                            });
                         }
                     }
                 });
@@ -238,9 +236,6 @@ public class HostQuestion extends FragmentActivity implements View.OnClickListen
         }
     }
 
-    private void showQuestion(String questionString) {
-        question.setText(questionString);
-    }
 
     private void selectItemFromDrawer(int position, String title) {
 
@@ -263,5 +258,42 @@ public class HostQuestion extends FragmentActivity implements View.OnClickListen
 
         // Close the drawer
         mDrawerLayout.closeDrawer(mDrawerPane);
+    }
+
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+
+        final View mProgressView = (View) findViewById(R.id.host_question_progress);
+        Button yes = (Button) findViewById(R.id.host_question_yes);
+        Button no = (Button) findViewById(R.id.host_question_no);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+            yes.setVisibility(View.GONE);
+            no.setVisibility(View.GONE);
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+            TextView view = (TextView) findViewById(R.id.textView);
+            view.setText("Please wait.\nWe are currently trying to save your answer.");
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            yes.setVisibility(View.GONE);
+            no.setVisibility(View.GONE);
+
+        }
     }
 }

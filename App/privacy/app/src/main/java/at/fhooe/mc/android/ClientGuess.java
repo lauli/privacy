@@ -107,7 +107,7 @@ public class ClientGuess extends FragmentActivity implements AdapterView.OnItemS
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction()==MotionEvent.ACTION_DOWN && guess[0] != -1) {
-                    helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.questionId, helper.getAnswer(), guess[0], new OnJSONResponseCallback() {
+                    helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.getQuestionId(), helper.getAnswer(), guess[0], new OnJSONResponseCallback() {
                         @Override
                         public void onJSONResponse(boolean success, JSONObject response) {
                             Timer timerContinue = new Timer();

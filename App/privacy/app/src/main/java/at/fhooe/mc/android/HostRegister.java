@@ -228,7 +228,7 @@ public class HostRegister extends FragmentActivity implements  LoaderCallbacks<C
     public void onClick(View view) {
         if (attemptLogin()) {
             final AdditionalMethods helper = AdditionalMethods.getInstance();
-            helper.newGame(helper.userId, helper.questionId, new OnJSONResponseCallback() {
+            helper.newGame(helper.getUserID(), helper.getQuestionId(), new OnJSONResponseCallback() {
                 @Override
                 public void onJSONResponse(boolean success, JSONObject response) {
                     if (success) {
@@ -270,8 +270,8 @@ public class HostRegister extends FragmentActivity implements  LoaderCallbacks<C
             cancel = true;
         }
         else{
-            if(!helper.name.equals(mName)){
-                helper.changeUserName(helper.userId, mName, new OnJSONResponseCallback() {
+            if(!helper.getName().equals(mName)){
+                helper.changeUserName(helper.getUserID(), mName, new OnJSONResponseCallback() {
                     @Override
                     public void onJSONResponse(boolean success, JSONObject response) {
                         if (success) {
@@ -287,8 +287,6 @@ public class HostRegister extends FragmentActivity implements  LoaderCallbacks<C
         }
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
             focusView.requestFocus();
             return false;
         } else {

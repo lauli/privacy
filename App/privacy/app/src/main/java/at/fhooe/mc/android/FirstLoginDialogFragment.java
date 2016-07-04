@@ -46,6 +46,11 @@ public class FirstLoginDialogFragment extends DialogFragment {
                             @Override
                             public void onJSONResponse(boolean success, JSONObject response) {
                                 if (success) {
+                                    try{
+                                        finalize();
+                                    } catch (Throwable _throwable) {
+                                        _throwable.printStackTrace();
+                                    }
                                 }
                             }
                         });

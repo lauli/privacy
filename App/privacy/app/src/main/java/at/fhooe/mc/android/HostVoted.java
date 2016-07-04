@@ -86,6 +86,12 @@ public class HostVoted extends FragmentActivity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.host_voted);
 
+        final TextView tv = (TextView) findViewById(R.id.host_voted_note);
+
+
+        Button b = null;
+        b = (Button) findViewById(R.id.host_voted_continue);
+        b.setOnClickListener(this);
 
         list = null;
         list = (ListView) findViewById(R.id.host_voted_players_list);
@@ -96,6 +102,7 @@ public class HostVoted extends FragmentActivity implements View.OnClickListener{
         int delay = 2000;   // delay for 2 sec.
         int interval = 5000;  // iterate every sec.
 
+        final Button finalB = b;
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
                 final AdditionalMethods helper = AdditionalMethods.getInstance();
@@ -113,15 +120,23 @@ public class HostVoted extends FragmentActivity implements View.OnClickListener{
                                     }
                                 });
                             }
+
+                            if(helper.getAnsweredPlayers().length == helper.getPlayers().length){
+                                tv.setText( "every player has voted. you can continue");
+                                tv.setTextSize(12);
+                                finalB.setTextColor(getResources().getColor(R.color.oxblood));
+                            }
+                            else{
+                                tv.setText( "note that only " + helper.getAnsweredPlayers().length +
+                                            " from " + helper.getPlayers().length + " players have answered" +
+                                            "\nMaybe you should wait for the others. ;)");
+                                tv.setTextSize(12);
+                            }
                         }
                     }
                 });
             }
         }, delay, interval);
-
-        Button b = null;
-        b = (Button) findViewById(R.id.host_voted_continue);
-        b.setOnClickListener(this);
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.host_voted_drawer_layout);
@@ -220,7 +235,7 @@ public class HostVoted extends FragmentActivity implements View.OnClickListener{
         timer.purge();
         timer = null;
 
-        helper.allowStatistics(helper.userId, helper.getGameId(), new OnJSONResponseCallback() {
+        helper.allowStatistics(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
             @Override
             public void onJSONResponse(boolean success, JSONObject response) {
                 if(success){
@@ -238,6 +253,7 @@ public class HostVoted extends FragmentActivity implements View.OnClickListener{
             }
         });
     }
+
 
     public void addItem(String name){
         boolean foundEqual = false;
