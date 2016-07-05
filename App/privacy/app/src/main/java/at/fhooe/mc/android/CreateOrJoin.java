@@ -3,6 +3,7 @@ package at.fhooe.mc.android;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -27,7 +28,7 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
-public class CreateOrJoin extends FragmentActivity implements View.OnClickListener{
+public class CreateOrJoin extends FragmentActivity implements View.OnClickListener, FirstLoginDialogFragment.OnHeadlineSelectedListener{
 
     /**
      * Context from Activity
@@ -133,8 +134,7 @@ public class CreateOrJoin extends FragmentActivity implements View.OnClickListen
         name.setText(username);
         TextView points = (TextView) findViewById(R.id.user_points);
         points.setText("Points: " + punkte);
-        mNavItems.add(new NavItem("Skip", "skip this question", R.drawable.skip));
-        mNavItems.add(new NavItem("Quit", "Quit the game", R.drawable.quit));
+        mNavItems.add(new NavItem("Language", "change question Language", R.drawable.language));
         mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.credits));
 
         // DrawerLayout
@@ -239,10 +239,10 @@ public class CreateOrJoin extends FragmentActivity implements View.OnClickListen
 //            SkipDialogFragment fragment = new SkipDialogFragment();
 //            fragment.show(getSupportFragmentManager(), "Dialog");
 //        }
-//        else { //Quit
-//            QuitDialogFragment fragment = new QuitDialogFragment();
-//            fragment.show(getSupportFragmentManager(), "Dialog");
-//        }
+        else {
+            ChangeLanguageDialogFragment fragment = new ChangeLanguageDialogFragment();
+            fragment.show(getSupportFragmentManager(), "Dialog");
+        }
 
         mDrawerList.setItemChecked(position, true);
         setTitle(mNavItems.get(position).mTitle);
@@ -258,19 +258,12 @@ public class CreateOrJoin extends FragmentActivity implements View.OnClickListen
 
     @Override
     public void onBackPressed() {
-        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
 
-        if (getFragmentManager().getBackStackEntryCount() == 0) {
-            super.onBackPressed();
-        } else {
-            getFragmentManager().popBackStack();
-            String username = preferences.getString("username", "");
-            int punkte = preferences.getInt("points", -1);
+    }
 
-            TextView name = (TextView) findViewById(R.id.user_name);
-            name.setText(username);
-            TextView points = (TextView) findViewById(R.id.user_points);
-            points.setText("Points: " + punkte);
-        }
+    @Override
+    public void onArticleSelected(boolean done) {
+        finish();
+        startActivity(getIntent());
     }
 }

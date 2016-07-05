@@ -5,10 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.RequestParams;
-import com.loopj.android.http.ResponseHandlerInterface;
 import com.loopj.android.http.SyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 
@@ -17,44 +14,119 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.HttpEntity;
 
 /**
  * Created by laureenschausberger on 14.06.16.
+ * class that holds every method related to database
+ * contains instance method, with which one can access same data in every activity via singleton
  */
 public class AdditionalMethods {
 
-    private static final String LOG_TAG = "PostSample";
+    /**
+     * Tag for Log.i
+     */
+    private static final String LOG_TAG = "AdditionalMethods";
 
+    /**
+     * instance variable, witch which one can access same data in every activity via singleton
+     */
     private static AdditionalMethods mInstance = null;
 
-    public boolean isRequestBodyAllowed() {
-        return true;
-    }
-
-    public boolean isRequestHeadersAllowed() {
-        return true;
-    }
-
+    /**
+     * phpurl for createUser
+     * @return php link for createUser
+     */
     public String createUserURL()                   {return "http://privacygame.soft-tec.net/create_user.php";}
+
+    /**
+     * phpurl for changeLanguage
+     * @return php link for changeLanguage
+     */
     public String changeLanguageURL()               {return "http://privacygame.soft-tec.net/change_language.php";}
-    public String changeUserName()                  {return "http://privacygame.soft-tec.net/change_user_name.php";}
-    public String getQuestionGroupsByUserIdURL()    {return "http://privacygame.soft-tec.net/get_question_groups_by_user_id.php";}
+
+    /**
+     * phpurl for changeUserName
+     * @return php link for changeUserName
+     */
+    public String changeUserNameURL()               {return "http://privacygame.soft-tec.net/change_user_name.php";}
+//    public String getQuestionGroupsByUserIdURL()    {return "http://privacygame.soft-tec.net/get_question_groups_by_user_id.php";}
+
+    /**
+     * phpurl for getQuestionsIdsByGrpId
+     * @return php link for getQuestionsIdsByGrpId
+     */
     public String getQuestionsIdsByGrpIdURL ()      {return "http://privacygame.soft-tec.net/get_question_ids_by_grp_id.php";}
+
+    /**
+     * phpurl for getQuestionByUserAndGameId
+     * @return php link for getQuestionByUserAndGameId
+     */
     public String getQuestionByUserAndGameIdURL ()  {return "http://privacygame.soft-tec.net/get_question_by_user_and_game_id.php";}
+
+    /**
+     * phpurl for newGame
+     * @return php link for newGame
+     */
     public String newGameURL ()                     {return "http://privacygame.soft-tec.net/new_game.php";}
+
+    /**
+     * phpurl for joinGame
+     * @return php link for joinGame
+     */
     public String joinGameURL ()                    {return "http://privacygame.soft-tec.net/join_game.php";}
+
+    /**
+     * phpurl for answerQuestion
+     * @return php link for answerQuestion
+     */
     public String answerQuestionURL ()              {return "http://privacygame.soft-tec.net/answer_question.php";}
+
+    /**
+     * phpurl for getAnsweredUsers
+     * @return php link for getAnsweredUsers
+     */
     public String getAnsweredUsersURL ()            {return "http://privacygame.soft-tec.net/get_answered_users.php";}
-    public String allowStatisticsURL()              {return "http://privacygame.soft-tec.net/allow_statistics.php";}
-    public String countPlayersByGameIdURL()         {return "http://privacygame.soft-tec.net/count_players_by_game_id.php";}
+
+    /**
+     * phpurl for getStatisticsbyGameId
+     * @return php link for getStatisticsbyGameId
+     */
     public String getStatisticsbyGameIdURL()        {return "http://privacygame.soft-tec.net/get_statistic_by_game_id.php";}
-    public String pushPointsToProfileURL ()         {return "http://privacygame.soft-tec.net/push_points_to_profile.php";}
+
+    /**
+     * phpurl for forceNextQuestion
+     * @return php link for forceNextQuestion
+     */
     public String forceNextQuestionURL()            {return "http://privacygame.soft-tec.net/force_next_question.php";}
+
+    /**
+     * phpurl for getPlayersInGame
+     * @return php link for getPlayersInGame
+     */
     public String getPlayersInGameURL()             {return "http://privacygame.soft-tec.net/get_players_in_game.php";}
+
+    /**
+     * phpurl for allowContinue
+     * @return php link for allowContinue
+     */
     public String allowContinueURL()                {return "http://privacygame.soft-tec.net/allow_continue.php";}
+
+    /**
+     * phpurl for isCountinueAllowed
+     * @return php link for isCountinueAllowed
+     */
     public String isCountinueAllowedURL()           {return "http://privacygame.soft-tec.net/is_continue_allowed.php";}
+
+    /**
+     * phpurl for quitGame
+     * @return php link for quitGame
+     */
     public String quitGameURL()                     {return "http://privacygame.soft-tec.net/quit_game.php";}
+
+    /**
+     * phpurl for isGameExisting
+     * @return php link for isGameExisting
+     */
     public String isGameExistingURL()               {return "http://privacygame.soft-tec.net/is_game_existing.php";}
 
 
@@ -94,8 +166,6 @@ public class AdditionalMethods {
         return gameId;
     }
 
-    public String getGameIdString(){return Integer.toString(gameId);}
-
     public int getQuestionId(){ return questionId; }
 
     public String getName(){
@@ -128,8 +198,6 @@ public class AdditionalMethods {
 
     public int getPointsFromThisRound(){ return pointsFromThisRound;}
 
-    public String getPointsString(){ return Integer.toString(points);}
-
     public int getAnswer(){ return answer;}
 
     public int getGuess(){ return guess;}
@@ -138,37 +206,11 @@ public class AdditionalMethods {
 
     public Player[] getStatistic() { return statistic;}
 
-    public int[] getQuestionIds() { return ids;}
-
-    public RequestHandle executeSample(AsyncHttpClient client,
-                                       String URL,
-                                       Header[] headers,
-                                       HttpEntity entity,
-                                       ResponseHandlerInterface responseHandler,
-                                       Context _c) {
-        return client.post(_c, URL, headers, entity, null, responseHandler);
-    }
-
-    public ResponseHandlerInterface getResponseHandler() {
-        return new AsyncHttpResponseHandler() {
-
-            @Override
-            public void onStart() {}
-
-            @Override
-            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {}
-
-            @Override
-            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {}
-        };
-    }
-
 
     protected void createUser(int language, String name, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
         this.lang = language;
-        language = 1;
         this.name = name;
 
         RequestParams params = new RequestParams();
@@ -188,7 +230,7 @@ public class AdditionalMethods {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 Context context = CreateOrJoin.getContextOfApplication();
-                SharedPreferences preferences = context.getSharedPreferences("myPref", context.MODE_PRIVATE);
+                SharedPreferences preferences = context.getSharedPreferences("myPref", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
                     editor.putBoolean("firstCall", false);
                     editor.commit();
@@ -218,7 +260,7 @@ public class AdditionalMethods {
         });
     }
 
-    protected void changeLanguage (int userId, int language,  final OnJSONResponseCallback callback) {
+    protected void changeLanguage (int userId, final int language, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
         RequestParams params = new RequestParams();
@@ -233,7 +275,12 @@ public class AdditionalMethods {
             @Override
             public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
                 Log.i(LOG_TAG,"changeLanguage was a success.");
-                String firstEvent = responseString;
+                lang = language;
+                Context context = CreateOrJoin.getContextOfApplication();
+                SharedPreferences preferences = context.getSharedPreferences("myPref", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putInt("language", getLang());
+                editor.commit();
 
                 callback.onJSONResponse(true, null);
             }
@@ -246,7 +293,7 @@ public class AdditionalMethods {
         RequestParams params = new RequestParams();
         params.put("user_id", userId);
         params.put("name", name);
-        client.post(changeLanguageURL(), params, new TextHttpResponseHandler() {
+        client.post(changeUserNameURL(), params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
                 callback.onJSONResponse(false, null);
@@ -262,26 +309,24 @@ public class AdditionalMethods {
         });
     }
 
-    protected void getQuestionGroupsByUserId(int userId, final OnJSONResponseCallback callback) {
-        AsyncHttpClient client = new AsyncHttpClient();
-        counter = 0;
-        RequestParams params = new RequestParams();
-        params.put("user_id", userId);
-        client.post(getQuestionGroupsByUserIdURL(), params, new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
-                callback.onJSONResponse(false, null);
-            }
-
-            @Override
-            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
-                Log.i(LOG_TAG,"getQuestionGroupsByUserId was a success.");
-                String firstEvent = responseString;
-
-                callback.onJSONResponse(true, null);
-            }
-        });
-    }
+//    protected void getQuestionGroupsByUserId(int userId, final OnJSONResponseCallback callback) {
+//        AsyncHttpClient client = new AsyncHttpClient();
+//        counter = 0;
+//        RequestParams params = new RequestParams();
+//        params.put("user_id", userId);
+//        client.post(getQuestionGroupsByUserIdURL(), params, new TextHttpResponseHandler() {
+//            @Override
+//            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
+//                callback.onJSONResponse(false, null);
+//            }
+//
+//            @Override
+//            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
+//                Log.i(LOG_TAG,"getQuestionGroupsByUserId was a success.");
+//                callback.onJSONResponse(true, null);
+//            }
+//        });
+//    }
 
     protected void getQuestionIdsByGroupId(int category, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
@@ -439,50 +484,6 @@ public class AdditionalMethods {
         });
     }
 
-    protected void allowStatistics(int userId, int gameId,  final OnJSONResponseCallback callback) {
-        AsyncHttpClient client = new AsyncHttpClient();
-
-        RequestParams params = new RequestParams();
-        params.put("user_id", userId);
-        params.put("game_id", gameId);
-        client.post(allowStatisticsURL(), params, new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
-                callback.onJSONResponse(false, null);
-            }
-
-            @Override
-            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
-                Log.i(LOG_TAG,"allowStatistics was a success.");
-                String firstEvent = responseString;
-
-                callback.onJSONResponse(true, null);
-            }
-        });
-    }
-
-    protected void countPlayersByGameId(int gameId,  final OnJSONResponseCallback callback) {
-        AsyncHttpClient client = new AsyncHttpClient();
-
-        gameId = 1;
-
-        RequestParams params = new RequestParams();
-        params.put("game_id", gameId);
-        client.post(countPlayersByGameIdURL(), params, new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
-                callback.onJSONResponse(false, null);
-            }
-
-            @Override
-            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
-                Log.i(LOG_TAG,"countPlayersByGameId was a success.");
-                String firstEvent = responseString;
-
-                callback.onJSONResponse(true, null);
-            }
-        });
-    }
 
     protected void getStatisticsByGameIdHost(int gameId, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
@@ -515,7 +516,7 @@ public class AdditionalMethods {
                     points += pointsFromThisRound;
 
                     Context context = HostGuess.getContextOfApplication();
-                    SharedPreferences preferences = context.getSharedPreferences("myPref", context.MODE_PRIVATE);
+                    SharedPreferences preferences = context.getSharedPreferences("myPref", Context.MODE_PRIVATE);
                     int p = preferences.getInt("points", -1);
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putInt("points", (p+pointsFromThisRound));
@@ -560,7 +561,7 @@ public class AdditionalMethods {
                     points += pointsFromThisRound;
 
                     Context context = ClientGuess.getContextOfApplication();
-                    SharedPreferences preferences = context.getSharedPreferences("myPref", context.MODE_PRIVATE);
+                    SharedPreferences preferences = context.getSharedPreferences("myPref", Context.MODE_PRIVATE);
                     int p = preferences.getInt("points", -1);
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putInt("points", (p+pointsFromThisRound));
@@ -611,38 +612,14 @@ public class AdditionalMethods {
         });
     }
 
-    protected void pushPointsToProfile(int userId, int points,  final OnJSONResponseCallback callback) {
-        AsyncHttpClient client = new AsyncHttpClient();
-
-
-        RequestParams params = new RequestParams();
-        params.put("user_id", userId);
-        params.put("points", points);
-        client.post(pushPointsToProfileURL(), params, new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
-                callback.onJSONResponse(false, null);
-            }
-
-            @Override
-            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
-                Log.i(LOG_TAG,"pushPointsToProfile was a success.");
-                String firstEvent = responseString;
-
-
-                callback.onJSONResponse(true, null);
-            }
-        });
-    }
-
-    protected void forceNextQuestion(int userId, int gameId, int questionId,  final OnJSONResponseCallback callback) {
+    protected void forceNextQuestion(int userId, int gameId, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
         counter++;
         if(counter >= ids.length){
-            //TODO: endGame Funktion
+            counter = 0;
         }
-        questionId = ids[counter];
+        int questionId = ids[counter];
 
         RequestParams params = new RequestParams();
         params.put("user_id", userId);
@@ -697,7 +674,6 @@ public class AdditionalMethods {
 
                     callback.onJSONResponse(true, null);
                 } catch (JSONException _e) {
-                    // TODO: error handling
                     _e.printStackTrace();
                 }
             }
@@ -729,7 +705,6 @@ public class AdditionalMethods {
                     question = json.getString("title");
                     callback.onJSONResponse(true, null);
                 } catch (JSONException _e) {
-                    // TODO: error handling
                     _e.printStackTrace();
                 }
             }
@@ -761,7 +736,6 @@ public class AdditionalMethods {
                     question = json.getString("title");
                     callback.onJSONResponse(true, null);
                 } catch (JSONException _e) {
-                    // TODO: error handling
                     _e.printStackTrace();
                 }
             }
@@ -897,14 +871,6 @@ public class AdditionalMethods {
                     callback.onJSONResponse(false, null);
             }
         });
-    }
-
-    public int toInt( byte[] bytes ) {
-        int result = 0;
-        for (int i=0; i<4; i++) {
-            result = ( result << 8 ) - Byte.MIN_VALUE + (int) bytes[i];
-        }
-        return result;
     }
 
 }

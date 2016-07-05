@@ -248,7 +248,7 @@ public class HostStatistics extends FragmentActivity implements View.OnClickList
         timerPlayer.purge();
         timerPlayer = null;
         Log.i("", "onclick");
-        helper.forceNextQuestion(helper.getUserID(), helper.getGameId(), helper.getQuestionId(), new OnJSONResponseCallback() {
+        helper.forceNextQuestion(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
             @Override
             public void onJSONResponse(boolean success, JSONObject response) {
                 if(success) {

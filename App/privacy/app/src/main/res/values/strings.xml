@@ -87,6 +87,7 @@
     <string name="dialog_quit">Are you sure you want to leave this game?</string>
     <string name="dialog_skip">Are you sure you want to skip this question?</string>
     <string name="dialog_question">Are you sure you want to skip this question?</string>
+    <string name="dialog_language">Are you sure you want to change your language? Eng/Ger</string>
     <string name="dialog_yes">Yes</string>
     <string name="dialog_cancel">Cancel</string>
 

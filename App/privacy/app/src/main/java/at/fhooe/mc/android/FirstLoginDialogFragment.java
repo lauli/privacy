@@ -25,6 +25,8 @@ public class FirstLoginDialogFragment extends DialogFragment {
 
     private final String MyPREFERENCES = "myPref";
     Handler handler = new Handler();
+    OnHeadlineSelectedListener mCallback;
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -47,7 +49,7 @@ public class FirstLoginDialogFragment extends DialogFragment {
                             public void onJSONResponse(boolean success, JSONObject response) {
                                 if (success) {
                                     try{
-                                        finalize();
+                                        mCallback.onArticleSelected(true);
                                     } catch (Throwable _throwable) {
                                         _throwable.printStackTrace();
                                     }
@@ -69,6 +71,25 @@ public class FirstLoginDialogFragment extends DialogFragment {
 
     public interface MyDialogCloseListener {
         public void handleDialogClose(DialogInterface dialog);
+    }
+
+    // Container Activity must implement this interface
+    public interface OnHeadlineSelectedListener {
+        public void onArticleSelected(boolean done);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mCallback = (OnHeadlineSelectedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnHeadlineSelectedListener");
+        }
     }
 
 }
