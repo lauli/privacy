@@ -22,16 +22,7 @@ import cz.msebera.android.httpclient.Header;
  */
 public class AdditionalMethods {
 
-    /**
-     * Tag for Log.i
-     */
-    private static final String LOG_TAG = "AdditionalMethods";
-
-    /**
-     * instance variable, witch which one can access same data in every activity via singleton
-     */
-    private static AdditionalMethods mInstance = null;
-
+    // -----------------------------------------------------------------------------start URL variables
     /**
      * phpurl for createUser
      * @return php link for createUser
@@ -89,7 +80,7 @@ public class AdditionalMethods {
 
     /**
      * phpurl for getStatisticsbyGameId
-     * @return php link for getStatisticsbyGameId
+     * @return php link for getStatisticsbyGameIdHost/Client/2
      */
     public String getStatisticsbyGameIdURL()        {return "http://privacygame.soft-tec.net/get_statistic_by_game_id.php";}
 
@@ -130,81 +121,274 @@ public class AdditionalMethods {
     public String isGameExistingURL()               {return "http://privacygame.soft-tec.net/is_game_existing.php";}
 
 
+
+
+
+
+
+    // -----------------------------------------------------------------------------end URL variables
+
+
+    // -----------------------------------------------------------------------------start variables
+
+
+
+
+
+
+    /**
+     * Tag for Log.i
+     */
+    private static final String LOG_TAG = "AdditionalMethods";
+
+    /**
+     * instance variable, witch which one can access same data in every activity via singleton
+     */
+    private static AdditionalMethods mInstance = null;
+
+    /**
+     * language, on time it can only be 1(eng) or 2(ger)
+     */
     private int lang;
+
+    /**
+     * name of user
+     */
     private String name;
+
+    /**
+     * userId, given by database
+     */
     private int userId;
+
+    /**
+     * gameId/sessionId, given by database after new Game was created or one joined an already existing session
+     */
     private int gameId;
+
+    /**
+     * questionId, given by database
+     * changes when forceNextQuestion is called
+     * must be one element from ids[]
+     */
     private int questionId;
+
+    /**
+     * counter, which determines questionId
+     * increments when forceNextQuestion is called
+     */
     private int counter;
+
+    /**
+     * String Array, which contains name of players in game
+     * shown at lobby
+     */
     private String[] players;
+
+    /**
+     * String Array, which contains name of players in game, which have answered a Question
+     * shown at voted and guessed
+     */
     private String[] answeredPlayers;
+
+    /**
+     * Array from type Player (class)
+     * contains statistic given by database
+     * every player item has String name, int points, int difference
+     * shown at statistics
+     */
     private Player[] statistic;
+
+    /**
+     * String question, given by database via questionId from ids[]
+     */
     private String question;
+
+    /**
+     * points from session
+     * increased by pointsFromThisRound after getStatisticsbyGameIdHost/Client/2
+     */
     private int points;
+
+    /**
+     * points from this round
+     * used to increase points from session
+     */
     private int pointsFromThisRound;
+
+    /**
+     * answer to question
+     * can be 1 yes, or 2 no
+     */
     private int answer;
+
+    /**
+     * guess how many players have answered with yes
+     * min 0
+     * max number of answered players
+     */
     private int guess;
+
+    /**
+     * yeses from this round
+     */
     private int howManyYes;
+
+    /**
+     * question ids from database
+     * have already been shuffled by database
+     */
     private int[] ids;
 
 
+
+
+// -----------------------------------------------------------------------------end variables
+
+// -----------------------------------------------------------------------------start functions for variables
+
+
+    /**
+     * used to create instance from AdditionalMethods
+     * Singleton
+     * @return instance of AdditionalMethods
+     */
     public static AdditionalMethods getInstance() {
         if (mInstance == null)
             mInstance = new AdditionalMethods();
         return mInstance;
     }
 
+    /**
+     * 
+     * @return userId
+     */
     public int getUserID(){
         return userId;
     }
 
+    /**
+     * used to change userId
+     * @param id
+     */
     public void setUserID(int id){
         this.userId = id;
     }
 
+    /**
+     *
+     * @return gameId
+     */
     public int getGameId(){
         return gameId;
     }
 
+    /**
+     *
+     * @return questionId
+     */
     public int getQuestionId(){ return questionId; }
 
+    /**
+     *
+     * @return name
+     */
     public String getName(){
         return name;
     }
 
+    /**
+     * used to change name
+     * @param name
+     */
     public void setName(String name){
         this.name = name;
     }
 
+    /**
+     * get language as string
+     * @return eng or de or null
+     */
     public String getLanguage(){
         if(lang == 1) return "eng";
         if(lang == 2) return "de";
         else return null;
     }
 
+    /**
+     *
+     * @return lang
+     */
     public int getLang(){
         return lang;
     }
 
+    /**
+     *
+     * @return players
+     */
     public String[] getPlayers(){ return players;}
 
+    /**
+     *
+     * @return answeredPlayers
+     */
     public String[] getAnsweredPlayers(){ return answeredPlayers;}
 
+    /**
+     *
+     * @return question
+     */
     public String getQuestion(){ return question;}
 
+    /**
+     *
+     * @return points
+     */
     public int getPoints(){ return points;}
 
+    /**
+     * used to change points
+     * @param points
+     */
     public void setPoints(int points){ this.points = points;}
 
+    /**
+     *
+     * @return pointsFromThisRound
+     */
     public int getPointsFromThisRound(){ return pointsFromThisRound;}
 
+    /**
+     *
+     * @return answer
+     */
     public int getAnswer(){ return answer;}
 
+    /**
+     *
+     * @return guess
+     */
     public int getGuess(){ return guess;}
 
+    /**
+     *
+     * @return howManyYes
+     */
     public int getHowManyYes(){ return howManyYes;}
 
+    /**
+     *
+     * @return statistic
+     */
     public Player[] getStatistic() { return statistic;}
+
+
+
+    // -----------------------------------------------------------------------------end functions for variables
+
+    // -----------------------------------------------------------------------------start functions for database
+
 
 
     protected void createUser(int language, String name, final OnJSONResponseCallback callback) {
