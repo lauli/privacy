@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:float="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     >
 
@@ -58,6 +58,18 @@
             tools:context=".ClientLobby"
             android:background="@color/tan">
 
+            <com.rey.material.widget.ProgressView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:id="@+id/client_statistics_progress"
+                android:visibility="gone"
+                app:pv_autostart="true"
+                app:pv_circular="false"
+                app:pv_progressStyle="@style/Material.Drawable.CircularProgress"
+                app:pv_progressMode="indeterminate"
+                app:lpd_strokeColors="@color/oxblood"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -78,23 +90,23 @@
                 android:layout_marginTop="50dp"
                 android:clickable="false"/>
 
-            <TextView
+            <ListView
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/client_statistic_score_view"
                 android:layout_gravity="right"/>
 
-            <Button
-                style="ButtonTheme"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:text="continue"
-                android:id="@+id/client_statistics_continue"
-                android:layout_alignParentBottom="true"
-                android:background="@drawable/button_design"
-                android:layout_gravity="left"
-                android:gravity="bottom|right"
-                android:layout_marginTop="250dp"/>
+            <!--<Button-->
+                <!--style="ButtonTheme"-->
+                <!--android:layout_width="300dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="continue"-->
+                <!--android:id="@+id/client_statistics_continue"-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:background="@drawable/button_design"-->
+                <!--android:layout_gravity="left"-->
+                <!--android:gravity="bottom|right"-->
+                <!--android:layout_marginTop="250dp"/>-->
 
         </LinearLayout>
 

@@ -93,7 +93,7 @@
 
             <ListView
                 android:layout_width="300dp"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
                 android:id="@+id/host_voted_players_list"
                 android:layout_alignParentTop="false"
                 android:layout_alignParentEnd="false"

@@ -3,7 +3,6 @@ package at.fhooe.mc.android;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,10 +30,11 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class HostStatistics extends FragmentActivity implements View.OnClickListener{
+public class HostStatistics extends FragmentActivity implements View.OnClickListener, QuitDialogFragment.OnHeadlineSelectedListener{
 
     private ArrayList<String> listItems = new ArrayList<String>();
     private ListView list;
+    private Timer timerPlayer;
 
     /**
      * menu and actionbar
@@ -83,7 +83,6 @@ public class HostStatistics extends FragmentActivity implements View.OnClickList
      */
     private DrawerLayout mDrawerLayout;
     private ArrayAdapter<String> adapter;
-    Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,41 +91,49 @@ public class HostStatistics extends FragmentActivity implements View.OnClickList
 
 
 
-        TextView score = (TextView) findViewById(R.id.host_statistic_score_view);
-        score.setText("guess/total = " + helper.getGuess() + "/" + helper.getHowManyYes());
-        score.append("\n\ndifference: " + (helper.getAnsweredPlayers().length - helper.getPointsFromThisRound()));
+        TextView score = (TextView) findViewById(R.id.textView);
+        score.setText("Your guess: " + helper.getGuess() + ", yeses:" + helper.getHowManyYes());
+        score.append("\nDifference: " + (helper.getAnsweredPlayers().length - helper.getPointsFromThisRound()));
+        score.append("\n\nTotal points: " + helper.getPoints());
 
-//        list = (ListView) findViewById(R.id.host_statistics_players_list);
-//        this.adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
-//        list.setAdapter(this.adapter);
+        list = (ListView) findViewById(R.id.host_statistic_score_view);
+        this.adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
+        list.setAdapter(this.adapter);
 
-//        final Handler handler = new Handler();
+        final Handler handler = new Handler();
 
-//        int delay = 2000;   // delay for 5 sec.
-//        int interval = 5000;  // iterate every sec.
-//        timerPlayer = new Timer();
-//
-//        timerPlayer.scheduleAtFixedRate(new TimerTask() {
-//            public void run() {
-//                final AdditionalMethods helper = AdditionalMethods.getInstance();
-//                helper.getPlayersInGame(helper.getGameId(), new OnJSONResponseCallback() {
-//                    @Override
-//                    public void onJSONResponse(boolean success, JSONObject response) {
-//                        if(success) {
-//                            for (int i = 0; i < helper.getPlayers().length; i++) {
-//                                final int finalI = i;
-//                                handler.post(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        addItem(helper.getPlayers()[finalI],1,1);
-//                                    }
-//                                });
-//                            }
-//                        }
-//                    }
-//                });
-//            }
-//        }, delay, interval);
+        int delay = 500;   // delay for 5 sec.
+        int interval = 3000;  // iterate every sec.
+        timerPlayer = new Timer();
+
+        timerPlayer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                final AdditionalMethods helper = AdditionalMethods.getInstance();
+                helper.getStatisticsByGameId2(helper.getGameId(), new OnJSONResponseCallback() {
+                    @Override
+                    public void onJSONResponse(boolean success, JSONObject response) {
+                        if(success) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter.clear();
+                                }
+                            });
+                            for (int i = 0; i < helper.getStatistic().length; i++) {
+                                final int finalI = i;
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        addItem(helper.getStatistic()[finalI].getName(),helper.getStatistic()[finalI].getPoints(),helper.getStatistic()[finalI].getDifference());
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+        }, delay, interval);
 
 
 
@@ -154,14 +161,13 @@ public class HostStatistics extends FragmentActivity implements View.OnClickList
         //------------------------------------------------------------------------ ListView in Actionbar
         SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
         String username = preferences.getString("username", "");
-        int punkte = preferences.getInt("points", -1);
 
         TextView name = (TextView) findViewById(R.id.user_name);
         name.setText(username);
         TextView points = (TextView) findViewById(R.id.user_points);
-        points.setText("Points: " + punkte);
-        mNavItems.add(new NavItem("Quit", "quit game", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
-        mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
+        points.setText("Points: " + helper.getPoints());
+        mNavItems.add(new NavItem("Quit", "quit game", R.drawable.quit));
+        mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.credits));
 
         // DrawerLayout
         mDrawerLayout = (DrawerLayout) findViewById(R.id.host_statistics_drawer_layout);
@@ -238,6 +244,9 @@ public class HostStatistics extends FragmentActivity implements View.OnClickList
     public void onClick(View view) {
 //        timerPlayer.cancel();
         showProgress(true);
+        timerPlayer.cancel();
+        timerPlayer.purge();
+        timerPlayer = null;
         Log.i("", "onclick");
         helper.forceNextQuestion(helper.getUserID(), helper.getGameId(), helper.getQuestionId(), new OnJSONResponseCallback() {
             @Override
@@ -258,21 +267,21 @@ public class HostStatistics extends FragmentActivity implements View.OnClickList
         });
     }
 
-//    public void addItem(String name, int points, int difference){
+    public void addItem(String name, int points, int difference){
 //        boolean foundEqual = false;
 //        if(!adapter.isEmpty()) {
 //            for (int i = 0; (i < adapter.getCount() && !foundEqual); i++) {
 //
-//                if (adapter.getItem(i).equals(name + " (" + points + ") " + difference)) {
+//                if (adapter.getItem(i).equals(name)) {
 //                    foundEqual = true;
 //                }
 //            }
 //        }
 //        if (!foundEqual) {
-//            adapter.add(name + " (" + points + ") " + difference);
-//            adapter.notifyDataSetChanged();
+            adapter.add(name + "(" + points + ")  " + "diff: " + difference);
+            adapter.notifyDataSetChanged();
 //        }
-//    }
+    }
 
 //    private class callPlayers extends TimerTask {
 //        @Override
@@ -344,5 +353,16 @@ public class HostStatistics extends FragmentActivity implements View.OnClickList
         }
     }
 
+    @Override
+    public void onArticleSelected(boolean quit) {
+        timerPlayer.cancel();
+        timerPlayer.purge();
+        timerPlayer = null;
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+    }
 }
 

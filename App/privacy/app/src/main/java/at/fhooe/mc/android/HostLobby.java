@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class HostLobby extends FragmentActivity implements View.OnClickListener{
+public class HostLobby extends FragmentActivity implements View.OnClickListener, QuitDialogFragment.OnHeadlineSelectedListener{
 
     /**
      * ArrayList<String> where all players (form this session) will be listed und updated
@@ -159,13 +159,13 @@ public class HostLobby extends FragmentActivity implements View.OnClickListener{
         //------------------------------------------------------------------------ ListView in Actionbar
         SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
         String username = preferences.getString("username", "");
-        int punkte = preferences.getInt("points", -1);
 
         TextView name = (TextView) findViewById(R.id.user_name);
         name.setText(username);
         TextView points = (TextView) findViewById(R.id.user_points);
-        points.setText("Points: " + punkte);
-        mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
+        points.setText("Points: " + helper.getPoints());
+        mNavItems.add(new NavItem("Quit", "Quit this game", R.drawable.quit));
+        mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.credits));
 
         // DrawerLayout
         mDrawerLayout = (DrawerLayout) findViewById(R.id.host_lobby_drawer_layout);
@@ -253,6 +253,7 @@ public class HostLobby extends FragmentActivity implements View.OnClickListener{
                             Intent i = new Intent(HostLobby.this, HostQuestion.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(i);
+                            finish();
                         }
                     }
                 });
@@ -341,6 +342,18 @@ public class HostLobby extends FragmentActivity implements View.OnClickListener{
                 b.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    @Override
+    public void onArticleSelected(boolean quit) {
+        timer.cancel();
+        timer.purge();
+        timer = null;
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 }
 

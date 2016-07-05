@@ -57,6 +57,19 @@
             tools:context=".ClientGuess"
             android:background="@color/tan">
 
+            <com.rey.material.widget.ProgressView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:id="@+id/client_guess_progress"
+                android:visibility="gone"
+                app:pv_autostart="true"
+                app:pv_circular="false"
+                app:pv_progressStyle="@style/Material.Drawable.CircularProgress"
+                app:pv_progressMode="indeterminate"
+                app:lpd_strokeColors="@color/oxblood"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"/>
+
 
             <TextView
                 android:layout_width="wrap_content"
@@ -76,7 +89,6 @@
                 android:background="@drawable/button_design"
                 android:layout_gravity="right"
                 android:gravity="left|bottom"
-                android:layout_marginTop="50dp"
                 android:clickable="false"/>
 
             <ListView
@@ -117,6 +129,19 @@
                 android:id="@+id/client_guess_slider"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"/>
+
+            <Button
+                style="ButtonTheme"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:text="continue"
+                android:id="@+id/client_guess_continue"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/button_design"
+                android:layout_gravity="left"
+                android:gravity="bottom|right"
+                android:layout_marginBottom="10dp"
+                android:paddingTop="20dp"/>
 
         </LinearLayout>
 

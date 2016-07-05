@@ -382,9 +382,10 @@ public class ClientRegister extends FragmentActivity implements  LoaderCallbacks
                 public void onJSONResponse(boolean success, JSONObject response) {
                     if(success) {
                         if (helper.getGameId() != -1) {
-                            Intent i = new Intent(ClientRegister.this, ClientQuestion.class);
+                            Intent i = new Intent(ClientRegister.this, ClientLobby.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(i);
+                            finish();
                         } else {
                             Toast.makeText(ClientRegister.this, "Oops. That did not work.\n Your Session ID was wrong.", Toast.LENGTH_SHORT).show();
                         }

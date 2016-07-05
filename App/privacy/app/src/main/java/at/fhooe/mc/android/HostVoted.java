@@ -3,7 +3,6 @@ package at.fhooe.mc.android;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class HostVoted extends FragmentActivity implements View.OnClickListener{
+public class HostVoted extends FragmentActivity implements View.OnClickListener, QuitDialogFragment.OnHeadlineSelectedListener{
 
     private ArrayList<String> listItems = new ArrayList<String>();
     private ListView list;
@@ -103,8 +102,8 @@ public class HostVoted extends FragmentActivity implements View.OnClickListener{
         list.setAdapter(this.adapter);
 
         final Handler handler = new Handler();
-        int delay = 2000;   // delay for 2 sec.
-        int interval = 5000;  // iterate every sec.
+        int delay = 500;   // delay for 2 sec.
+        int interval = 3000;  // iterate every sec.
 
         final Button finalB = b;
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -153,6 +152,7 @@ public class HostVoted extends FragmentActivity implements View.OnClickListener{
             }
         }, delay, interval);
 
+
         // --------------------------------------------------------------------------------------------  actionbar Start!
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.host_voted_drawer_layout);
         final ImageView imageView = (ImageView) findViewById(R.id.host_voted_drawer_indicator);
@@ -165,14 +165,13 @@ public class HostVoted extends FragmentActivity implements View.OnClickListener{
         //------------------------------------------------------------------------ ListView in Actionbar
         SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
         String username = preferences.getString("username", "");
-        int punkte = preferences.getInt("points", -1);
 
         TextView name = (TextView) findViewById(R.id.user_name);
         name.setText(username);
         TextView points = (TextView) findViewById(R.id.user_points);
-        points.setText("Points: " + punkte);
-        mNavItems.add(new NavItem("Quit", "quit game", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
-        mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
+        points.setText("Points: " + helper.getPoints());
+        mNavItems.add(new NavItem("Quit", "quit game", R.drawable.quit));
+        mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.credits));
 
         // DrawerLayout
         mDrawerLayout = (DrawerLayout) findViewById(R.id.host_voted_drawer_layout);
@@ -251,7 +250,7 @@ public class HostVoted extends FragmentActivity implements View.OnClickListener{
         timer = null;
 
         showProgress(true);
-        helper.allowCounting(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
+        helper.allowContinue(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
            @Override
            public void onJSONResponse(boolean success, JSONObject response) {
                if(success){
@@ -341,6 +340,18 @@ public class HostVoted extends FragmentActivity implements View.OnClickListener{
                 b.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    @Override
+    public void onArticleSelected(boolean quit) {
+        timer.cancel();
+        timer.purge();
+        timer = null;
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 }
 

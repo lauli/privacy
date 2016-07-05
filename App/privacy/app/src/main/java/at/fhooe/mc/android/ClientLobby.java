@@ -1,9 +1,13 @@
 package at.fhooe.mc.android;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Handler;
@@ -26,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ClientLobby extends FragmentActivity implements View.OnClickListener{
+public class ClientLobby extends FragmentActivity implements View.OnClickListener, QuitDialogFragment.OnHeadlineSelectedListener{
 
     private ArrayList<String> listItems = new ArrayList<String>();
     private ListView list;
@@ -151,8 +155,8 @@ public class ClientLobby extends FragmentActivity implements View.OnClickListene
         name.setText(username);
         TextView points = (TextView) findViewById(R.id.user_points);
         points.setText("Points: " + punkte);
-        mNavItems.add(new NavItem("Quit", "quit game", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
-        mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
+        mNavItems.add(new NavItem("Quit", "quit game", R.drawable.quit));
+        mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.credits));
 
         // DrawerLayout
         mDrawerLayout = (DrawerLayout) findViewById(R.id.client_lobby_drawer_layout);
@@ -252,12 +256,21 @@ public class ClientLobby extends FragmentActivity implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
+        showProgress(true);
         timerPlayer.cancel();
         timerPlayer.purge();
         timerPlayer = null;
-        Intent i = new Intent(ClientLobby.this, ClientQuestion.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
+        helper.getQuestionByUserAndGameId(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
+            @Override
+            public void onJSONResponse(boolean success, JSONObject response) {
+                if (success) {
+                    Intent i = new Intent(ClientLobby.this, ClientQuestion.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+                    finish();
+                }
+            }
+        });
     }
 
     private class callPlayers extends TimerTask {
@@ -294,6 +307,52 @@ public class ClientLobby extends FragmentActivity implements View.OnClickListene
 
         // Close the drawer
         mDrawerLayout.closeDrawer(mDrawerPane);
+    }
+
+    /**
+     * Shows the progress UI and hides form to continue
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+
+        final View mProgressView = (View) findViewById(R.id.client_lobby_progress);
+        Button b = (Button) findViewById(R.id.client_lobby_continue);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+            b.setVisibility(View.GONE);
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+            TextView view = (TextView) findViewById(R.id.textView);
+            view.setText("Please wait.");
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            b.setVisibility(View.GONE);
+
+        }
+    }
+
+    @Override
+    public void onArticleSelected(boolean quit) {
+        timerPlayer.cancel();
+        timerPlayer.purge();
+        timerPlayer = null;
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 }
 

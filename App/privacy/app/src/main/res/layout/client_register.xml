@@ -57,14 +57,6 @@
                       tools:context=".ClientRegister"
                       android:background="@color/tan">
 
-             <!--Login progress -->
-            <!--<ProgressBar-->
-                <!--android:id="@+id/client_register_progress"-->
-                <!--style="?android:attr/progressBarStyleLarge"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginBottom="8dp"-->
-                <!--android:visibility="gone" />-->
 
             <com.rey.material.widget.ProgressView
                 android:layout_width="match_parent"

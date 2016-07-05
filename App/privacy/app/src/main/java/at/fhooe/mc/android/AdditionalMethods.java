@@ -2,7 +2,6 @@ package at.fhooe.mc.android;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -16,9 +15,6 @@ import com.loopj.android.http.TextHttpResponseHandler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Random;
-import java.util.concurrent.Future;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpEntity;
@@ -56,8 +52,11 @@ public class AdditionalMethods {
     public String pushPointsToProfileURL ()         {return "http://privacygame.soft-tec.net/push_points_to_profile.php";}
     public String forceNextQuestionURL()            {return "http://privacygame.soft-tec.net/force_next_question.php";}
     public String getPlayersInGameURL()             {return "http://privacygame.soft-tec.net/get_players_in_game.php";}
-    public String allowCountingURL()                {return "http://privacygame.soft-tec.net/allow_counting.php";}
-    public String isCountinueAllowedURL()             {return "http://privacygame.soft-tec.net/is_continue_allowed.php";}
+    public String allowContinueURL()                {return "http://privacygame.soft-tec.net/allow_continue.php";}
+    public String isCountinueAllowedURL()           {return "http://privacygame.soft-tec.net/is_continue_allowed.php";}
+    public String quitGameURL()                     {return "http://privacygame.soft-tec.net/quit_game.php";}
+    public String isGameExistingURL()               {return "http://privacygame.soft-tec.net/is_game_existing.php";}
+
 
     private int lang;
     private String name;
@@ -69,7 +68,7 @@ public class AdditionalMethods {
     private String[] answeredPlayers;
     private Player[] statistic;
     private String question;
-    private int points = 0;
+    private int points;
     private int pointsFromThisRound;
     private int answer;
     private int guess;
@@ -201,7 +200,7 @@ public class AdditionalMethods {
                     editor.commit();
 
                 JSONObject json;
-
+                points = 0;
                 Log.i(LOG_TAG,"createUser was a success.");
 
                 try {
@@ -327,6 +326,7 @@ public class AdditionalMethods {
     protected void newGame(int userId, int questionId, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
+        points = 0;
         RequestParams params = new RequestParams();
         params.put("user_id", userId);
         params.put("question_id", questionId);
@@ -360,12 +360,10 @@ public class AdditionalMethods {
     protected void joinGame(int userId, int id, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
-        int sessionId = id;
-
-
+        points = 0;
         RequestParams params = new RequestParams();
         params.put("user_id", userId);
-        params.put("game_id", sessionId);
+        params.put("game_id", id);
 
 
 
@@ -486,7 +484,7 @@ public class AdditionalMethods {
         });
     }
 
-    protected void getStatisticsByGameId(int gameId,  final OnJSONResponseCallback callback) {
+    protected void getStatisticsByGameIdHost(int gameId, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
 
@@ -500,7 +498,7 @@ public class AdditionalMethods {
 
             @Override
             public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
-                Log.i(LOG_TAG, "getStatisticsByGameId was a success.");
+                Log.i(LOG_TAG, "getStatisticsByGameIdHost was a success.");
 
                 JSONObject json;
 
@@ -510,26 +508,100 @@ public class AdditionalMethods {
 
                     //get the total amount of yeses
                     JSONObject obj = array.getJSONObject(0);
-                    howManyYes= Integer.parseInt(obj.getString("yeses"));
+                    howManyYes= Integer.parseInt(obj.getString("yesses"));
 
                     //get my points from this round and add it to my points from the game
                     pointsFromThisRound = getAnsweredPlayers().length - Math.abs(getHowManyYes() - getGuess());
                     points += pointsFromThisRound;
 
-                    Context context = CreateOrJoin.getContextOfApplication();
+                    Context context = HostGuess.getContextOfApplication();
                     SharedPreferences preferences = context.getSharedPreferences("myPref", context.MODE_PRIVATE);
+                    int p = preferences.getInt("points", -1);
                     SharedPreferences.Editor editor = preferences.edit();
-                    editor.putInt("points", points);
+                    editor.putInt("points", (p+pointsFromThisRound));
                     editor.commit();
 
-                    //TODO: implement statistic form all users with Player[] statistic
+                    callback.onJSONResponse(true, null);
+                } catch (JSONException _e) {
+                    _e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    protected void getStatisticsByGameIdClient(int gameId,  final OnJSONResponseCallback callback) {
+        AsyncHttpClient client = new AsyncHttpClient();
+
+
+        RequestParams params = new RequestParams();
+        params.put("game_id", gameId);
+        client.post(getStatisticsbyGameIdURL(), params, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
+                callback.onJSONResponse(false, null);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
+                Log.i(LOG_TAG, "getStatisticsByGameIdHost was a success.");
+
+                JSONObject json;
+
+                try {
+                    json = new JSONObject(responseString);
+                    JSONArray array = json.getJSONArray("STAT");
+
+                    //get the total amount of yeses
+                    JSONObject obj = array.getJSONObject(0);
+                    howManyYes= Integer.parseInt(obj.getString("yesses"));
+
+                    //get my points from this round and add it to my points from the game
+                    pointsFromThisRound = getAnsweredPlayers().length - Math.abs(getHowManyYes() - getGuess());
+                    points += pointsFromThisRound;
+
+                    Context context = ClientGuess.getContextOfApplication();
+                    SharedPreferences preferences = context.getSharedPreferences("myPref", context.MODE_PRIVATE);
+                    int p = preferences.getInt("points", -1);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putInt("points", (p+pointsFromThisRound));
+                    editor.commit();
+
+                    callback.onJSONResponse(true, null);
+                } catch (JSONException _e) {
+                    _e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    protected void getStatisticsByGameId2(int gameId,  final OnJSONResponseCallback callback) {
+        SyncHttpClient client = new SyncHttpClient();
+
+
+        RequestParams params = new RequestParams();
+        params.put("game_id", gameId);
+        client.post(getStatisticsbyGameIdURL(), params, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
+                callback.onJSONResponse(false, null);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
+                Log.i(LOG_TAG, "getStatisticsByGameIdHost was a success.");
+
+                JSONObject json;
+
+                try {
+                    json = new JSONObject(responseString);
+                    JSONArray array = json.getJSONArray("STAT");
+
                     statistic = new Player[array.length()];
                     for (int i = 0; i < array.length(); i++) {
                         statistic[i] = new Player();
-                        statistic[i].guessed = Integer.parseInt(array.getJSONObject(i).getString("guessed"));
-                        statistic[i].name = array.getJSONObject(i).getString("name");
-                        statistic[i].points = Integer.parseInt(array.getJSONObject(i).getString("points"));
-                        statistic[i].mistake = (Math.abs(getHowManyYes() - statistic[i].guessed));
+                        statistic[i].setName(array.getJSONObject(i).getString("name"));
+                        statistic[i].setPoints(Integer.parseInt(array.getJSONObject(i).getString("points")));
+                        statistic[i].setDifference(Integer.parseInt(array.getJSONObject(i).getString("difference")));
                     }
                     callback.onJSONResponse(true, null);
                 } catch (JSONException _e) {
@@ -664,9 +736,41 @@ public class AdditionalMethods {
         });
     }
 
+    protected void getQuestionByUserAndGameId2(int userId, int gameId, final OnJSONResponseCallback callback) {
+        SyncHttpClient client = new SyncHttpClient();
+
+
+        RequestParams params = new RequestParams();
+        params.put("user_id", userId);
+        params.put("game_id", gameId);
+        client.post(getQuestionByUserAndGameIdURL(), params, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
+                Log.i(LOG_TAG,"getQuestionByUserAndGameId was a failure.");
+                callback.onJSONResponse(false, null);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
+                Log.i(LOG_TAG,"getQuestionByUserAndGameId was a success.");
+                JSONObject json;
+
+                try {
+                    json = new JSONObject(responseString);
+                    questionId = json.getInt("id");
+                    question = json.getString("title");
+                    callback.onJSONResponse(true, null);
+                } catch (JSONException _e) {
+                    // TODO: error handling
+                    _e.printStackTrace();
+                }
+            }
+        });
+    }
+
 
     protected void answerQuestion(int user_id, int game_id,int question_id, int yn_answer, int cnt_answer, final OnJSONResponseCallback callback) {
-       // yn_answer ---->     1 == true , 2 == false
+       // yn_answer ---->     1 == true , 0 == false
 
         AsyncHttpClient client = new AsyncHttpClient();
 
@@ -694,14 +798,14 @@ public class AdditionalMethods {
         });
     }
 
-    protected void allowCounting(int user_id, int game_id, final OnJSONResponseCallback callback) {
+    protected void allowContinue(int user_id, int game_id, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
 
         RequestParams params = new RequestParams();
         params.put("user_id", user_id);
         params.put("game_id", game_id);
-        client.post(allowCountingURL(), params, new TextHttpResponseHandler() {
+        client.post(allowContinueURL(), params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
                 callback.onJSONResponse(false, null);
@@ -709,7 +813,7 @@ public class AdditionalMethods {
 
             @Override
             public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
-                Log.i(LOG_TAG,"allowCounting was a success.");
+                Log.i(LOG_TAG,"allowContinue was a success.");
                 //returns true when success
                 callback.onJSONResponse(true, null);
             }
@@ -734,9 +838,58 @@ public class AdditionalMethods {
                 boolean allowed = false;
                 if(responseString.equals("true")) {
                     allowed = true;
-                    Log.i(LOG_TAG, "isContinueAllowed is allowed.");
+                    Log.i(LOG_TAG, "isContinueAllowed is true.");
                 }
-                else Log.i(LOG_TAG, "isContinueAllowed is not allowed.");
+                else Log.i(LOG_TAG, "isContinueAllowed is not false.");
+                //returns true when allowed
+                if(allowed)
+                    callback.onJSONResponse(true, null);
+                else
+                    callback.onJSONResponse(false, null);
+            }
+        });
+    }
+
+    protected void quitGame(int game_id, final OnJSONResponseCallback callback) {
+        AsyncHttpClient client = new AsyncHttpClient();
+
+
+        RequestParams params = new RequestParams();
+        params.put("game_id", game_id);
+        client.post(quitGameURL(), params, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
+                callback.onJSONResponse(false, null);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
+                Log.i(LOG_TAG, "isContinueAllowed was a success.");
+                    callback.onJSONResponse(true, null);
+            }
+        });
+    }
+
+    protected void isGameExisting(int game_id, final OnJSONResponseCallback callback) {
+        SyncHttpClient client = new SyncHttpClient();
+
+
+        RequestParams params = new RequestParams();
+        params.put("game_id", game_id);
+        client.post(isGameExistingURL(), params, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
+                callback.onJSONResponse(false, null);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
+                Log.i(LOG_TAG, "isGameExisting was a success.");
+                boolean allowed = false;
+                if(responseString.equals("true")) {
+                    allowed = true;
+                }
+
                 //returns true when allowed
                 if(allowed)
                     callback.onJSONResponse(true, null);

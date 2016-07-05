@@ -75,7 +75,7 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="80dp"
                 android:text="@string/client_statistic_informationText"
                 android:id="@+id/textView"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -89,12 +89,11 @@
                 android:background="@drawable/button_design"
                 android:layout_gravity="right"
                 android:gravity="left|bottom"
-                android:layout_marginTop="50dp"
                 android:clickable="false"/>
 
-            <TextView
+            <ListView
                 android:layout_width="300dp"
-                android:layout_height="wrap_content"
+                android:layout_height="250dp"
                 android:id="@+id/host_statistic_score_view"
                 android:layout_gravity="right"/>
 
@@ -108,7 +107,7 @@
                 android:background="@drawable/button_design"
                 android:layout_gravity="left"
                 android:gravity="bottom|right"
-                android:layout_marginTop="250dp"/>
+                android:layout_marginTop="50dp"/>
 
         </LinearLayout>
 

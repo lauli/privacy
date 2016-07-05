@@ -109,7 +109,7 @@ public class HostCategory extends FragmentActivity implements View.OnClickListen
         name.setText(username);
         TextView points = (TextView) findViewById(R.id.user_points);
         points.setText("Points: " + punkte);
-        mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
+        mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.credits));
 
         // DrawerLayout
         mDrawerLayout = (DrawerLayout) findViewById(R.id.host_category_drawer_layout);
@@ -191,6 +191,7 @@ public class HostCategory extends FragmentActivity implements View.OnClickListen
                             Intent i = new Intent(HostCategory.this, HostRegister.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(i);
+                            finish();
                         }
                     }
                 });
@@ -200,9 +201,10 @@ public class HostCategory extends FragmentActivity implements View.OnClickListen
                     @Override
                     public void onJSONResponse(boolean success, JSONObject response) {
                         if(success){
-                                        Intent i = new Intent(HostCategory.this, HostRegister.class);
-                                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        startActivity(i);
+                            Intent i = new Intent(HostCategory.this, HostRegister.class);
+                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(i);
+                            finish();
                         }
                     }
                 });
@@ -215,6 +217,7 @@ public class HostCategory extends FragmentActivity implements View.OnClickListen
                             Intent i = new Intent(HostCategory.this, HostRegister.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(i);
+                            finish();
                         }
                     }
                 });

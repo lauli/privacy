@@ -3,18 +3,16 @@ package at.fhooe.mc.android;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -29,13 +27,12 @@ import com.rey.material.widget.Slider;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
-public class HostGuess extends FragmentActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener{
+public class HostGuess extends FragmentActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener, QuitDialogFragment.OnHeadlineSelectedListener{
 
     private ArrayList<String> listItems = new ArrayList<String>();
     private ListView list;
+    private static Context context;
 
     /**
      * menu and actionbar
@@ -115,7 +112,7 @@ public class HostGuess extends FragmentActivity implements AdapterView.OnItemSel
 //                            helper.allowStatistics(helper.userId, helper.getGameId(), new OnJSONResponseCallback() {
 //                                @Override
 //                                public void onJSONResponse(boolean success, JSONObject response) {
-//                                    helper.getStatisticsByGameId(helper.getGameId(), new OnJSONResponseCallback() {
+//                                    helper.getStatisticsByGameIdHost(helper.getGameId(), new OnJSONResponseCallback() {
 //                                        @Override
 //                                        public void onJSONResponse(boolean success, JSONObject response) {
 //                                            helper.pushPointsToProfile(helper.getUserID(), helper.getPointsFromThisRound(), new OnJSONResponseCallback() {
@@ -147,6 +144,8 @@ public class HostGuess extends FragmentActivity implements AdapterView.OnItemSel
         b = (Button) findViewById(R.id.host_guess_continue);
         b.setOnClickListener(this);
 
+        context = getApplicationContext();
+
         // --------------------------------------------------------------------------------------------  actionbar Start!
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.host_guess_drawer_layout);
         final ImageView imageView = (ImageView) findViewById(R.id.host_guess_drawer_indicator);
@@ -159,14 +158,13 @@ public class HostGuess extends FragmentActivity implements AdapterView.OnItemSel
         //------------------------------------------------------------------------ ListView in Actionbar
         SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
         String username = preferences.getString("username", "");
-        int punkte = preferences.getInt("points", -1);
 
         TextView name = (TextView) findViewById(R.id.user_name);
         name.setText(username);
         TextView points = (TextView) findViewById(R.id.user_points);
-        points.setText("Points: " + punkte);
-        mNavItems.add(new NavItem("Quit", "quit game", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
-        mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
+        points.setText("Points: " + helper.getPoints());
+        mNavItems.add(new NavItem("Quit", "quit game", R.drawable.quit));
+        mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.credits));
 
         // DrawerLayout
         mDrawerLayout = (DrawerLayout) findViewById(R.id.host_guess_drawer_layout);
@@ -277,27 +275,15 @@ public class HostGuess extends FragmentActivity implements AdapterView.OnItemSel
         helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.getQuestionId(), helper.getAnswer(), guess[0], new OnJSONResponseCallback() {
             @Override
             public void onJSONResponse(boolean success, JSONObject response) {
-               if(success)
-                   helper.allowStatistics(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
-                    @Override
-                    public void onJSONResponse(boolean success, JSONObject response) {
-                        if(success)
-                            helper.getStatisticsByGameId(helper.getGameId(), new OnJSONResponseCallback() {
-                            @Override
-                            public void onJSONResponse(boolean success, JSONObject response) {
-                                if(success) helper.pushPointsToProfile(helper.getUserID(), helper.getPointsFromThisRound(), new OnJSONResponseCallback() {
-                                    @Override
-                                    public void onJSONResponse(boolean success, JSONObject response) {
-                                        if(success) {
-                                            Intent i = new Intent(HostGuess.this, HostStatistics.class);
-                                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                            startActivity(i);
-                                        }
-                                    }
-                                });
-                            }
-                        });
-                    }
+               if(success) helper.getStatisticsByGameIdHost(helper.getGameId(), new OnJSONResponseCallback() {
+                   @Override
+                   public void onJSONResponse(boolean success, JSONObject response) {
+                       if(success) {
+                           Intent i = new Intent(HostGuess.this, HostStatistics.class);
+                           i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                           startActivity(i);
+                       }
+                   }
                 });
             }
         });
@@ -354,6 +340,19 @@ public class HostGuess extends FragmentActivity implements AdapterView.OnItemSel
             b.setVisibility(View.GONE);
 
         }
+    }
+
+    public static Context getContextOfApplication(){
+        return context;
+    }
+
+    @Override
+    public void onArticleSelected(boolean quit) {
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 
 }

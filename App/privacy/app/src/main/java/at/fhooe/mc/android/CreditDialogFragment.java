@@ -43,8 +43,7 @@ public class CreditDialogFragment extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(dialogLayout);
-        builder.setTitle("Credits");
-        builder.setMessage(R.string.dialog_credits)
+        builder.setTitle("Credits")
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // User cancelled the dialog
@@ -69,13 +68,17 @@ public class CreditDialogFragment extends DialogFragment {
         listDataChild = new HashMap<String, List<String>>();
 
         // Adding child data
+        listDataHeader.add("Special thanks to");
         listDataHeader.add("DrawerArrowDrawable");
         listDataHeader.add("FloatLabeledEditText");
         listDataHeader.add("Material");
 
         // Adding child data
+        List<String> special = new ArrayList<String>();
+        special.add("FH Hagenberg and Fabian Bouchal");
+
         List<String> DrawerArrowDrawable = new ArrayList<String>();
-        DrawerArrowDrawable.add("ene mene muh");
+        DrawerArrowDrawable.add(getString(R.string.credits_chrisrenke));
 
         List<String> FloatLabeledEditText = new ArrayList<String>();
         FloatLabeledEditText.add(getString(R.string.credits_henriksandstroem));
@@ -83,8 +86,9 @@ public class CreditDialogFragment extends DialogFragment {
         List<String> Material = new ArrayList<String>();
         Material.add(getString(R.string.credits_reypham));
 
-        listDataChild.put(listDataHeader.get(0), DrawerArrowDrawable); // Header, Child data
-        listDataChild.put(listDataHeader.get(1), FloatLabeledEditText);
-        listDataChild.put(listDataHeader.get(2), Material);
+        listDataChild.put(listDataHeader.get(0), special); // Header, Child data
+        listDataChild.put(listDataHeader.get(1), DrawerArrowDrawable);
+        listDataChild.put(listDataHeader.get(2), FloatLabeledEditText);
+        listDataChild.put(listDataHeader.get(3), Material);
     }
 }

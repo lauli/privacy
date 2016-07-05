@@ -3,8 +3,7 @@
               android:layout_width="fill_parent"
               android:layout_height="wrap_content"
               android:orientation="vertical"
-              android:padding="8dp"
-              android:background="@color/grain">
+              android:padding="8dp">
 
 
     <TextView
@@ -13,6 +12,6 @@
         android:layout_height="wrap_content"
         android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
         android:textSize="17dp"
-        android:textColor="@+color/blackboard" />
+        android:textColor="@+color/light_gray" />
 
 </LinearLayout>

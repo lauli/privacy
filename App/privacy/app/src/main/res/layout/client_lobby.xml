@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:float="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     >
 
@@ -57,6 +58,19 @@
             android:paddingTop="@dimen/activity_vertical_margin"
             tools:context=".ClientLobby"
             android:background="@color/tan">
+
+            <com.rey.material.widget.ProgressView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:id="@+id/client_lobby_progress"
+                android:visibility="gone"
+                app:pv_autostart="true"
+                app:pv_circular="false"
+                app:pv_progressStyle="@style/Material.Drawable.CircularProgress"
+                app:pv_progressMode="indeterminate"
+                app:lpd_strokeColors="@color/oxblood"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"/>
 
 
             <TextView

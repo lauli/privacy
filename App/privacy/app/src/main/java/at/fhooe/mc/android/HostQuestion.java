@@ -3,22 +3,17 @@ package at.fhooe.mc.android;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -29,7 +24,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class HostQuestion extends FragmentActivity implements View.OnClickListener{
+public class HostQuestion extends FragmentActivity implements View.OnClickListener, QuitDialogFragment.OnHeadlineSelectedListener{
 
     /**
      * TextView for the question, which will be shown
@@ -112,15 +107,14 @@ public class HostQuestion extends FragmentActivity implements View.OnClickListen
         //------------------------------------------------------------------------ ListView in Actionbar
         SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
         String username = preferences.getString("username", "");
-        int punkte = preferences.getInt("points", -1);
 
         TextView name = (TextView) findViewById(R.id.user_name);
         name.setText(username);
         TextView points = (TextView) findViewById(R.id.user_points);
-        points.setText("Points: " + punkte);
-        mNavItems.add(new NavItem("Skip", "skip this question", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
-        mNavItems.add(new NavItem("Quit", "quit game", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
-        mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
+        points.setText("Points: " + helper.getPoints());
+        mNavItems.add(new NavItem("Skip", "skip this question", R.drawable.skip));
+        mNavItems.add(new NavItem("Quit", "quit game", R.drawable.quit));
+        mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.credits));
 
         // DrawerLayout
         mDrawerLayout = (DrawerLayout) findViewById(R.id.host_question_drawer_layout);
@@ -200,26 +194,19 @@ public class HostQuestion extends FragmentActivity implements View.OnClickListen
                     @Override
                     public void onJSONResponse(boolean success, JSONObject response) {
                         if(success){
-                            helper.allowCounting(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
-                                @Override
-                                public void onJSONResponse(boolean success, JSONObject response) {
-                                    if(success){
-                                        Intent i = new Intent(HostQuestion.this, HostVoted.class);
-                                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        startActivity(i);
-                                    }
-                                }
-                            });
+                            Intent i = new Intent(HostQuestion.this, HostVoted.class);
+                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(i);
                         }
                     }
                 });
             } break;
             case R.id.host_question_no : {
-                helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.getQuestionId(), 2, 0, new OnJSONResponseCallback() {
+                helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.getQuestionId(), 0, 0, new OnJSONResponseCallback() {
                     @Override
                     public void onJSONResponse(boolean success, JSONObject response) {
                         if(success){
-                            helper.allowCounting(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
+                            helper.allowContinue(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
                                 @Override
                                 public void onJSONResponse(boolean success, JSONObject response) {
                                     if(success){
@@ -296,5 +283,14 @@ public class HostQuestion extends FragmentActivity implements View.OnClickListen
             no.setVisibility(View.GONE);
 
         }
+    }
+
+    @Override
+    public void onArticleSelected(boolean quit) {
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 }

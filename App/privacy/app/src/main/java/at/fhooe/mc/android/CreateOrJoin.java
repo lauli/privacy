@@ -29,22 +29,63 @@ import java.util.ArrayList;
 
 public class CreateOrJoin extends FragmentActivity implements View.OnClickListener{
 
+    /**
+     * Context from Activity
+     * needed for Fragments & AdditionalMethods
+     */
+    private static Context contextForCreateUser;
 
+    /**
+     * Fragment for first time call
+     */
+    FirstLoginDialogFragment dialog;
+
+    /**
+     * menu and actionbar
+     */
     private DrawerArrowDrawable drawerArrowDrawable;
-    private float offset;
-    private boolean flipped;
-    private ListView drawerList;
-    AdditionalMethods helper = AdditionalMethods.getInstance();
-    ListView mDrawerList;
-    RelativeLayout mDrawerPane;
-    private ActionBarDrawerToggle mDrawerToggle;
-    private DrawerLayout mDrawerLayout;
 
+    /**
+     * for drawerArrowDrawable
+     */
+    private float offset;
+
+    /**
+     * for drawerArrowDrawable
+     * used to show two different messages in menu
+     */
+    private boolean flipped;
+
+    /**
+     * Instance of AdditionalMethods
+     * with this Instance it's possible to save data and call methods in AdditionalMethods that will be the same in every activity
+     */
+    AdditionalMethods helper = AdditionalMethods.getInstance();
+
+    /**
+     * Items in Actionbar
+     */
     ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
 
-    private static Context contextForCreateUser;
+    /**
+     * SharedPreferences name
+     */
     private final String MyPREFERENCES = "myPref";
-    FirstLoginDialogFragment dialog;
+
+    /**
+     * ListView for Actionbar
+     */
+    ListView mDrawerList;
+
+    /**
+     * RelativeLayout for Actionbar
+     */
+    RelativeLayout mDrawerPane;
+
+    /**
+     * DrawerLayout for Actionbar
+     */
+    private DrawerLayout mDrawerLayout;
 
 
 
@@ -60,9 +101,7 @@ public class CreateOrJoin extends FragmentActivity implements View.OnClickListen
 
         SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        if (preferences.getBoolean("firstCall", true)) {
-            editor.putBoolean("firstCall", false);
-            editor.commit();
+        if (preferences.getString("username", "").equals("")) {
             FragmentManager fm = getFragmentManager();
             dialog = new FirstLoginDialogFragment();
             dialog.show(getSupportFragmentManager(), "Dialog");
@@ -94,9 +133,9 @@ public class CreateOrJoin extends FragmentActivity implements View.OnClickListen
         name.setText(username);
         TextView points = (TextView) findViewById(R.id.user_points);
         points.setText("Points: " + punkte);
-        mNavItems.add(new NavItem("Skip", "skip this question", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
-        mNavItems.add(new NavItem("Quit", "Quit the game", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
-        mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
+        mNavItems.add(new NavItem("Skip", "skip this question", R.drawable.skip));
+        mNavItems.add(new NavItem("Quit", "Quit the game", R.drawable.quit));
+        mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.credits));
 
         // DrawerLayout
         mDrawerLayout = (DrawerLayout) findViewById(R.id.create_or_join_drawer_layout);
