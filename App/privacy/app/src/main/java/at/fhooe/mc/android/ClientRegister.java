@@ -43,6 +43,7 @@ import java.util.List;
 
 
 /**
+ * Created by laureenschausberger.
  * A login screen that offers login via name/ID.
  */
 public class ClientRegister extends FragmentActivity implements  LoaderCallbacks<Cursor>, OnClickListener  {

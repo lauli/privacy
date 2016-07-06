@@ -30,6 +30,11 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+
+/**
+ *  Created by laureenschausberger.
+ *
+ */
 public class ClientQuestion extends FragmentActivity implements View.OnClickListener, QuitDialogFragment.OnHeadlineSelectedListener{
 
 

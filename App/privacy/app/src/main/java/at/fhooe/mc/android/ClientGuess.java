@@ -3,7 +3,6 @@ package at.fhooe.mc.android;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,13 +27,33 @@ import com.rey.material.widget.Slider;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
+
+/**
+ *  Created by laureenschausberger.
+ *  Activity for Client to guess how many players answered the last question with yes
+ */
 public class ClientGuess extends FragmentActivity implements AdapterView.OnItemSelectedListener, OnClickListener, QuitDialogFragment.OnHeadlineSelectedListener{
 
+    /**
+     * context of class
+     */
     private static Context context;
-    private ArrayList<String> listItems = new ArrayList<String>();
-    private ListView list;
+
+    /**
+     * String items for listview
+     */
+    private ArrayList<String> listItems = new ArrayList<>();
+
+    /**
+     * adapter for listview
+     */
     private ArrayAdapter<String> adapter;
+
+    /**
+     * guessed number of yeses
+     */
     private int guess;
 
     /**
@@ -62,12 +81,7 @@ public class ClientGuess extends FragmentActivity implements AdapterView.OnItemS
     /**
      * Items in Actionbar
      */
-    ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
-
-    /**
-     * SharedPreferences name
-     */
-    private final String MyPREFERENCES = "myPref";
+    ArrayList<NavItem> mNavItems = new ArrayList<>();
 
     /**
      * ListView for Actionbar
@@ -85,14 +99,20 @@ public class ClientGuess extends FragmentActivity implements AdapterView.OnItemS
     private DrawerLayout mDrawerLayout;
 
 
+    /**
+     * creates activity for clientguess
+     * user can guess how many players answered last question with yes
+     * activity will call clientstatistics when continue button is clicked
+     * if no other value is chosen via the slider, the maximum will be used
+     * @param savedInstanceState    .
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.client_guess);
 
-        list = null;
-        list = (ListView) findViewById(R.id.client_guess_players_list);
-        this.adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
+        ListView list = (ListView) findViewById(R.id.client_guess_players_list);
+        this.adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listItems);
         list.setAdapter(this.adapter);
 
 
@@ -106,32 +126,6 @@ public class ClientGuess extends FragmentActivity implements AdapterView.OnItemS
         com.rey.material.widget.Slider slider = (com.rey.material.widget.Slider) findViewById(R.id.client_guess_slider);
         slider.setValueRange(0, helper.getAnsweredPlayers().length, true);
 
-//        slider.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                if(event.getAction()==MotionEvent.ACTION_DOWN && guess[0] != -1) {
-//                    helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.getQuestionId(), helper.getAnswer(), guess[0], new OnJSONResponseCallback() {
-//                        @Override
-//                        public void onJSONResponse(boolean success, JSONObject response) {
-//                            if (success) {
-//                                helper.getStatisticsByGameIdHost(helper.getGameId(), new OnJSONResponseCallback() {
-//                                    @Override
-//                                    public void onJSONResponse(boolean success, JSONObject response) {
-//                                        if (success) {
-//                                            Intent i = new Intent(ClientGuess.this, ClientStatistics.class);
-//                                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                                            startActivity(i);
-//                                        }
-//                                    }
-//                                });
-//                            }
-//
-//                        }
-//                    });
-//                }
-//                return false;
-//            }
-//        });
         slider.setOnPositionChangeListener(new Slider.OnPositionChangeListener() {
             @Override
             public void onPositionChanged(Slider view, boolean fromUser, float oldPos, float newPos, int oldValue, int newValue) {
@@ -154,7 +148,11 @@ public class ClientGuess extends FragmentActivity implements AdapterView.OnItemS
         imageView.setImageDrawable(drawerArrowDrawable);
 
         //------------------------------------------------------------------------ ListView in Actionbar
-        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
+        /*
+      SharedPreferences name
+     */
+        String myPREFERENCES = "myPref";
+        SharedPreferences preferences = getSharedPreferences(myPREFERENCES, MODE_PRIVATE);
         String username = preferences.getString("username", "");
         int punkte = preferences.getInt("points", -1);
 
@@ -192,10 +190,10 @@ public class ClientGuess extends FragmentActivity implements AdapterView.OnItemS
                 // Sometimes slideOffset ends up so close to but not quite 1 or 0.
                 if (slideOffset >= .995) {
                     flipped = true;
-                    drawerArrowDrawable.setFlip(flipped);
+                    drawerArrowDrawable.setFlip(true);
                 } else if (slideOffset <= .005) {
                     flipped = false;
-                    drawerArrowDrawable.setFlip(flipped);
+                    drawerArrowDrawable.setFlip(false);
                 }
 
                 drawerArrowDrawable.setParameter(offset);
@@ -232,25 +230,31 @@ public class ClientGuess extends FragmentActivity implements AdapterView.OnItemS
             }
         });
         // --------------------------------------------------------------------------------------------  actionbar End!
-
-
-//        Spinner spinner = (Spinner) findViewById(R.id.spinner);
-//        ArrayAdapter<CharSequence> adapt = ArrayAdapter.createFromResource(this, R.array.spinner_elements, android.R.layout.simple_spinner_item);
-//        adapt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        spinner.setAdapter(adapt);
-//        spinner.setOnItemSelectedListener(this);
     }
 
+    /**
+     * An item was selected. You can retrieve the selected item using parent.getItemAtPosition(pos)
+     * * @param parent .
+     * @param view  .
+     * @param pos   .
+     * @param id    .
+     */
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
-        // An item was selected. You can retrieve the selected item using
-        // parent.getItemAtPosition(pos)
+
     }
 
+    /**
+     * Another interface callback
+     * @param parent    .
+     */
     public void onNothingSelected(AdapterView<?> parent) {
-        // Another interface callback
     }
 
+    /**
+     * adds a (players) name to listview
+     * @param name  name of player
+     */
     public void addItem(String name){
         boolean foundEqual = false;
         if(!adapter.isEmpty()) {
@@ -267,10 +271,15 @@ public class ClientGuess extends FragmentActivity implements AdapterView.OnItemS
         }
     }
 
+    /**
+     * used for menu
+     * when one item is selected, it will react considering which item was clicked
+     * @param position  .
+     * @param title     name of title
+     */
     private void selectItemFromDrawer(int position, String title) {
 
-        FragmentManager fm = getFragmentManager();
-        if(title == "Credit") {
+        if(Objects.equals(title, "Credit")) {
             CreditDialogFragment fragment = new CreditDialogFragment();
             fragment.show(getSupportFragmentManager(), "Dialog");
         }
@@ -286,6 +295,12 @@ public class ClientGuess extends FragmentActivity implements AdapterView.OnItemS
         mDrawerLayout.closeDrawer(mDrawerPane);
     }
 
+    /**
+     * onclick showProgress will be shown
+     * answerQuestion and getStatisticsByGameIdClient will be called
+     * if both success, call clientStatistics
+     * @param v .
+     */
     @Override
     public void onClick(View v) {
         showProgress(true);
@@ -319,7 +334,7 @@ public class ClientGuess extends FragmentActivity implements AdapterView.OnItemS
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
 
-        final View mProgressView = (View) findViewById(R.id.client_guess_progress);
+        final View mProgressView = findViewById(R.id.client_guess_progress);
         Button b = (Button) findViewById(R.id.client_guess_continue);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
@@ -344,15 +359,27 @@ public class ClientGuess extends FragmentActivity implements AdapterView.OnItemS
         }
     }
 
+    /**
+     * get context of application
+     * @return  context
+     */
     public static Context getContextOfApplication(){
         return context;
     }
 
+    /**
+     * finishes activity if quit is true
+     * is true if user clicked positive button and quitGame was a success
+     * @param quit true if quitGame
+     */
     @Override
     public void onArticleSelected(boolean quit) {
         finish();
     }
 
+    /**
+     * overridden because back should not be able to be pressed
+     */
     @Override
     public void onBackPressed() {
     }

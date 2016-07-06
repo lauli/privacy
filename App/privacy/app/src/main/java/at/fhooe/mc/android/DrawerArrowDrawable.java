@@ -38,7 +38,10 @@ import static android.graphics.PixelFormat.TRANSLUCENT;
 import static android.support.v4.widget.DrawerLayout.DrawerListener;
 import static java.lang.Math.sqrt;
 
-/** A drawable that rotates between a drawer icon and a back arrow based on parameter. */
+/**
+ * Created by laureenschausberger.
+ * A drawable that rotates between a drawer icon and a back arrow based on parameter.
+ * */
 public class DrawerArrowDrawable extends Drawable {
 
 

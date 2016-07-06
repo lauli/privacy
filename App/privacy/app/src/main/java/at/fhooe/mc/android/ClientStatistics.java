@@ -30,6 +30,10 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+
+/**
+ * Created by laureenschausberger.
+ */
 public class ClientStatistics extends FragmentActivity implements QuitDialogFragment.OnHeadlineSelectedListener{
 
     private ArrayList<String> listItems = new ArrayList<String>();

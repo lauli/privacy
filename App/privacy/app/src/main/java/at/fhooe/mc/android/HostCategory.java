@@ -27,6 +27,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+
+/**
+ * Created by laureenschausberger.
+ */
 public class HostCategory extends FragmentActivity implements View.OnClickListener{
 
     /**

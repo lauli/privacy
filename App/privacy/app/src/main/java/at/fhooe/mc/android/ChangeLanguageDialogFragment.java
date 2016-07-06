@@ -1,6 +1,5 @@
 package at.fhooe.mc.android;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -11,10 +10,18 @@ import android.support.v4.app.DialogFragment;
 import org.json.JSONObject;
 
 /**
- * Created by laureenschausberger on 17.06.16 for Privacy.
+ * Created by laureenschausberger on 17.06.16.
+ * DialogFragment
+ * called when User calls on CreateOrJoin (class) in menu
+ * can change players language by calling changeLanguage() from AdditionalMethods
  */
 public class ChangeLanguageDialogFragment extends DialogFragment {
 
+    /**
+     * creates Dialog to change Language
+     * @param savedInstanceState    .
+     * @return                      builder.create()
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -33,8 +40,6 @@ public class ChangeLanguageDialogFragment extends DialogFragment {
                         helper.changeLanguage(helper.getUserID(), language,new OnJSONResponseCallback() {
                             @Override
                             public void onJSONResponse(boolean success, JSONObject response) {
-                                if(success) {
-                                }
                             }
                         });
                     }
