@@ -33,14 +33,25 @@ import java.util.TimerTask;
 
 /**
  * Created by laureenschausberger.
- *
+ * Activity for Client to see how many players have joined the game
+ * will be updated by an intervall
  */
 public class ClientLobby extends FragmentActivity implements View.OnClickListener, QuitDialogFragment.OnHeadlineSelectedListener{
 
+    /**
+     * String items for listview
+     */
     private ArrayList<String> listItems = new ArrayList<String>();
-    private ListView list;
 
+    /**
+     * adapter for listview
+     */
     private ArrayAdapter<String> adapter;
+
+    /**
+     * timer for listview
+     * call getplayersingame
+     */
     Timer timerPlayer;
 
     /**
@@ -91,13 +102,19 @@ public class ClientLobby extends FragmentActivity implements View.OnClickListene
     private DrawerLayout mDrawerLayout;
 
 
+    /**
+     * creates activity for clientlobby
+     * interface shows listview with all players which are currently in the game
+     * calls getPlayersInGame by timer to update listview every now and then
+     * @param savedInstanceState    .
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.client_lobby);
 
 
-        list = (ListView) findViewById(R.id.client_lobby_players_list);
+        ListView list = (ListView) findViewById(R.id.client_lobby_players_list);
         this.adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
         list.setAdapter(this.adapter);
 
@@ -233,16 +250,10 @@ public class ClientLobby extends FragmentActivity implements View.OnClickListene
 
     }
 
-//    @Override
-//    public void onClick(View view) {
-//        timerPlayer.cancel();
-//        timerPlayer.purge();
-//        timerPlayer = null;
-//        Intent i = new Intent(this, ClientQuestion.class);
-//        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        startActivity(i);
-//    }
-
+    /**
+     * adds a (players) name to listview
+     * @param name  name of player
+     */
     public void addItem(String name){
         boolean foundEqual = false;
         if(!adapter.isEmpty()) {
@@ -259,6 +270,14 @@ public class ClientLobby extends FragmentActivity implements View.OnClickListene
         }
     }
 
+    /**
+     * onclick progressview will be showhn by showProgress
+     * timerPlayer will be canceled
+     * getQuestionByUserAndGameId will be called
+     * calls ClientQuestion
+     * finishes
+     * @param v .
+     */
     @Override
     public void onClick(View v) {
         showProgress(true);
@@ -278,23 +297,12 @@ public class ClientLobby extends FragmentActivity implements View.OnClickListene
         });
     }
 
-    private class callPlayers extends TimerTask {
-        @Override
-        public void run() {
-            final AdditionalMethods helper = AdditionalMethods.getInstance();
-            helper.getPlayersInGame(helper.getGameId(), new OnJSONResponseCallback() {
-                @Override
-                public void onJSONResponse(boolean success, JSONObject response) {
-                    if(success) {
-                        for (int i = 0; i < helper.getPlayers().length; i++) {
-                            addItem(helper.getPlayers()[i]);
-                        }
-                    }
-                }
-            });
-        }
-    }
-
+    /**
+     * used for menu
+     * when one item is selected, it will react considering which item was clicked
+     * @param position  .
+     * @param title     name of title
+     */
     private void selectItemFromDrawer(int position, String title) {
 
         FragmentManager fm = getFragmentManager();
@@ -348,6 +356,11 @@ public class ClientLobby extends FragmentActivity implements View.OnClickListene
         }
     }
 
+    /**
+     * finishes activity and canceled timerPlayer if quit is true
+     * is true if user clicked positive button and quitGame was a success
+     * @param quit true if quitGame
+     */
     @Override
     public void onArticleSelected(boolean quit) {
         timerPlayer.cancel();
@@ -356,6 +369,9 @@ public class ClientLobby extends FragmentActivity implements View.OnClickListene
         finish();
     }
 
+    /**
+     * overridden because back should not be able to be pressed
+     */
     @Override
     public void onBackPressed() {
     }

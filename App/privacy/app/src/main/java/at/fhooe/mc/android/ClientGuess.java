@@ -296,9 +296,10 @@ public class ClientGuess extends FragmentActivity implements AdapterView.OnItemS
     }
 
     /**
-     * onclick showProgress will be shown
+     * onclick progressview will be showhn by showProgress
      * answerQuestion and getStatisticsByGameIdClient will be called
      * if both success, call clientStatistics
+     * clientguess will be finished
      * @param v .
      */
     @Override
