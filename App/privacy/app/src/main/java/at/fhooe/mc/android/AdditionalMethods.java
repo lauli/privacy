@@ -623,12 +623,13 @@ public class AdditionalMethods {
     }
 
     /**
-     * POST REQUEST, that
-     * uses URL
-     * result: 
-     * @param userId
-     * @param id
-     * @param callback
+     * POST REQUEST, that allows user to join an already existing game by its gameId
+     * uses joineGameURL
+     * saves user and game id in AM
+     * result: gameId
+     * @param userId    userId
+     * @param id        gameIde
+     * @param callback  callback
      */
     protected void joinGame(int userId, int id, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
@@ -670,6 +671,14 @@ public class AdditionalMethods {
 
     }
 
+    /**
+     * POST REQUEST, that gets all players, which have answered the current question
+     * saves playernames in answeredPlayers[]
+     * uses getAnsweredUsersURL
+     * result: names of answered players
+     * @param gameId    gameId
+     * @param callback  callback
+     */
     protected void getAnsweredUsers(int gameId,  final OnJSONResponseCallback callback) {
         SyncHttpClient client = new SyncHttpClient();
 
@@ -713,6 +722,15 @@ public class AdditionalMethods {
     }
 
 
+    /**
+     * POST REQUEST, that gets statistic of game
+     * used only by host
+     * saves howManyYes, pointsFromThisRound, points
+     * uses getStatisticsbyGameIdURL
+     * result: statistic of game, player: id, name, points, difference, yesses
+     * @param gameId    gameId
+     * @param callback  callback
+     */
     protected void getStatisticsByGameIdHost(int gameId, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
@@ -758,6 +776,15 @@ public class AdditionalMethods {
         });
     }
 
+    /**
+     * POST REQUEST, that gets statistic of game
+     * used only by client
+     * saves howManyYes, pointsFromThisRound, points
+     * uses getStatisticsbyGameIdURL
+     * result: statistic of game, player: id, name, points, difference, yesses
+     * @param gameId    gameId
+     * @param callback  callback
+     */
     protected void getStatisticsByGameIdClient(int gameId,  final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
@@ -803,6 +830,15 @@ public class AdditionalMethods {
         });
     }
 
+    /**
+     * POST REQUEST, that gets statistic of game
+     * used only when others didn't work
+     * saves howManyYes, pointsFromThisRound, points
+     * uses getStatisticsbyGameIdURL
+     * result: statistic of game, player: id, name, points, difference, yesses
+     * @param gameId    gameId
+     * @param callback  callback
+     */
     protected void getStatisticsByGameId2(int gameId,  final OnJSONResponseCallback callback) {
         SyncHttpClient client = new SyncHttpClient();
 
@@ -840,6 +876,14 @@ public class AdditionalMethods {
         });
     }
 
+    /**
+     * POST REQUEST, that forces next question in line (from ids[])
+     * increases counter
+     * uses counter to get next questionId from ids[]
+     * uses forceNextQuestionURL
+     * @param gameId    old gameId
+     * @param callback  callback
+     */
     protected void forceNextQuestion(int userId, int gameId, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
@@ -867,6 +911,14 @@ public class AdditionalMethods {
         });
     }
 
+    /**
+     * POST REQUEST, that get players in game by gameId
+     * saves names of all players in players[]
+     * uses getPlayersInGameURL
+     * result: players in game
+     * @param gameId    gameId
+     * @param callback  callback
+     */
     protected void getPlayersInGame(int gameId, final OnJSONResponseCallback callback) {
         SyncHttpClient client = new SyncHttpClient();
 
@@ -908,6 +960,15 @@ public class AdditionalMethods {
         });
     }
 
+    /**
+     * POST REQUEST, that gets question by user an game id
+     * saves question in question and questionId in questionId
+     * uses getQuestionbyUserAndGameURL
+     * result: one question (string) and question id (int)
+     * @param userId    userId
+     * @param gameId    gameId
+     * @param callback  callback
+     */
     protected void getQuestionByUserAndGameId(int userId, int gameId, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
@@ -939,6 +1000,15 @@ public class AdditionalMethods {
         });
     }
 
+    /**
+     * POST REQUEST, that gets question by user an game id
+     * saves question in question and questionId in questionId
+     * uses getQuestionbyUserAndGameURL
+     * result: one question (string) and question id (int)
+     * @param userId    userId
+     * @param gameId    gameId
+     * @param callback  callback
+     */
     protected void getQuestionByUserAndGameId2(int userId, int gameId, final OnJSONResponseCallback callback) {
         SyncHttpClient client = new SyncHttpClient();
 
@@ -970,7 +1040,19 @@ public class AdditionalMethods {
         });
     }
 
-
+    /**
+     * POST REQUEST, that saves answer of user
+     * saves answer(yn_answer -> 0 no / 1 yes) and guess (cnt_answer -> how many players answered with yes)
+     * must be called 2 times in one session round, first time with default cnt_answer, later with real value
+     * saves answer and guess
+     * uses answerQuestionURL
+     * @param user_id       userId
+     * @param game_id       gameId
+     * @param question_id   questionId
+     * @param yn_answer     yes or no answer
+     * @param cnt_answer    guess
+     * @param callback      callback
+     */
     protected void answerQuestion(int user_id, int game_id,int question_id, int yn_answer, int cnt_answer, final OnJSONResponseCallback callback) {
        // yn_answer ---->     1 == true , 0 == false
 
@@ -1000,6 +1082,15 @@ public class AdditionalMethods {
         });
     }
 
+    /**
+     * POST REQUEST, that allows client to continue
+     * is only called by host
+     * uses allowContinueURL
+     * result: true or false
+     * @param user_id   userId
+     * @param game_id   gameId
+     * @param callback  callback
+     */
     protected void allowContinue(int user_id, int game_id, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
@@ -1022,6 +1113,12 @@ public class AdditionalMethods {
         });
     }
 
+    /**
+     * POST REQUEST, that allows client to continue after host called allowContinue
+     * uses isCountinueAllowedURL
+     * @param game_id   gameId
+     * @param callback  callback
+     */
     protected void isContinueAllowed(int game_id, final OnJSONResponseCallback callback) {
         SyncHttpClient client = new SyncHttpClient();
 
@@ -1052,6 +1149,14 @@ public class AdditionalMethods {
         });
     }
 
+    /**
+     * POST REQUEST, that quits game
+     * quits game completely if called by host
+     * user leaves game if called by client
+     * uses quitGameURL
+     * @param game_id   gameId
+     * @param callback  callback
+     */
     protected void quitGame(int game_id, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
@@ -1072,6 +1177,13 @@ public class AdditionalMethods {
         });
     }
 
+    /**
+     * checks if game still exists
+     * game will be deleted if host called quitGame
+     * uses isGameExistingURL
+     * @param game_id   gameId
+     * @param callback  callback
+     */
     protected void isGameExisting(int game_id, final OnJSONResponseCallback callback) {
         SyncHttpClient client = new SyncHttpClient();
 
