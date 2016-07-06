@@ -536,7 +536,7 @@ public class AdditionalMethods {
      * @param name      name
      * @param callback  callback
      */
-    protected void changeUserNameClient (int userId, final String name, final OnJSONResponseCallback callback) {
+    protected void changeUserName (int userId, final String name, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
         RequestParams params = new RequestParams();
@@ -553,7 +553,7 @@ public class AdditionalMethods {
             public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
                 Log.i(LOG_TAG,"changeName was a success.");
                 setName(name);
-                Context context = ClientRegister.getContextOfApplication();
+                Context context = CreateOrJoin.getContextOfApplication();
                 SharedPreferences preferences = context.getSharedPreferences("myPref", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putString("username", getName());
@@ -562,6 +562,41 @@ public class AdditionalMethods {
             }
         });
     }
+
+    /**
+     * POST REQUEST, that changes name in AdditionalMethods and database
+     * uses URL changeUserNameURL
+     * used only by Client
+     * @param userId    userId
+     * @param name      name
+     * @param callback  callback
+     */
+//    protected void changeUserNameClient (int userId, final String name, final OnJSONResponseCallback callback) {
+//        AsyncHttpClient client = new AsyncHttpClient();
+//
+//        RequestParams params = new RequestParams();
+//        params.put("user_id", userId);
+//        params.put("name", name);
+//        client.post(changeUserNameURL(), params, new TextHttpResponseHandler() {
+//            @Override
+//            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
+//                callback.onJSONResponse(false, null);
+//                Log.i(LOG_TAG,"changeName was a failure.");
+//            }
+//
+//            @Override
+//            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
+//                Log.i(LOG_TAG,"changeName was a success.");
+//                setName(name);
+//                Context context = ClientRegister.getContextOfApplication();
+//                SharedPreferences preferences = context.getSharedPreferences("myPref", Context.MODE_PRIVATE);
+//                SharedPreferences.Editor editor = preferences.edit();
+//                editor.putString("username", getName());
+//                editor.commit();
+//                callback.onJSONResponse(true, null);
+//            }
+//        });
+//    }
 
 //    protected void getQuestionGroupsByUserId(int userId, final OnJSONResponseCallback callback) {
 //        AsyncHttpClient client = new AsyncHttpClient();

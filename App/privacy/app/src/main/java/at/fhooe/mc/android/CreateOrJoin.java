@@ -26,7 +26,7 @@ import java.util.Objects;
     * also shows FirstLoginDialogFragment if its open for the first time
  */
 
-public class CreateOrJoin extends FragmentActivity implements View.OnClickListener, FirstLoginDialogFragment.OnHeadlineSelectedListener, QuitDialogFragment.OnHeadlineSelectedListener, ChangeLanguageDialogFragment.OnHeadlineSelectedListener, GameDoesntExistDialogFragment.OnHeadlineSelectedListener{
+public class CreateOrJoin extends FragmentActivity implements View.OnClickListener, FirstLoginDialogFragment.OnHeadlineSelectedListener, QuitDialogFragment.OnHeadlineSelectedListener, ChangeLanguageDialogFragment.OnHeadlineSelectedListener, GameDoesntExistDialogFragment.OnHeadlineSelectedListener, ChangeNameDialogFragment.OnHeadlineSelectedListener{
 
     /**
      * Context from Activity
@@ -149,8 +149,9 @@ public class CreateOrJoin extends FragmentActivity implements View.OnClickListen
         name.setText(username);
         TextView points = (TextView) findViewById(R.id.user_points);
         points.setText("Points: " + punkte);
-        mNavItems.add(new NavItem("Language: " + helper.getLanguage(), "change question language", R.drawable.language));
-        mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.credits));
+        mNavItems.add(new NavItem("Name", "change username", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
+        mNavItems.add(new NavItem("Language: " + helper.getLanguage(), "change question language", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
+        mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.ic_menu_moreoverflow_normal_holo_dark));
 
         // DrawerLayout
         mDrawerLayout = (DrawerLayout) findViewById(R.id.create_or_join_drawer_layout);
@@ -255,6 +256,10 @@ public class CreateOrJoin extends FragmentActivity implements View.OnClickListen
     private void selectItemFromDrawer(int position, String title) {
         if(Objects.equals(title, "Credit")) {
             CreditDialogFragment fragment = new CreditDialogFragment();
+            fragment.show(getSupportFragmentManager(), "Dialog");
+        }
+        else if(Objects.equals(title, "Name")){
+            ChangeNameDialogFragment fragment = new ChangeNameDialogFragment();
             fragment.show(getSupportFragmentManager(), "Dialog");
         }
         else {

@@ -89,13 +89,17 @@ public class CreditDialogFragment extends DialogFragment {
 
         // Adding child data
         listDataHeader.add("Special thanks to");
+        listDataHeader.add("Icons");
         listDataHeader.add("DrawerArrowDrawable");
         listDataHeader.add("FloatLabeledEditText");
         listDataHeader.add("Material");
 
         // Adding child data
         List<String> special = new ArrayList<>();
-        special.add("FH Hagenberg and Fabian Bouchal");
+        special.add("Special thanks to our university FH Hagenberg and our advisor Fabian Bouchal.");
+
+        List<String> icons = new ArrayList<>();
+        icons.add("Thank you Madebyoliver for the menu-icons!\nhttp://file000.flaticon.com/downloads/license/license.pdf");
 
         List<String> DrawerArrowDrawable = new ArrayList<>();
         DrawerArrowDrawable.add(getString(R.string.credits_chrisrenke));
@@ -107,8 +111,9 @@ public class CreditDialogFragment extends DialogFragment {
         Material.add(getString(R.string.credits_reypham));
 
         listDataChild.put(listDataHeader.get(0), special); // Header, Child data
-        listDataChild.put(listDataHeader.get(1), DrawerArrowDrawable);
-        listDataChild.put(listDataHeader.get(2), FloatLabeledEditText);
-        listDataChild.put(listDataHeader.get(3), Material);
+        listDataChild.put(listDataHeader.get(1), icons);
+        listDataChild.put(listDataHeader.get(2), DrawerArrowDrawable);
+        listDataChild.put(listDataHeader.get(3), FloatLabeledEditText);
+        listDataChild.put(listDataHeader.get(4), Material);
     }
 }

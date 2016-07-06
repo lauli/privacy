@@ -291,22 +291,22 @@ public class ClientRegister extends FragmentActivity implements  LoaderCallbacks
             focusView = mUsername;
             cancel = true;
         }
-        else{
-            if(!helper.getName().equals(mName)){
-                helper.changeUserNameClient(helper.getUserID(), mName, new OnJSONResponseCallback() {
-                    @Override
-                    public void onJSONResponse(boolean success, JSONObject response) {
-                        if (success) {
-                            SharedPreferences preferences = getSharedPreferences("myPref", MODE_PRIVATE);
-                            SharedPreferences.Editor editor = preferences.edit();
-                            editor.putString("username", mName);
-                            editor.commit();
-                        }
-                    }
-                });
-
-            }
-        }
+//        else{
+//            if(!helper.getName().equals(mName)){
+//                helper.changeUserNameClient(helper.getUserID(), mName, new OnJSONResponseCallback() {
+//                    @Override
+//                    public void onJSONResponse(boolean success, JSONObject response) {
+//                        if (success) {
+//                            SharedPreferences preferences = getSharedPreferences("myPref", MODE_PRIVATE);
+//                            SharedPreferences.Editor editor = preferences.edit();
+//                            editor.putString("username", mName);
+//                            editor.commit();
+//                        }
+//                    }
+//                });
+//
+//            }
+//        }
 
         if (cancel) {
             focusView.requestFocus();
