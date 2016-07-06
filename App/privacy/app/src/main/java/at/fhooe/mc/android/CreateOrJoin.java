@@ -26,7 +26,7 @@ import java.util.Objects;
     * also shows FirstLoginDialogFragment if its open for the first time
  */
 
-public class CreateOrJoin extends FragmentActivity implements View.OnClickListener, FirstLoginDialogFragment.OnHeadlineSelectedListener{
+public class CreateOrJoin extends FragmentActivity implements View.OnClickListener, FirstLoginDialogFragment.OnHeadlineSelectedListener, QuitDialogFragment.OnHeadlineSelectedListener, ChangeLanguageDialogFragment.OnHeadlineSelectedListener, GameDoesntExistDialogFragment.OnHeadlineSelectedListener{
 
     /**
      * Context from Activity
@@ -81,6 +81,21 @@ public class CreateOrJoin extends FragmentActivity implements View.OnClickListen
      */
     private DrawerLayout mDrawerLayout;
 
+    /**
+     * adapter for Actionbar
+     */
+    DrawerListAdapter adapter;
+
+    /**
+     * username, must be global to notify changes
+     */
+    private  String username;
+
+    /**
+     * points, must be global to notify changes
+     */
+    private int punkte;
+
 
     /**
      * creates activity for user to join or create a session
@@ -103,6 +118,7 @@ public class CreateOrJoin extends FragmentActivity implements View.OnClickListen
         SharedPreferences preferences = getSharedPreferences(myPREFERENCES, MODE_PRIVATE);
         if (preferences.getString("username", "").equals("")) {
             dialog = new FirstLoginDialogFragment();
+            dialog.setCancelable(false);
             dialog.show(getSupportFragmentManager(), "Dialog");
         }
         else{
@@ -110,6 +126,7 @@ public class CreateOrJoin extends FragmentActivity implements View.OnClickListen
             helper.setName(preferences.getString("username", ""));
             helper.setUserID(preferences.getInt("userId", -1));
             helper.setPoints(preferences.getInt("points", -1));
+            helper.setLang(preferences.getInt("language", -1));
         }
 
         contextForCreateUser = getApplicationContext();
@@ -125,14 +142,14 @@ public class CreateOrJoin extends FragmentActivity implements View.OnClickListen
         imageView.setImageDrawable(drawerArrowDrawable);
 
         //------------------------------------------------------------------------ ListView in Actionbar
-        String username = preferences.getString("username", "");
-        int punkte = preferences.getInt("points", -1);
+        username = preferences.getString("username", "");
+        punkte = preferences.getInt("points", -1);
 
         TextView name = (TextView) findViewById(R.id.user_name);
         name.setText(username);
         TextView points = (TextView) findViewById(R.id.user_points);
         points.setText("Points: " + punkte);
-        mNavItems.add(new NavItem("Language", "change question Language", R.drawable.language));
+        mNavItems.add(new NavItem("Language: " + helper.getLanguage(), "change question language", R.drawable.language));
         mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.credits));
 
         // DrawerLayout
@@ -141,7 +158,7 @@ public class CreateOrJoin extends FragmentActivity implements View.OnClickListen
         // Populate the Navigtion Drawer with options
         mDrawerPane = (RelativeLayout) findViewById(R.id.drawerPane);
         mDrawerList = (ListView) findViewById(R.id.navList);
-        final DrawerListAdapter adapter = new DrawerListAdapter(this, mNavItems);
+        adapter = new DrawerListAdapter(this, mNavItems);
         mDrawerList.setAdapter(adapter);
 
         // Drawer Item click listeners
@@ -269,7 +286,7 @@ public class CreateOrJoin extends FragmentActivity implements View.OnClickListen
     }
 
     /**
-     * finishes activity  if user changedLanguage
+     * finishes activity  if user changedLanguage and firstLoginDialogFragment
      * is true if user clicked positive button and quitGame was a success
      * @param done true if user changed language
      */
@@ -278,4 +295,15 @@ public class CreateOrJoin extends FragmentActivity implements View.OnClickListen
         finish();
         startActivity(getIntent());
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if(helper == null || helper.getName() == null) return;
+        if(!helper.getName().equals(username) || helper.getPoints() != punkte){
+            startActivity(getIntent());
+            finish();
+        }
+    }
+
 }

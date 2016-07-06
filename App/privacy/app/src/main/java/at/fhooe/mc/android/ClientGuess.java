@@ -28,13 +28,23 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 /**
  *  Created by laureenschausberger.
  *  Activity for Client to guess how many players answered the last question with yes
  */
-public class ClientGuess extends FragmentActivity implements AdapterView.OnItemSelectedListener, OnClickListener, QuitDialogFragment.OnHeadlineSelectedListener{
+public class ClientGuess extends FragmentActivity implements AdapterView.OnItemSelectedListener, OnClickListener, QuitDialogFragment.OnHeadlineSelectedListener, GameDoesntExistDialogFragment.OnHeadlineSelectedListener{
+
+
+    /**
+     * timer checks if game still exists
+     * call isGameExisting
+     */
+    Timer timerDoesGameExist;
+
 
     /**
      * context of class
@@ -137,6 +147,22 @@ public class ClientGuess extends FragmentActivity implements AdapterView.OnItemS
         b.setOnClickListener(this);
 
         context = getApplicationContext();
+
+        timerDoesGameExist = new Timer();
+        timerDoesGameExist.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                helper.isGameExisting(helper.getGameId(), new OnJSONResponseCallback() {
+                    @Override
+                    public void onJSONResponse(boolean success, JSONObject response) {
+                        if(success) {
+                            GameDoesntExistDialogFragment dialog = new GameDoesntExistDialogFragment();
+                            dialog.setCancelable(false);
+                            dialog.show(getSupportFragmentManager(), "Dialog");
+                        }
+                    }
+                });
+            }
+        }, 0, 5000);
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.client_guess_drawer_layout);
@@ -313,6 +339,9 @@ public class ClientGuess extends FragmentActivity implements AdapterView.OnItemS
                         @Override
                         public void onJSONResponse(boolean success, JSONObject response) {
                             if (success) {
+                                timerDoesGameExist.cancel();
+                                timerDoesGameExist.purge();
+                                timerDoesGameExist = null;
                                 Intent i = new Intent(ClientGuess.this, ClientStatistics.class);
                                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(i);
@@ -375,6 +404,9 @@ public class ClientGuess extends FragmentActivity implements AdapterView.OnItemS
      */
     @Override
     public void onArticleSelected(boolean quit) {
+        timerDoesGameExist.cancel();
+        timerDoesGameExist.purge();
+        timerDoesGameExist = null;
         finish();
     }
 

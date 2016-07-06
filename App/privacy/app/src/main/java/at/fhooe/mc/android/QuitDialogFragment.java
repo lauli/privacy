@@ -30,7 +30,7 @@ public class QuitDialogFragment extends DialogFragment {
                 .setPositiveButton(R.string.dialog_yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         AdditionalMethods helper = AdditionalMethods.getInstance();
-                        helper.quitGame(helper.getGameId(), new OnJSONResponseCallback() {
+                        helper.quitGame(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
                             @Override
                             public void onJSONResponse(boolean success, JSONObject response) {
                                 if(success) {
@@ -53,7 +53,7 @@ public class QuitDialogFragment extends DialogFragment {
      * OnHeadlineSelectedListener interface
      */
     public interface OnHeadlineSelectedListener {
-        public void onArticleSelected(boolean quit);
+         void onArticleSelected(boolean quit);
     }
 
     @Override

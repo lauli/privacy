@@ -24,11 +24,17 @@ public class FirstLoginDialogFragment extends DialogFragment {
      */
     OnHeadlineSelectedListener mCallback;
 
+    /**
+     * name, changes when editText is filled
+     */
+    String name;
+
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
+
 
         final EditText edittext = new EditText(getActivity());
         edittext.setSingleLine(true);
@@ -39,24 +45,36 @@ public class FirstLoginDialogFragment extends DialogFragment {
                 .setView(edittext)
                 .setPositiveButton("register", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        String name = edittext.getText().toString();
+                        name = edittext.getText().toString();
                         AdditionalMethods helper = AdditionalMethods.getInstance();
-                        helper.createUser(1, name, new OnJSONResponseCallback() {
-                            @Override
-                            public void onJSONResponse(boolean success, JSONObject response) {
-                                if (success) {
-                                    try{
-                                        mCallback.onArticleSelected(true);
-                                    } catch (Throwable _throwable) {
-                                        _throwable.printStackTrace();
+                        if(!name.equals("")) {
+                            helper.createUser(1, name, new OnJSONResponseCallback() {
+                                @Override
+                                public void onJSONResponse(boolean success, JSONObject response) {
+                                    if (success) {
+                                        try {
+                                            mCallback.onArticleSelected(true);
+                                        } catch (Throwable _throwable) {
+                                            _throwable.printStackTrace();
+                                        }
                                     }
                                 }
+                            });
+                        }
+                        else{
+                            try {
+                                mCallback.onArticleSelected(true);
+                            } catch (Throwable _throwable) {
+                                _throwable.printStackTrace();
                             }
-                        });
+                        }
                     }
                 })
                 .setIcon(R.drawable.privacy_icon)
+                .setCancelable(false)
                 .create();
+
+
         return  builder.create();
     }
 
@@ -97,5 +115,6 @@ public class FirstLoginDialogFragment extends DialogFragment {
                     + " must implement OnHeadlineSelectedListener");
         }
     }
+
 
 }

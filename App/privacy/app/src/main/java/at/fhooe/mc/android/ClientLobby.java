@@ -35,7 +35,14 @@ import java.util.TimerTask;
  * Activity for Client to see how many players have joined the game
  * will be updated by an interval
  */
-public class ClientLobby extends FragmentActivity implements View.OnClickListener, QuitDialogFragment.OnHeadlineSelectedListener{
+public class ClientLobby extends FragmentActivity implements View.OnClickListener, QuitDialogFragment.OnHeadlineSelectedListener, GameDoesntExistDialogFragment.OnHeadlineSelectedListener{
+
+
+    /**
+     * timer checks if game still exists
+     * call isGameExisting
+     */
+    Timer timerDoesGameExist;
 
     /**
      * String items for listview
@@ -121,7 +128,6 @@ public class ClientLobby extends FragmentActivity implements View.OnClickListene
 
         timerPlayer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
-                final AdditionalMethods helper = AdditionalMethods.getInstance();
                 helper.getPlayersInGame(helper.getGameId(), new OnJSONResponseCallback() {
                     @Override
                     public void onJSONResponse(boolean success, JSONObject response) {
@@ -151,6 +157,22 @@ public class ClientLobby extends FragmentActivity implements View.OnClickListene
 
         Button b =  (Button) findViewById(R.id.client_lobby_continue);
         b.setOnClickListener(this);
+
+        timerDoesGameExist = new Timer();
+        timerDoesGameExist.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                helper.isGameExisting(helper.getGameId(), new OnJSONResponseCallback() {
+                    @Override
+                    public void onJSONResponse(boolean success, JSONObject response) {
+                        if(success) {
+                            GameDoesntExistDialogFragment dialog = new GameDoesntExistDialogFragment();
+                            dialog.setCancelable(false);
+                            dialog.show(getSupportFragmentManager(), "Dialog");
+                        }
+                    }
+                });
+            }
+        }, 0, 5000);
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.client_lobby_drawer_layout);
@@ -281,6 +303,9 @@ public class ClientLobby extends FragmentActivity implements View.OnClickListene
         timerPlayer.cancel();
         timerPlayer.purge();
         timerPlayer = null;
+        timerDoesGameExist.cancel();
+        timerDoesGameExist.purge();
+        timerDoesGameExist = null;
         helper.getQuestionByUserAndGameId(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
             @Override
             public void onJSONResponse(boolean success, JSONObject response) {
@@ -362,6 +387,9 @@ public class ClientLobby extends FragmentActivity implements View.OnClickListene
         timerPlayer.cancel();
         timerPlayer.purge();
         timerPlayer = null;
+        timerDoesGameExist.cancel();
+        timerDoesGameExist.purge();
+        timerDoesGameExist = null;
         finish();
     }
 

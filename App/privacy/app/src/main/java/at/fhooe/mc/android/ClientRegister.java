@@ -47,6 +47,13 @@ public class ClientRegister extends FragmentActivity implements  LoaderCallbacks
 
 
     /**
+     * Context from Activity
+     * needed for Fragments & AdditionalMethods
+     */
+    private static Context context;
+
+
+    /**
      * EditText field for username-input
      */
     private EditText mUsername;
@@ -154,6 +161,8 @@ public class ClientRegister extends FragmentActivity implements  LoaderCallbacks
         mJoinFormView = findViewById(R.id.client_register_scroll);
         mProgressView = findViewById(R.id.client_register_progress);
         mName.setOnClickListener(ClientRegister.this);
+
+        context = getApplicationContext();
 
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
@@ -284,7 +293,7 @@ public class ClientRegister extends FragmentActivity implements  LoaderCallbacks
         }
         else{
             if(!helper.getName().equals(mName)){
-                helper.changeUserName(helper.getUserID(), mName, new OnJSONResponseCallback() {
+                helper.changeUserNameClient(helper.getUserID(), mName, new OnJSONResponseCallback() {
                     @Override
                     public void onJSONResponse(boolean success, JSONObject response) {
                         if (success) {
@@ -457,5 +466,14 @@ public class ClientRegister extends FragmentActivity implements  LoaderCallbacks
         // Close the drawer
         mDrawerLayout.closeDrawer(mDrawerPane);
     }
+
+    /**
+     * context of application
+     * @return  context
+     */
+    public static Context getContextOfApplication(){
+        return context;
+    }
+
 }
 

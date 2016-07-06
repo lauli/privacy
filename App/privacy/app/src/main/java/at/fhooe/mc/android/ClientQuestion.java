@@ -38,8 +38,14 @@ import java.util.TimerTask;
  *  will call ClientGuess only if Host has called allowContinuing before
  *  checked by timer and isContinueAllowed
  */
-public class ClientQuestion extends FragmentActivity implements View.OnClickListener, QuitDialogFragment.OnHeadlineSelectedListener{
+public class ClientQuestion extends FragmentActivity implements View.OnClickListener, QuitDialogFragment.OnHeadlineSelectedListener, GameDoesntExistDialogFragment.OnHeadlineSelectedListener{
 
+
+    /**
+     * timer checks if game still exists
+     * call isGameExisting
+     */
+    Timer timerDoesGameExist;
 
     /**
      * textview that shows question
@@ -113,6 +119,22 @@ public class ClientQuestion extends FragmentActivity implements View.OnClickList
         String quest = helper.getQuestion();
         question.setText(quest);
 
+
+        timerDoesGameExist = new Timer();
+        timerDoesGameExist.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                helper.isGameExisting(helper.getGameId(), new OnJSONResponseCallback() {
+                    @Override
+                    public void onJSONResponse(boolean success, JSONObject response) {
+                        if(success) {
+                            GameDoesntExistDialogFragment dialog = new GameDoesntExistDialogFragment();
+                            dialog.setCancelable(false);
+                            dialog.show(getSupportFragmentManager(), "Dialog");
+                        }
+                    }
+                });
+            }
+        }, 0, 5000);
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.client_question_drawer_layout);
@@ -235,6 +257,9 @@ public class ClientQuestion extends FragmentActivity implements View.OnClickList
                                                             timer.cancel();
                                                             timer.purge();
                                                             timer = null;
+                                                            timerDoesGameExist.cancel();
+                                                            timerDoesGameExist.purge();
+                                                            timerDoesGameExist = null;
                                                             Intent i = new Intent(ClientQuestion.this, ClientGuess.class);
                                                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                                             startActivity(i);
@@ -269,6 +294,9 @@ public class ClientQuestion extends FragmentActivity implements View.OnClickList
                                                             timer.cancel();
                                                             timer.purge();
                                                             timer = null;
+                                                            timerDoesGameExist.cancel();
+                                                            timerDoesGameExist.purge();
+                                                            timerDoesGameExist = null;
                                                             Intent i = new Intent(ClientQuestion.this, ClientGuess.class);
                                                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                                             startActivity(i);
@@ -361,6 +389,9 @@ public class ClientQuestion extends FragmentActivity implements View.OnClickList
         timer.cancel();
         timer.purge();
         timer = null;
+        timerDoesGameExist.cancel();
+        timerDoesGameExist.purge();
+        timerDoesGameExist = null;
         finish();
     }
 

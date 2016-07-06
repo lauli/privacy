@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.FragmentManager;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -40,6 +41,13 @@ import java.util.List;
  * A login screen that offers login via name/ID.
  */
 public class HostRegister extends FragmentActivity implements  LoaderCallbacks<Cursor>, OnClickListener  {
+
+    /**
+     * Context from Activity
+     * needed for Fragments & AdditionalMethods
+     */
+    private static Context context;
+
 
     /**
      * saves the username, which the user can put into the edittext field
@@ -124,6 +132,7 @@ public class HostRegister extends FragmentActivity implements  LoaderCallbacks<C
         mProgressView = findViewById(R.id.host_register_progress);
         mName.setOnClickListener(HostRegister.this);
 
+        context = getApplicationContext();
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.host_register_drawer_layout);
@@ -271,7 +280,7 @@ public class HostRegister extends FragmentActivity implements  LoaderCallbacks<C
         }
         else{
             if(!helper.getName().equals(mName)){
-                helper.changeUserName(helper.getUserID(), mName, new OnJSONResponseCallback() {
+                helper.changeUserNameHost(helper.getUserID(), mName, new OnJSONResponseCallback() {
                     @Override
                     public void onJSONResponse(boolean success, JSONObject response) {
                         if (success) {
@@ -405,5 +414,14 @@ public class HostRegister extends FragmentActivity implements  LoaderCallbacks<C
         // Close the drawer
         mDrawerLayout.closeDrawer(mDrawerPane);
     }
+
+    /**
+     * context of application
+     * @return  context
+     */
+    public static Context getContextOfApplication(){
+        return context;
+    }
+
 }
 

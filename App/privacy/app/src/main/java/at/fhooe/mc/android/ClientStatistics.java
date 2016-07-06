@@ -35,7 +35,14 @@ import java.util.TimerTask;
  * Activity for Client to see round/game statistics
  * will call ClientQuestion when isContinueAllowed is false
  */
-public class ClientStatistics extends FragmentActivity implements QuitDialogFragment.OnHeadlineSelectedListener{
+public class ClientStatistics extends FragmentActivity implements QuitDialogFragment.OnHeadlineSelectedListener, GameDoesntExistDialogFragment.OnHeadlineSelectedListener{
+
+
+    /**
+     * timer checks if game still exists
+     * call isGameExisting
+     */
+    Timer timerDoesGameExist;
 
     /**
      * String items for listview
@@ -172,6 +179,9 @@ public class ClientStatistics extends FragmentActivity implements QuitDialogFrag
                             timerPlayer.cancel();
                             timerPlayer.purge();
                             timerPlayer = null;
+                            timerDoesGameExist.cancel();
+                            timerDoesGameExist.purge();
+                            timerDoesGameExist = null;
                             showProgress(true);
                             helper.getQuestionByUserAndGameId2(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
                                 @Override
@@ -199,10 +209,21 @@ public class ClientStatistics extends FragmentActivity implements QuitDialogFrag
         }
 
 
-
-//        Button b = null;
-//        b = (Button) findViewById(R.id.client_statistics_continue);
-//        b.setOnClickListener(this);
+        timerDoesGameExist = new Timer();
+        timerDoesGameExist.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                helper.isGameExisting(helper.getGameId(), new OnJSONResponseCallback() {
+                    @Override
+                    public void onJSONResponse(boolean success, JSONObject response) {
+                        if(success) {
+                            GameDoesntExistDialogFragment dialog = new GameDoesntExistDialogFragment();
+                            dialog.setCancelable(false);
+                            dialog.show(getSupportFragmentManager(), "Dialog");
+                        }
+                    }
+                });
+            }
+        }, 0, 5000);
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.client_statistics_drawer_layout);
@@ -387,6 +408,9 @@ public class ClientStatistics extends FragmentActivity implements QuitDialogFrag
         timerPlayer.cancel();
         timerPlayer.purge();
         timerPlayer = null;
+        timerDoesGameExist.cancel();
+        timerDoesGameExist.purge();
+        timerDoesGameExist = null;
         finish();
     }
 

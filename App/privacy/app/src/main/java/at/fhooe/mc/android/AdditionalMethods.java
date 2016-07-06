@@ -311,7 +311,7 @@ public class AdditionalMethods {
      */
     public String getLanguage(){
         if(lang == 1) return "eng";
-        if(lang == 2) return "de";
+        else if(lang == 2) return "de";
         else return null;
     }
 
@@ -322,6 +322,14 @@ public class AdditionalMethods {
     public int getLang(){
         return lang;
     }
+
+    /**
+     * changes language
+     */
+    public void setLang(int lang){
+         this.lang = lang;
+    }
+
 
     /**
      *
@@ -488,11 +496,12 @@ public class AdditionalMethods {
     /**
      * POST REQUEST, that changes name in AdditionalMethods and database
      * uses URL changeUserNameURL
+     * used only by Host
      * @param userId    userId
      * @param name      name
      * @param callback  callback
      */
-    protected void changeUserName (int userId, final String name, final OnJSONResponseCallback callback) {
+    protected void changeUserNameHost (int userId, final String name, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
         RequestParams params = new RequestParams();
@@ -509,6 +518,46 @@ public class AdditionalMethods {
             public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
                 Log.i(LOG_TAG,"changeName was a success.");
                 setName(name);
+                Context context = HostRegister.getContextOfApplication();
+                SharedPreferences preferences = context.getSharedPreferences("myPref", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("username", getName());
+                editor.commit();
+                callback.onJSONResponse(true, null);
+            }
+        });
+    }
+
+    /**
+     * POST REQUEST, that changes name in AdditionalMethods and database
+     * uses URL changeUserNameURL
+     * used only by Client
+     * @param userId    userId
+     * @param name      name
+     * @param callback  callback
+     */
+    protected void changeUserNameClient (int userId, final String name, final OnJSONResponseCallback callback) {
+        AsyncHttpClient client = new AsyncHttpClient();
+
+        RequestParams params = new RequestParams();
+        params.put("user_id", userId);
+        params.put("name", name);
+        client.post(changeUserNameURL(), params, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
+                callback.onJSONResponse(false, null);
+                Log.i(LOG_TAG,"changeName was a failure.");
+            }
+
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
+                Log.i(LOG_TAG,"changeName was a success.");
+                setName(name);
+                Context context = ClientRegister.getContextOfApplication();
+                SharedPreferences preferences = context.getSharedPreferences("myPref", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("username", getName());
+                editor.commit();
                 callback.onJSONResponse(true, null);
             }
         });
@@ -1157,11 +1206,12 @@ public class AdditionalMethods {
      * @param game_id   gameId
      * @param callback  callback
      */
-    protected void quitGame(int game_id, final OnJSONResponseCallback callback) {
+    protected void quitGame(int user_id, int game_id, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
 
         RequestParams params = new RequestParams();
+        params.put("user_id", user_id);
         params.put("game_id", game_id);
         client.post(quitGameURL(), params, new TextHttpResponseHandler() {
             @Override
@@ -1193,7 +1243,7 @@ public class AdditionalMethods {
         client.post(isGameExistingURL(), params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
-                callback.onJSONResponse(false, null);
+                callback.onJSONResponse(true, null);
             }
 
             @Override
@@ -1204,11 +1254,10 @@ public class AdditionalMethods {
                     allowed = true;
                 }
 
-                //returns true when allowed
                 if(allowed)
-                    callback.onJSONResponse(true, null);
-                else
                     callback.onJSONResponse(false, null);
+                else
+                    callback.onJSONResponse(true, null);
             }
         });
     }

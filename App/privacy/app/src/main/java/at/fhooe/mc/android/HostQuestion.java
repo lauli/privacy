@@ -119,7 +119,7 @@ public class HostQuestion extends FragmentActivity implements View.OnClickListen
         name.setText(username);
         TextView points = (TextView) findViewById(R.id.user_points);
         points.setText("Points: " + helper.getPoints());
-        mNavItems.add(new NavItem("Skip", "skip this question", R.drawable.skip));
+//        mNavItems.add(new NavItem("Skip", "skip this question", R.drawable.skip));
         mNavItems.add(new NavItem("Quit", "quit game", R.drawable.quit));
         mNavItems.add(new NavItem("Credit", "thank you!", R.drawable.credits));
 
