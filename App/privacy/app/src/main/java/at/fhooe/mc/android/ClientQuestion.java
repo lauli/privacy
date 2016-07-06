@@ -27,18 +27,28 @@ import android.widget.TextView;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
 
 /**
  *  Created by laureenschausberger.
- *
+ *  Activity for Client to see question an answer it
+ *  will call ClientGuess only if Host has called allowContinuing before
+ *  checked by timer and isContinueAllowed
  */
 public class ClientQuestion extends FragmentActivity implements View.OnClickListener, QuitDialogFragment.OnHeadlineSelectedListener{
 
 
+    /**
+     * textview that shows question
+     */
     TextView question;
+
+    /**
+     * timer for checking if ClientGuess can be called
+     */
     Timer timer = new Timer();
 
     /**
@@ -66,12 +76,7 @@ public class ClientQuestion extends FragmentActivity implements View.OnClickList
     /**
      * Items in Actionbar
      */
-    ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
-
-    /**
-     * SharedPreferences name
-     */
-    private final String MyPREFERENCES = "myPref";
+    ArrayList<NavItem> mNavItems = new ArrayList<>();
 
     /**
      * ListView for Actionbar
@@ -88,13 +93,18 @@ public class ClientQuestion extends FragmentActivity implements View.OnClickList
      */
     private DrawerLayout mDrawerLayout;
 
+
+    /**
+     * creates activity for clientquestion
+     * shows question
+     * @param savedInstanceState    .
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.client_question);
 
-        Button b = null;
-        b = (Button) findViewById(R.id.client_question_yes);
+        Button b =  (Button) findViewById(R.id.client_question_yes);
         b.setOnClickListener(this);
         b = (Button) findViewById(R.id.client_question_no);
         b.setOnClickListener(this);
@@ -114,7 +124,11 @@ public class ClientQuestion extends FragmentActivity implements View.OnClickList
         imageView.setImageDrawable(drawerArrowDrawable);
 
         //------------------------------------------------------------------------ ListView in Actionbar
-        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
+        /*
+      SharedPreferences name
+     */
+        String myPREFERENCES = "myPref";
+        SharedPreferences preferences = getSharedPreferences(myPREFERENCES, MODE_PRIVATE);
         String username = preferences.getString("username", "");
 
         TextView name = (TextView) findViewById(R.id.user_name);
@@ -151,10 +165,10 @@ public class ClientQuestion extends FragmentActivity implements View.OnClickList
                 // Sometimes slideOffset ends up so close to but not quite 1 or 0.
                 if (slideOffset >= .995) {
                     flipped = true;
-                    drawerArrowDrawable.setFlip(flipped);
+                    drawerArrowDrawable.setFlip(true);
                 } else if (slideOffset <= .005) {
                     flipped = false;
-                    drawerArrowDrawable.setFlip(flipped);
+                    drawerArrowDrawable.setFlip(false);
                 }
 
                 drawerArrowDrawable.setParameter(offset);
@@ -270,10 +284,15 @@ public class ClientQuestion extends FragmentActivity implements View.OnClickList
         }
     }
 
+    /**
+     * used for menu
+     * when one item is selected, it will react considering which item was clicked
+     * @param position  .
+     * @param title     name of title
+     */
     private void selectItemFromDrawer(int position, String title) {
 
-        FragmentManager fm = getFragmentManager();
-        if(title == "Credit") {
+        if(Objects.equals(title, "Credit")) {
             CreditDialogFragment fragment = new CreditDialogFragment();
             fragment.show(getSupportFragmentManager(), "Dialog");
         }
@@ -298,7 +317,7 @@ public class ClientQuestion extends FragmentActivity implements View.OnClickList
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
 
-        final View mProgressView = (View) findViewById(R.id.client_question_progress);
+        final View mProgressView = findViewById(R.id.client_question_progress);
         Button y = (Button) findViewById(R.id.client_question_yes);
         Button n = (Button) findViewById(R.id.client_question_no);
 
@@ -326,6 +345,11 @@ public class ClientQuestion extends FragmentActivity implements View.OnClickList
         }
     }
 
+    /**
+     * finishes activity and cancels timer if quit is true
+     * is true if user clicked positive button and quitGame was a success
+     * @param quit true if quitGame
+     */
     @Override
     public void onArticleSelected(boolean quit) {
         timer.cancel();
@@ -334,6 +358,9 @@ public class ClientQuestion extends FragmentActivity implements View.OnClickList
         finish();
     }
 
+    /**
+     * overridden because back should not be able to be pressed
+     */
     @Override
     public void onBackPressed() {
     }

@@ -3,13 +3,11 @@ package at.fhooe.mc.android;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-import android.app.Activity;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
@@ -27,6 +25,7 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -41,7 +40,7 @@ public class ClientLobby extends FragmentActivity implements View.OnClickListene
     /**
      * String items for listview
      */
-    private ArrayList<String> listItems = new ArrayList<String>();
+    private ArrayList<String> listItems = new ArrayList<>();
 
     /**
      * adapter for listview
@@ -79,12 +78,7 @@ public class ClientLobby extends FragmentActivity implements View.OnClickListene
     /**
      * Items in Actionbar
      */
-    ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
-
-    /**
-     * SharedPreferences name
-     */
-    private final String MyPREFERENCES = "myPref";
+    ArrayList<NavItem> mNavItems = new ArrayList<>();
 
     /**
      * ListView for Actionbar
@@ -115,7 +109,7 @@ public class ClientLobby extends FragmentActivity implements View.OnClickListene
 
 
         ListView list = (ListView) findViewById(R.id.client_lobby_players_list);
-        this.adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
+        this.adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listItems);
         list.setAdapter(this.adapter);
 
         final Handler handler = new Handler();
@@ -155,8 +149,7 @@ public class ClientLobby extends FragmentActivity implements View.OnClickListene
             return;
         }
 
-        Button b = null;
-        b = (Button) findViewById(R.id.client_lobby_continue);
+        Button b =  (Button) findViewById(R.id.client_lobby_continue);
         b.setOnClickListener(this);
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
@@ -169,7 +162,11 @@ public class ClientLobby extends FragmentActivity implements View.OnClickListene
         imageView.setImageDrawable(drawerArrowDrawable);
 
         //------------------------------------------------------------------------ ListView in Actionbar
-        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
+        /*
+      SharedPreferences name
+     */
+        String myPREFERENCES = "myPref";
+        SharedPreferences preferences = getSharedPreferences(myPREFERENCES, MODE_PRIVATE);
         String username = preferences.getString("username", "");
         int punkte = preferences.getInt("points", -1);
 
@@ -207,10 +204,10 @@ public class ClientLobby extends FragmentActivity implements View.OnClickListene
                 // Sometimes slideOffset ends up so close to but not quite 1 or 0.
                 if (slideOffset >= .995) {
                     flipped = true;
-                    drawerArrowDrawable.setFlip(flipped);
+                    drawerArrowDrawable.setFlip(true);
                 } else if (slideOffset <= .005) {
                     flipped = false;
-                    drawerArrowDrawable.setFlip(flipped);
+                    drawerArrowDrawable.setFlip(false);
                 }
 
                 drawerArrowDrawable.setParameter(offset);
@@ -305,8 +302,7 @@ public class ClientLobby extends FragmentActivity implements View.OnClickListene
      */
     private void selectItemFromDrawer(int position, String title) {
 
-        FragmentManager fm = getFragmentManager();
-        if(title == "Credit") {
+        if(Objects.equals(title, "Credit")) {
             CreditDialogFragment fragment = new CreditDialogFragment();
             fragment.show(getSupportFragmentManager(), "Dialog");
         }
@@ -331,7 +327,7 @@ public class ClientLobby extends FragmentActivity implements View.OnClickListene
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
 
-        final View mProgressView = (View) findViewById(R.id.client_lobby_progress);
+        final View mProgressView = findViewById(R.id.client_lobby_progress);
         Button b = (Button) findViewById(R.id.client_lobby_continue);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {

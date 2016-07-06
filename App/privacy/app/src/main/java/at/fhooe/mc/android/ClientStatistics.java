@@ -3,7 +3,6 @@ package at.fhooe.mc.android;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,7 +16,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -27,20 +25,39 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
 
 /**
  * Created by laureenschausberger.
+ * Activity for Client to see round/game statistics
+ * will call ClientQuestion when isContinueAllowed is false
  */
 public class ClientStatistics extends FragmentActivity implements QuitDialogFragment.OnHeadlineSelectedListener{
 
-    private ArrayList<String> listItems = new ArrayList<String>();
-    private ListView list;
+    /**
+     * String items for listview
+     */
+    private ArrayList<String> listItems = new ArrayList<>();
+
+    /**
+     * adapter for listview
+     */
     private ArrayAdapter<String> adapter;
-    Timer timer;
+
+    /**
+     * timer for listview
+     * calls getStatisticsByGameId
+     */
     Timer timerPlayer;
+
+    /**
+     * timer for next Activitycall
+     * calls isContinueAllowed
+     */
+    Timer timer;
 
     /**
      * menu and actionbar
@@ -67,12 +84,7 @@ public class ClientStatistics extends FragmentActivity implements QuitDialogFrag
     /**
      * Items in Actionbar
      */
-    ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
-
-    /**
-     * SharedPreferences name
-     */
-    private final String MyPREFERENCES = "myPref";
+    ArrayList<NavItem> mNavItems = new ArrayList<>();
 
     /**
      * ListView for Actionbar
@@ -89,6 +101,12 @@ public class ClientStatistics extends FragmentActivity implements QuitDialogFrag
      */
     private DrawerLayout mDrawerLayout;
 
+    /**
+     * creates activity for ClientStatistics
+     * shows game statistic
+     * checks with timer if its allowed to call ClientQuestion
+     * @param savedInstanceState    .
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,8 +119,8 @@ public class ClientStatistics extends FragmentActivity implements QuitDialogFrag
         score.append("\nDifference: " + (helper.getAnsweredPlayers().length - helper.getPointsFromThisRound()));
         score.append("\n\nTotal points: " + helper.getPoints());
 
-        list = (ListView) findViewById(R.id.client_statistic_score_view);
-        this.adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
+        ListView list = (ListView) findViewById(R.id.client_statistic_score_view);
+        this.adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listItems);
         list.setAdapter(this.adapter);
 
         final Handler handler = new Handler();
@@ -196,7 +214,11 @@ public class ClientStatistics extends FragmentActivity implements QuitDialogFrag
         imageView.setImageDrawable(drawerArrowDrawable);
 
         //------------------------------------------------------------------------ ListView in Actionbar
-        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
+        /*
+      SharedPreferences name
+     */
+        String myPREFERENCES = "myPref";
+        SharedPreferences preferences = getSharedPreferences(myPREFERENCES, MODE_PRIVATE);
         String username = preferences.getString("username", "");
 
         TextView name = (TextView) findViewById(R.id.user_name);
@@ -233,10 +255,10 @@ public class ClientStatistics extends FragmentActivity implements QuitDialogFrag
                 // Sometimes slideOffset ends up so close to but not quite 1 or 0.
                 if (slideOffset >= .995) {
                     flipped = true;
-                    drawerArrowDrawable.setFlip(flipped);
+                    drawerArrowDrawable.setFlip(true);
                 } else if (slideOffset <= .005) {
                     flipped = false;
-                    drawerArrowDrawable.setFlip(flipped);
+                    drawerArrowDrawable.setFlip(false);
                 }
 
                 drawerArrowDrawable.setParameter(offset);
@@ -276,59 +298,15 @@ public class ClientStatistics extends FragmentActivity implements QuitDialogFrag
 
     }
 
-//    @Override
-//    public void onClick(View view) {
-////        timerPlayer.cancel();
-//        showProgress(true);
-//        helper.getQuestionByUserAndGameId(helper.getUserID(), helper.getGameId(), new OnJSONResponseCallback() {
-//            @Override
-//            public void onJSONResponse(boolean success, JSONObject response) {
-//                if(success) {
-//                    Intent i = new Intent(ClientStatistics.this, ClientQuestion.class);
-//                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                    startActivity(i);
-//                }
-//            }
-//        });
-//    }
-
-//    public void addItem(String name, int points, int difference){
-//        boolean foundEqual = false;
-//        if(!adapter.isEmpty()) {
-//            for (int i = 0; (i < adapter.getCount() && !foundEqual); i++) {
-//
-//                if (adapter.getItem(i).equals(name + " (" + points + ") " + difference)) {
-//                    foundEqual = true;
-//                }
-//            }
-//        }
-//        if (!foundEqual) {
-//            adapter.add(name + " (" + points + ") " + difference);
-//            adapter.notifyDataSetChanged();
-//        }
-//    }
-//
-//    private class callPlayers extends TimerTask {
-//        @Override
-//        public void run() {
-//            final AdditionalMethods helper = AdditionalMethods.getInstance();
-//            helper.getPlayersInGame(helper.getGameId(), new OnJSONResponseCallback() {
-//                @Override
-//                public void onJSONResponse(boolean success, JSONObject response) {
-//                    if(success) {
-//                        for (int i = 0; i < helper.getPlayers().length; i++) {
-//                            addItem(helper.getPlayers()[i],1,1);
-//                        }
-//                    }
-//                }
-//            });
-//        }
-//    }
-
+    /**
+     * used for menu
+     * when one item is selected, it will react considering which item was clicked
+     * @param position  .
+     * @param title     name of title
+     */
     private void selectItemFromDrawer(int position, String title) {
 
-        FragmentManager fm = getFragmentManager();
-        if(title == "Credit") {
+        if(Objects.equals(title, "Credit")) {
             CreditDialogFragment fragment = new CreditDialogFragment();
             fragment.show(getSupportFragmentManager(), "Dialog");
         }
@@ -353,7 +331,7 @@ public class ClientStatistics extends FragmentActivity implements QuitDialogFrag
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
 
-        final View mProgressView = (View) findViewById(R.id.client_statistics_progress);
+        final View mProgressView = findViewById(R.id.client_statistics_progress);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             final int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
@@ -386,11 +364,21 @@ public class ClientStatistics extends FragmentActivity implements QuitDialogFrag
         }
     }
 
+
+    /**
+     * adds a (players) statistic to listview
+     * @param name  name of player
+     */
     public void addItem(String name, int points, int difference){
         adapter.add(name + "(" + points + ")  " + "diff: " + difference);
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * finishes activity and canceled timerPlayer if quit is true
+     * is true if user clicked positive button and quitGame was a success
+     * @param quit true if quitGame
+     */
     @Override
     public void onArticleSelected(boolean quit) {
         timer.cancel();
@@ -402,6 +390,9 @@ public class ClientStatistics extends FragmentActivity implements QuitDialogFrag
         finish();
     }
 
+    /**
+     * overridden because back should not be able to be pressed
+     */
     @Override
     public void onBackPressed() {
     }

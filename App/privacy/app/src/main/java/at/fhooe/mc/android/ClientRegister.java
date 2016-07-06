@@ -3,8 +3,6 @@ package at.fhooe.mc.android;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.FragmentManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -14,10 +12,8 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
@@ -40,6 +36,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -49,13 +46,29 @@ import java.util.List;
 public class ClientRegister extends FragmentActivity implements  LoaderCallbacks<Cursor>, OnClickListener  {
 
 
-    // UI references.
+    /**
+     * EditText field for username-input
+     */
     private EditText mUsername;
+
+    /**
+     * EditText field for gameIde input
+     */
     private EditText mSessionId;
+
+    /**
+     * View for Progress
+     */
     private View mProgressView;
+
+    /**
+     * View to hide JoinForm
+     */
     private View mJoinFormView;
 
-    private String name;
+    /**
+     * sessionId
+     */
     private int sessionId;
 
     /**
@@ -83,12 +96,7 @@ public class ClientRegister extends FragmentActivity implements  LoaderCallbacks
     /**
      * Items in Actionbar
      */
-    ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
-
-    /**
-     * SharedPreferences name
-     */
-    private final String MyPREFERENCES = "myPref";
+    ArrayList<NavItem> mNavItems = new ArrayList<>();
 
     /**
      * ListView for Actionbar
@@ -106,13 +114,23 @@ public class ClientRegister extends FragmentActivity implements  LoaderCallbacks
     private DrawerLayout mDrawerLayout;
 
 
+    /**
+     * created activity for clientregister
+     * login UI for client
+     * needs name and sessionid to be told
+     * @param savedInstanceState    .
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.client_register);
         // Set up the login form.
         mUsername = (EditText) findViewById(R.id.client_register_username);
-        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        /*
+      SharedPreferences name
+     */
+        String myPREFERENCES = "myPref";
+        SharedPreferences preferences = getSharedPreferences(myPREFERENCES, Context.MODE_PRIVATE);
         String name = preferences.getString("username", "");
         mUsername.setText(name);
 
@@ -120,11 +138,7 @@ public class ClientRegister extends FragmentActivity implements  LoaderCallbacks
         mSessionId.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_ACTION_DONE) {
-                    //attemptLogin();
-                    return true;
-                }
-                return false;
+                return id == R.id.login || id == EditorInfo.IME_ACTION_DONE;
             }
         });
 
@@ -190,10 +204,10 @@ public class ClientRegister extends FragmentActivity implements  LoaderCallbacks
                 // Sometimes slideOffset ends up so close to but not quite 1 or 0.
                 if (slideOffset >= .995) {
                     flipped = true;
-                    drawerArrowDrawable.setFlip(flipped);
+                    drawerArrowDrawable.setFlip(true);
                 } else if (slideOffset <= .005) {
                     flipped = false;
-                    drawerArrowDrawable.setFlip(flipped);
+                    drawerArrowDrawable.setFlip(false);
                 }
 
                 drawerArrowDrawable.setParameter(offset);
@@ -263,7 +277,7 @@ public class ClientRegister extends FragmentActivity implements  LoaderCallbacks
             focusView = mSessionId;
             cancel = true;
         }
-        else if (!isUsernameValid(mName, mID)) {
+        else if (!isUsernameValid(mName)) {
             mUsername.setError(getString(R.string.error_invalid_name));
             focusView = mUsername;
             cancel = true;
@@ -291,16 +305,19 @@ public class ClientRegister extends FragmentActivity implements  LoaderCallbacks
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            name = mName;
             sessionId = Integer.parseInt(mID);
             showProgress(true);
             return true;
         }
     }
 
-    private boolean isUsernameValid(final String name, String id) {
-        if(name.length() > 25) return false;
-        return true;
+    /**
+     * check if username is valid
+     * @param name  username
+     * @return      true or false
+     */
+    private boolean isUsernameValid(final String name) {
+        return name.length() <= 25;
     }
 
 
@@ -373,10 +390,15 @@ public class ClientRegister extends FragmentActivity implements  LoaderCallbacks
 
     }
 
+    /**
+     * onclick calls attemptLogin
+     * if input is valid, calls joinGame and ClientLobby
+     * finishes
+     * @param view  .
+     */
     @Override
     public void onClick(View view) {
         helper = AdditionalMethods.getInstance();
-        Handler handler = new Handler();
         if(attemptLogin()) {
             helper.joinGame(helper.getUserID(), sessionId, new OnJSONResponseCallback() {
                 @Override
@@ -399,7 +421,9 @@ public class ClientRegister extends FragmentActivity implements  LoaderCallbacks
         }
     }
 
-
+    /**
+     * ProfileQuery interface
+     */
     private interface ProfileQuery {
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
@@ -407,24 +431,18 @@ public class ClientRegister extends FragmentActivity implements  LoaderCallbacks
         };
 
         int ADDRESS = 0;
-        int IS_PRIMARY = 1;
     }
 
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        AdditionalMethods helper = AdditionalMethods.getInstance();
-        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("userID", helper.getUserID());
-        editor.commit();
-    }
-
+    /**
+     * used for menu
+     * when one item is selected, it will react considering which item was clicked
+     * @param position  .
+     * @param title     name of title
+     */
     private void selectItemFromDrawer(int position, String title) {
 
-        FragmentManager fm = getFragmentManager();
-        if(title == "Credit") {
+        if(Objects.equals(title, "Credit")) {
             CreditDialogFragment fragment = new CreditDialogFragment();
             fragment.show(getSupportFragmentManager(), "Dialog");
         }
