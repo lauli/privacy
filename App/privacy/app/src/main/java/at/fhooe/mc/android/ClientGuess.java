@@ -155,6 +155,9 @@ public class ClientGuess extends FragmentActivity implements AdapterView.OnItemS
                     @Override
                     public void onJSONResponse(boolean success, JSONObject response) {
                         if(success) {
+                            timerDoesGameExist.cancel();
+                            timerDoesGameExist.purge();
+                            timerDoesGameExist = null;
                             GameDoesntExistDialogFragment dialog = new GameDoesntExistDialogFragment();
                             dialog.setCancelable(false);
                             dialog.show(getSupportFragmentManager(), "Dialog");
@@ -404,9 +407,6 @@ public class ClientGuess extends FragmentActivity implements AdapterView.OnItemS
      */
     @Override
     public void onArticleSelected(boolean quit) {
-        timerDoesGameExist.cancel();
-        timerDoesGameExist.purge();
-        timerDoesGameExist = null;
         finish();
     }
 

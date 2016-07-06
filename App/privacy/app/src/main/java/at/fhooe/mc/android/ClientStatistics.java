@@ -216,6 +216,9 @@ public class ClientStatistics extends FragmentActivity implements QuitDialogFrag
                     @Override
                     public void onJSONResponse(boolean success, JSONObject response) {
                         if(success) {
+                            timerDoesGameExist.cancel();
+                            timerDoesGameExist.purge();
+                            timerDoesGameExist = null;
                             GameDoesntExistDialogFragment dialog = new GameDoesntExistDialogFragment();
                             dialog.setCancelable(false);
                             dialog.show(getSupportFragmentManager(), "Dialog");
@@ -408,9 +411,6 @@ public class ClientStatistics extends FragmentActivity implements QuitDialogFrag
         timerPlayer.cancel();
         timerPlayer.purge();
         timerPlayer = null;
-        timerDoesGameExist.cancel();
-        timerDoesGameExist.purge();
-        timerDoesGameExist = null;
         finish();
     }
 

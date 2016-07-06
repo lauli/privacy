@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PrivacyGame</string>
+    <string name="app_name">Privacy</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_client_register">Join Session</string>
 

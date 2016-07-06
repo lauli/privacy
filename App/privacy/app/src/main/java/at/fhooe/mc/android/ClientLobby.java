@@ -165,6 +165,9 @@ public class ClientLobby extends FragmentActivity implements View.OnClickListene
                     @Override
                     public void onJSONResponse(boolean success, JSONObject response) {
                         if(success) {
+                            timerDoesGameExist.cancel();
+                            timerDoesGameExist.purge();
+                            timerDoesGameExist = null;
                             GameDoesntExistDialogFragment dialog = new GameDoesntExistDialogFragment();
                             dialog.setCancelable(false);
                             dialog.show(getSupportFragmentManager(), "Dialog");
@@ -387,9 +390,6 @@ public class ClientLobby extends FragmentActivity implements View.OnClickListene
         timerPlayer.cancel();
         timerPlayer.purge();
         timerPlayer = null;
-        timerDoesGameExist.cancel();
-        timerDoesGameExist.purge();
-        timerDoesGameExist = null;
         finish();
     }
 
