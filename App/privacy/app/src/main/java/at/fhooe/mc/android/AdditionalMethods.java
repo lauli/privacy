@@ -260,7 +260,7 @@ public class AdditionalMethods {
     }
 
     /**
-     * 
+     *
      * @return userId
      */
     public int getUserID(){
@@ -269,7 +269,7 @@ public class AdditionalMethods {
 
     /**
      * used to change userId
-     * @param id
+     * @param id integer to which userId should be changed
      */
     public void setUserID(int id){
         this.userId = id;
@@ -299,7 +299,7 @@ public class AdditionalMethods {
 
     /**
      * used to change name
-     * @param name
+     * @param name  String to which name should be changed
      */
     public void setName(String name){
         this.name = name;
@@ -349,7 +349,7 @@ public class AdditionalMethods {
 
     /**
      * used to change points
-     * @param points
+     * @param points    integer to which points should be changed
      */
     public void setPoints(int points){ this.points = points;}
 
@@ -390,7 +390,16 @@ public class AdditionalMethods {
     // -----------------------------------------------------------------------------start functions for database
 
 
-
+    /**
+     * POST REQUEST, that creates user by language and name
+     * uses createUserURL
+     * result: userId or -1
+     * saves firstCall, username, language and points in sharedpreferences
+     * saves lang, name and userId in AdditionalMethods
+     * @param language      int id of language
+     * @param name          String name of user
+     * @param callback      responseCallback - success or not
+     */
     protected void createUser(int language, String name, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
@@ -406,7 +415,6 @@ public class AdditionalMethods {
         client.post(createUserURL(), params, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                // TODO: do error handling here
                 Log.i(LOG_TAG,"onFailure");
                 callback.onJSONResponse(false, null);
             }
@@ -437,13 +445,19 @@ public class AdditionalMethods {
                     callback.onJSONResponse(true, null);
 
                 } catch (JSONException _e) {
-                    // TODO: error handling
                     _e.printStackTrace();
                 }
             }
         });
     }
 
+    /**
+     * POST REQUEST, that changes language in AdditionalMethods and database for questions to come in right language
+     * uses URL changeLanguageURL
+     * @param userId        userId
+     * @param language      language
+     * @param callback      callback
+     */
     protected void changeLanguage (int userId, final int language, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
@@ -471,6 +485,13 @@ public class AdditionalMethods {
         });
     }
 
+    /**
+     * POST REQUEST, that changes name in AdditionalMethods and database
+     * uses URL changeUserNameURL
+     * @param userId    userId
+     * @param name      name
+     * @param callback  callback
+     */
     protected void changeUserName (int userId, final String name, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
@@ -512,6 +533,15 @@ public class AdditionalMethods {
 //        });
 //    }
 
+    /**
+     * POST REQUEST, that gets shuffled questionpool (ids) by groud id
+     * saves questionIds in ids[]
+     * saves question by first indes in ids[]
+     * uses getQuestionIdsByGrpIdURL
+     * result: shuffled ids
+     * @param category  question category (3,4,5)
+     * @param callback  callback
+     */
     protected void getQuestionIdsByGroupId(int category, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
@@ -543,7 +573,6 @@ public class AdditionalMethods {
 
                     callback.onJSONResponse(true, null);
                 } catch (JSONException _e) {
-                    // TODO: error handling
                     _e.printStackTrace();
                 }
 
@@ -551,7 +580,14 @@ public class AdditionalMethods {
         });
     }
 
-
+    /**
+     * POST REQUEST, that creates new Game and saves gameId
+     * uses newGameURL
+     * result: gameId
+     * @param userId        userId
+     * @param questionId    questionId
+     * @param callback      callback
+     */
     protected void newGame(int userId, int questionId, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
@@ -586,6 +622,14 @@ public class AdditionalMethods {
         });
     }
 
+    /**
+     * POST REQUEST, that
+     * uses URL
+     * result: 
+     * @param userId
+     * @param id
+     * @param callback
+     */
     protected void joinGame(int userId, int id, final OnJSONResponseCallback callback) {
         AsyncHttpClient client = new AsyncHttpClient();
 
