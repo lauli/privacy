@@ -3,28 +3,22 @@ package at.fhooe.mc.android;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ExpandableListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import android.widget.ExpandableListView.OnChildClickListener;
-
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 /**
  * Created by laureenschausberger on 17.06.16.
+ * shows dialog to see credits
  */
 public class CreditDialogFragment extends DialogFragment {
 
@@ -34,6 +28,12 @@ public class CreditDialogFragment extends DialogFragment {
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
 
+    /**
+     * * shows dialog to see credits
+     * @param savedInstanceState    .
+     * @return                      builder.create()
+     */
+    @NonNull
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -64,8 +64,8 @@ public class CreditDialogFragment extends DialogFragment {
    * Preparing the list data
    */
     private void prepareListData() {
-        listDataHeader = new ArrayList<String>();
-        listDataChild = new HashMap<String, List<String>>();
+        listDataHeader = new ArrayList<>();
+        listDataChild = new HashMap<>();
 
         // Adding child data
         listDataHeader.add("Special thanks to");
@@ -74,16 +74,16 @@ public class CreditDialogFragment extends DialogFragment {
         listDataHeader.add("Material");
 
         // Adding child data
-        List<String> special = new ArrayList<String>();
+        List<String> special = new ArrayList<>();
         special.add("FH Hagenberg and Fabian Bouchal");
 
-        List<String> DrawerArrowDrawable = new ArrayList<String>();
+        List<String> DrawerArrowDrawable = new ArrayList<>();
         DrawerArrowDrawable.add(getString(R.string.credits_chrisrenke));
 
-        List<String> FloatLabeledEditText = new ArrayList<String>();
+        List<String> FloatLabeledEditText = new ArrayList<>();
         FloatLabeledEditText.add(getString(R.string.credits_henriksandstroem));
 
-        List<String> Material = new ArrayList<String>();
+        List<String> Material = new ArrayList<>();
         Material.add(getString(R.string.credits_reypham));
 
         listDataChild.put(listDataHeader.get(0), special); // Header, Child data

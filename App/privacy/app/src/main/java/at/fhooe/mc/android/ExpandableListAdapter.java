@@ -16,6 +16,7 @@ package at.fhooe.mc.android;
 
 /**
  * Created by laureenschausberger on 17.06.16.
+ * ExpandableListAdapter for CreditDialogFragment
  */
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 

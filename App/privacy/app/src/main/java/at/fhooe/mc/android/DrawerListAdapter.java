@@ -12,12 +12,25 @@ import java.util.ArrayList;
 
 /**
  * Created by laureenschausberger on 03.07.16.
+ * DrawerListAdapter
  */
 class DrawerListAdapter extends BaseAdapter {
 
+    /**
+     * context form adapter
+     */
     Context mContext;
+
+    /**
+     * List with NavItems
+     */
     ArrayList<NavItem> mNavItems;
 
+    /**
+     * contructor for DrawerListAdapter
+     * @param context   context
+     * @param navItems  ArrayList with NavItems
+     */
     public DrawerListAdapter(Context context, ArrayList<NavItem> navItems) {
         mContext = context;
         mNavItems = navItems;

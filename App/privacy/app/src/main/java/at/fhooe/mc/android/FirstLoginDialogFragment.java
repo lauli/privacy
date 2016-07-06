@@ -3,28 +3,24 @@ package at.fhooe.mc.android;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import org.json.JSONObject;
 
 /**
  * Created by laureenschausberger on 17.06.16.
+ * Dialog for first time app call to createUser with input name
  */
 public class FirstLoginDialogFragment extends DialogFragment {
 
-    private final String MyPREFERENCES = "myPref";
-    Handler handler = new Handler();
+    /**
+     * callback for Activity to handle choices made in dialog
+     */
     OnHeadlineSelectedListener mCallback;
 
 
@@ -63,17 +59,26 @@ public class FirstLoginDialogFragment extends DialogFragment {
         return  builder.create();
     }
 
+    /**
+     * on dismiss dialog closes
+     * @param dialog
+     */
     public void onDismiss(DialogInterface dialog) {
         Activity activity = getActivity();
         if(activity instanceof MyDialogCloseListener)
             ((MyDialogCloseListener)activity).handleDialogClose(dialog);
     }
 
+    /**
+     * MyDialogCloseListener interface
+     */
     public interface MyDialogCloseListener {
         public void handleDialogClose(DialogInterface dialog);
     }
 
-    // Container Activity must implement this interface
+    /**
+     * OnHeadlineSelectedListener interface
+     */
     public interface OnHeadlineSelectedListener {
         public void onArticleSelected(boolean done);
     }
