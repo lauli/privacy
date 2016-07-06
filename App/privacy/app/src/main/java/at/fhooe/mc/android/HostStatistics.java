@@ -27,17 +27,28 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
 /**
  * Created by laureenschausberger.
+ * Activity for Host to see round/game statistics
+ * will call HostQuestion
  */
 public class HostStatistics extends FragmentActivity implements View.OnClickListener, QuitDialogFragment.OnHeadlineSelectedListener{
 
-    private ArrayList<String> listItems = new ArrayList<String>();
-    private ListView list;
-    private Timer timerPlayer;
+    /**
+     * String items for listview
+     */
+    private ArrayList<String> listItems = new ArrayList<>();
+
+
+    /**
+     * timer for listview
+     * calls getStatisticsByGameId
+     */
+    Timer timerPlayer;
 
     /**
      * menu and actionbar
@@ -64,12 +75,7 @@ public class HostStatistics extends FragmentActivity implements View.OnClickList
     /**
      * Items in Actionbar
      */
-    ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
-
-    /**
-     * SharedPreferences name
-     */
-    private final String MyPREFERENCES = "myPref";
+    ArrayList<NavItem> mNavItems = new ArrayList<>();
 
     /**
      * ListView for Actionbar
@@ -87,19 +93,21 @@ public class HostStatistics extends FragmentActivity implements View.OnClickList
     private DrawerLayout mDrawerLayout;
     private ArrayAdapter<String> adapter;
 
+    /**
+    * creates Activity for Host to see round/game statistics
+    * will call HostQuestion
+    */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.host_statistics);
-
-
 
         TextView score = (TextView) findViewById(R.id.textView);
         score.setText("Your guess: " + helper.getGuess() + ", yeses:" + helper.getHowManyYes());
         score.append("\nDifference: " + (helper.getAnsweredPlayers().length - helper.getPointsFromThisRound()));
         score.append("\n\nTotal points: " + helper.getPoints());
 
-        list = (ListView) findViewById(R.id.host_statistic_score_view);
+        ListView list = (ListView) findViewById(R.id.host_statistic_score_view);
         this.adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
         list.setAdapter(this.adapter);
 
@@ -148,8 +156,7 @@ public class HostStatistics extends FragmentActivity implements View.OnClickList
 
 
 
-        Button b = null;
-        b = (Button) findViewById(R.id.host_statistics_continue);
+        Button b = (Button) findViewById(R.id.host_statistics_continue);
         b.setOnClickListener(this);
 
         // --------------------------------------------------------------------------------------------  actionbar Start!
@@ -162,7 +169,11 @@ public class HostStatistics extends FragmentActivity implements View.OnClickList
         imageView.setImageDrawable(drawerArrowDrawable);
 
         //------------------------------------------------------------------------ ListView in Actionbar
-        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
+        /*
+      SharedPreferences name
+     */
+        String myPREFERENCES = "myPref";
+        SharedPreferences preferences = getSharedPreferences(myPREFERENCES, MODE_PRIVATE);
         String username = preferences.getString("username", "");
 
         TextView name = (TextView) findViewById(R.id.user_name);
@@ -200,10 +211,10 @@ public class HostStatistics extends FragmentActivity implements View.OnClickList
                 // Sometimes slideOffset ends up so close to but not quite 1 or 0.
                 if (slideOffset >= .995) {
                     flipped = true;
-                    drawerArrowDrawable.setFlip(flipped);
+                    drawerArrowDrawable.setFlip(true);
                 } else if (slideOffset <= .005) {
                     flipped = false;
-                    drawerArrowDrawable.setFlip(flipped);
+                    drawerArrowDrawable.setFlip(false);
                 }
 
                 drawerArrowDrawable.setParameter(offset);
@@ -243,9 +254,13 @@ public class HostStatistics extends FragmentActivity implements View.OnClickList
 
     }
 
+    /**
+     * calls forceNextQuestion and getQuestionByUserAndGameId
+     * calls HostQuestion
+     * @param view  .
+     */
     @Override
     public void onClick(View view) {
-//        timerPlayer.cancel();
         showProgress(true);
         timerPlayer.cancel();
         timerPlayer.purge();
@@ -270,43 +285,24 @@ public class HostStatistics extends FragmentActivity implements View.OnClickList
         });
     }
 
+    /**
+     * adds a (players) statistic to listview
+     * @param name  name of player
+     */
     public void addItem(String name, int points, int difference){
-//        boolean foundEqual = false;
-//        if(!adapter.isEmpty()) {
-//            for (int i = 0; (i < adapter.getCount() && !foundEqual); i++) {
-//
-//                if (adapter.getItem(i).equals(name)) {
-//                    foundEqual = true;
-//                }
-//            }
-//        }
-//        if (!foundEqual) {
             adapter.add(name + "(" + points + ")  " + "diff: " + difference);
             adapter.notifyDataSetChanged();
-//        }
     }
 
-//    private class callPlayers extends TimerTask {
-//        @Override
-//        public void run() {
-//            final AdditionalMethods helper = AdditionalMethods.getInstance();
-//            helper.getPlayersInGame(helper.getGameId(), new OnJSONResponseCallback() {
-//                @Override
-//                public void onJSONResponse(boolean success, JSONObject response) {
-//                    if(success) {
-//                        for (int i = 0; i < helper.getPlayers().length; i++) {
-//                            addItem(helper.getPlayers()[i],1,1);
-//                        }
-//                    }
-//                }
-//            });
-//        }
-//    }
-
+    /**
+     * used for menu
+     * when one item is selected, it will react considering which item was clicked
+     * @param position  .
+     * @param title     name of title
+     */
     private void selectItemFromDrawer(int position, String title) {
 
-        FragmentManager fm = getFragmentManager();
-        if(title == "Credit") {
+        if(Objects.equals(title, "Credit")) {
             CreditDialogFragment fragment = new CreditDialogFragment();
             fragment.show(getSupportFragmentManager(), "Dialog");
         }
@@ -331,7 +327,7 @@ public class HostStatistics extends FragmentActivity implements View.OnClickList
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
 
-        final View mProgressView = (View) findViewById(R.id.host_statistics_progress);
+        final View mProgressView = findViewById(R.id.host_statistics_progress);
         Button b = (Button) findViewById(R.id.host_statistics_continue);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
@@ -356,6 +352,11 @@ public class HostStatistics extends FragmentActivity implements View.OnClickList
         }
     }
 
+    /**
+     * finishes activity and canceled timerPlayer if quit is true
+     * is true if user clicked positive button and quitGame was a success
+     * @param quit true if quitGame
+     */
     @Override
     public void onArticleSelected(boolean quit) {
         timerPlayer.cancel();
@@ -364,6 +365,9 @@ public class HostStatistics extends FragmentActivity implements View.OnClickList
         finish();
     }
 
+    /**
+     * overridden because back should not be able to be pressed
+     */
     @Override
     public void onBackPressed() {
     }

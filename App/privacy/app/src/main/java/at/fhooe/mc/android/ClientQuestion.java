@@ -34,7 +34,7 @@ import java.util.TimerTask;
 
 /**
  *  Created by laureenschausberger.
- *  Activity for Client to see question an answer it
+ *  Activity for Client to see question and answer it
  *  will call ClientGuess only if Host has called allowContinuing before
  *  checked by timer and isContinueAllowed
  */
@@ -207,6 +207,12 @@ public class ClientQuestion extends FragmentActivity implements View.OnClickList
         // --------------------------------------------------------------------------------------------  actionbar End!
     }
 
+    /**
+     * onclick answersQuestion with chosen yes/no and default value for guess
+     * afterwards start timer to check if istContinueAllowed
+     * when true, calls ClientGuess
+     * @param _view
+     */
     @Override
     public void onClick(View _view) {
         showProgress(true);

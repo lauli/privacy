@@ -11,9 +11,14 @@ import org.json.JSONObject;
 
 /**
  * Created by laureenschausberger on 17.06.16.
+ * DialogFragment to show Quit Dialog
+ * game can be closed when one clicks positive button
  */
 public class QuitDialogFragment extends DialogFragment {
 
+    /**
+     * callback for Activity to handle choices made in dialog
+     */
     OnHeadlineSelectedListener mCallback;
 
     @Override
@@ -44,7 +49,9 @@ public class QuitDialogFragment extends DialogFragment {
         return builder.create();
     }
 
-    // Container Activity must implement this interface
+    /**
+     * OnHeadlineSelectedListener interface
+     */
     public interface OnHeadlineSelectedListener {
         public void onArticleSelected(boolean quit);
     }

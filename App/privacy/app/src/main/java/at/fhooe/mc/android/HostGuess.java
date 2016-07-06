@@ -3,7 +3,6 @@ package at.fhooe.mc.android;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -27,11 +26,21 @@ import com.rey.material.widget.Slider;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
+/**
+ * Activity for Host to be able to guess the number of positive answers from last question
+ */
 public class HostGuess extends FragmentActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener, QuitDialogFragment.OnHeadlineSelectedListener{
 
-    private ArrayList<String> listItems = new ArrayList<String>();
-    private ListView list;
+    /**
+     * String items for listview
+     */
+    private ArrayList<String> listItems = new ArrayList<>();
+
+    /**
+     * context from activity
+     */
     private static Context context;
 
     /**
@@ -59,12 +68,7 @@ public class HostGuess extends FragmentActivity implements AdapterView.OnItemSel
     /**
      * Items in Actionbar
      */
-    ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
-
-    /**
-     * SharedPreferences name
-     */
-    private final String MyPREFERENCES = "myPref";
+    ArrayList<NavItem> mNavItems = new ArrayList<>();
 
     /**
      * ListView for Actionbar
@@ -84,14 +88,17 @@ public class HostGuess extends FragmentActivity implements AdapterView.OnItemSel
     private ArrayAdapter<String> adapter;
     final int[] guess = {helper.getAnsweredPlayers().length};
 
+    /**
+     * Activity for Host to be able to guess the number of positive answers from last question
+     * @param savedInstanceState    .
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.host_guess);
 
-        list = null;
-        list = (ListView) findViewById(R.id.host_guess_players_list);
-        this.adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
+        ListView list = (ListView) findViewById(R.id.host_guess_players_list);
+        this.adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listItems);
         list.setAdapter(this.adapter);
 
 
@@ -102,37 +109,6 @@ public class HostGuess extends FragmentActivity implements AdapterView.OnItemSel
         com.rey.material.widget.Slider slider = (com.rey.material.widget.Slider) findViewById(R.id.host_guess_slider);
         slider.setValueRange(0, helper.getAnsweredPlayers().length, true);
 
-//        slider.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                if(event.getAction()==MotionEvent.ACTION_DOWN && guess[0] != -1) {
-//                    helper.answerQuestion(helper.getUserID(), helper.getGameId(), helper.questionId, helper.getAnswer(), guess[0], new OnJSONResponseCallback() {
-//                        @Override
-//                        public void onJSONResponse(boolean success, JSONObject response) {
-//                            helper.allowStatistics(helper.userId, helper.getGameId(), new OnJSONResponseCallback() {
-//                                @Override
-//                                public void onJSONResponse(boolean success, JSONObject response) {
-//                                    helper.getStatisticsByGameIdHost(helper.getGameId(), new OnJSONResponseCallback() {
-//                                        @Override
-//                                        public void onJSONResponse(boolean success, JSONObject response) {
-//                                            helper.pushPointsToProfile(helper.getUserID(), helper.getPointsFromThisRound(), new OnJSONResponseCallback() {
-//                                                @Override
-//                                                public void onJSONResponse(boolean success, JSONObject response) {
-//                                                    Intent i = new Intent(HostGuess.this, HostStatistics.class);
-//                                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                                                    startActivity(i);
-//                                                }
-//                                            });
-//                                        }
-//                                    });
-//                                }
-//                            });
-//                        }
-//                    });
-//                }
-//                return false;
-//            }
-//        });
         slider.setOnPositionChangeListener(new Slider.OnPositionChangeListener() {
             @Override
             public void onPositionChanged(Slider view, boolean fromUser, float oldPos, float newPos, int oldValue, int newValue) {
@@ -140,8 +116,7 @@ public class HostGuess extends FragmentActivity implements AdapterView.OnItemSel
             }
         });
 
-        Button b = null;
-        b = (Button) findViewById(R.id.host_guess_continue);
+        Button b = (Button) findViewById(R.id.host_guess_continue);
         b.setOnClickListener(this);
 
         context = getApplicationContext();
@@ -156,7 +131,11 @@ public class HostGuess extends FragmentActivity implements AdapterView.OnItemSel
         imageView.setImageDrawable(drawerArrowDrawable);
 
         //------------------------------------------------------------------------ ListView in Actionbar
-        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
+        /*
+      SharedPreferences name
+     */
+        String myPREFERENCES = "myPref";
+        SharedPreferences preferences = getSharedPreferences(myPREFERENCES, MODE_PRIVATE);
         String username = preferences.getString("username", "");
 
         TextView name = (TextView) findViewById(R.id.user_name);
@@ -194,10 +173,10 @@ public class HostGuess extends FragmentActivity implements AdapterView.OnItemSel
                 // Sometimes slideOffset ends up so close to but not quite 1 or 0.
                 if (slideOffset >= .995) {
                     flipped = true;
-                    drawerArrowDrawable.setFlip(flipped);
+                    drawerArrowDrawable.setFlip(true);
                 } else if (slideOffset <= .005) {
                     flipped = false;
-                    drawerArrowDrawable.setFlip(flipped);
+                    drawerArrowDrawable.setFlip(false);
                 }
 
                 drawerArrowDrawable.setParameter(offset);
@@ -234,25 +213,31 @@ public class HostGuess extends FragmentActivity implements AdapterView.OnItemSel
             }
         });
         // --------------------------------------------------------------------------------------------  actionbar End!
-
-
-//        Spinner spinner = (Spinner) findViewById(R.id.spinner);
-//        ArrayAdapter<CharSequence> adapt = ArrayAdapter.createFromResource(this, R.array.spinner_elements, android.R.layout.simple_spinner_item);
-//        adapt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        spinner.setAdapter(adapt);
-//        spinner.setOnItemSelectedListener(this);
     }
 
+    /**
+     * An item was selected. You can retrieve the selected item using parent.getItemAtPosition(pos)
+     * * @param parent .
+     * @param view  .
+     * @param pos   .
+     * @param id    .
+     */
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
-        // An item was selected. You can retrieve the selected item using
-        // parent.getItemAtPosition(pos)
+
     }
 
+    /**
+     * Another interface callback
+     * @param parent    .
+     */
     public void onNothingSelected(AdapterView<?> parent) {
-        // Another interface callback
     }
 
+    /**
+     * adds a (players) name to listview
+     * @param name  name of player
+     */
     public void addItem(String name){
         boolean foundEqual = false;
         if(!adapter.isEmpty()) {
@@ -269,6 +254,10 @@ public class HostGuess extends FragmentActivity implements AdapterView.OnItemSel
         }
     }
 
+    /**
+     * onclick callsanswerQuestion with already answered yes/no and now correct guess from guess
+     * @param view  .
+     */
     @Override
     public void onClick(View view) {
         showProgress(true);
@@ -289,10 +278,15 @@ public class HostGuess extends FragmentActivity implements AdapterView.OnItemSel
         });
     }
 
+    /**
+     * used for menu
+     * when one item is selected, it will react considering which item was clicked
+     * @param position  .
+     * @param title     name of title
+     */
     private void selectItemFromDrawer(int position, String title) {
 
-        FragmentManager fm = getFragmentManager();
-        if(title == "Credit") {
+        if(Objects.equals(title, "Credit")) {
             CreditDialogFragment fragment = new CreditDialogFragment();
             fragment.show(getSupportFragmentManager(), "Dialog");
         }
@@ -317,7 +311,7 @@ public class HostGuess extends FragmentActivity implements AdapterView.OnItemSel
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
 
-        final View mProgressView = (View) findViewById(R.id.host_guess_progress);
+        final View mProgressView = findViewById(R.id.host_guess_progress);
         Button b = (Button) findViewById(R.id.host_guess_continue);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
@@ -342,15 +336,27 @@ public class HostGuess extends FragmentActivity implements AdapterView.OnItemSel
         }
     }
 
+    /**
+     * context from application
+     * @return
+     */
     public static Context getContextOfApplication(){
         return context;
     }
 
+    /**
+     * finishes activity if quit is true
+     * is true if user clicked positive button and quitGame was a success
+     * @param quit true if quitGame
+     */
     @Override
     public void onArticleSelected(boolean quit) {
         finish();
     }
 
+    /**
+     * overridden because back should not be able to be pressed
+     */
     @Override
     public void onBackPressed() {
     }

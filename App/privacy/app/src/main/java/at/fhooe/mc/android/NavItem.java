@@ -2,6 +2,7 @@ package at.fhooe.mc.android;
 
 /**
  * Created by laureenschausberger on 03.07.16.
+ * Item for Menu
  */
 class NavItem {
     String mTitle;

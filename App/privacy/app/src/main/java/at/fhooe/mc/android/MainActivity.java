@@ -14,6 +14,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
+/**
+ * not used
+ * but nice layout :)
+ */
 public class MainActivity extends AppCompatActivity {
 
     @Override

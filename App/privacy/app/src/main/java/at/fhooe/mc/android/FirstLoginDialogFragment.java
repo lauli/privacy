@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.widget.EditText;
@@ -24,13 +25,13 @@ public class FirstLoginDialogFragment extends DialogFragment {
     OnHeadlineSelectedListener mCallback;
 
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
 
         final EditText edittext = new EditText(getActivity());
         edittext.setSingleLine(true);
-        View view = View.inflate(getActivity(),R.layout.dialog_first_login_fragment, null);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("User Registration")
@@ -61,7 +62,7 @@ public class FirstLoginDialogFragment extends DialogFragment {
 
     /**
      * on dismiss dialog closes
-     * @param dialog
+     * @param dialog    .
      */
     public void onDismiss(DialogInterface dialog) {
         Activity activity = getActivity();
@@ -73,14 +74,14 @@ public class FirstLoginDialogFragment extends DialogFragment {
      * MyDialogCloseListener interface
      */
     public interface MyDialogCloseListener {
-        public void handleDialogClose(DialogInterface dialog);
+         void handleDialogClose(DialogInterface dialog);
     }
 
     /**
      * OnHeadlineSelectedListener interface
      */
     public interface OnHeadlineSelectedListener {
-        public void onArticleSelected(boolean done);
+         void onArticleSelected(boolean done);
     }
 
     @Override

@@ -22,10 +22,30 @@ import java.util.List;
  */
 public class CreditDialogFragment extends DialogFragment {
 
+    /**
+     * instance of AdditionalMethode
+     */
     AdditionalMethods helper = new AdditionalMethods();
+
+    /**
+     * listadapter
+     */
     ExpandableListAdapter listAdapter;
+
+    /**
+     * listview
+     */
     ExpandableListView expListView;
+
+    /**
+     * title
+     */
     List<String> listDataHeader;
+
+    /**
+     * text under title
+     * should be shown when clicked on title (listDataHeader)
+     */
     HashMap<String, List<String>> listDataChild;
 
     /**

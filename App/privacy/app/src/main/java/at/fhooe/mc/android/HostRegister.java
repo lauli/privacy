@@ -3,10 +3,8 @@ package at.fhooe.mc.android;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -14,14 +12,12 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -88,12 +84,7 @@ public class HostRegister extends FragmentActivity implements  LoaderCallbacks<C
     /**
      * Items in Actionbar
      */
-    ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
-
-    /**
-     * SharedPreferences name
-     */
-    private final String MyPREFERENCES = "myPref";
+    ArrayList<NavItem> mNavItems = new ArrayList<>();
 
     /**
      * ListView for Actionbar
@@ -110,6 +101,9 @@ public class HostRegister extends FragmentActivity implements  LoaderCallbacks<C
      */
     private DrawerLayout mDrawerLayout;
 
+    /**
+     * A login screen that offers login via name/ID.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,7 +135,11 @@ public class HostRegister extends FragmentActivity implements  LoaderCallbacks<C
         imageView.setImageDrawable(drawerArrowDrawable);
 
         //------------------------------------------------------------------------ ListView in Actionbar
-        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
+        /*
+      SharedPreferences name
+     */
+        String myPREFERENCES = "myPref";
+        SharedPreferences preferences = getSharedPreferences(myPREFERENCES, MODE_PRIVATE);
         String username = preferences.getString("username", "");
         int punkte = preferences.getInt("points", -1);
 
@@ -178,10 +176,10 @@ public class HostRegister extends FragmentActivity implements  LoaderCallbacks<C
                 // Sometimes slideOffset ends up so close to but not quite 1 or 0.
                 if (slideOffset >= .995) {
                     flipped = true;
-                    drawerArrowDrawable.setFlip(flipped);
+                    drawerArrowDrawable.setFlip(true);
                 } else if (slideOffset <= .005) {
                     flipped = false;
-                    drawerArrowDrawable.setFlip(flipped);
+                    drawerArrowDrawable.setFlip(false);
                 }
 
                 drawerArrowDrawable.setParameter(offset);
@@ -223,7 +221,8 @@ public class HostRegister extends FragmentActivity implements  LoaderCallbacks<C
 
     /**
      * Onclicklistener, which attempts Logintask as soon as you click the host Button
-     * @param view
+     * if input is valid, valls newGame and afterwards HostLobby
+     * @param view  .
      */
     @Override
     public void onClick(View view) {
@@ -301,11 +300,10 @@ public class HostRegister extends FragmentActivity implements  LoaderCallbacks<C
      *
      * Checks if name is valid (no more than 25 chars)
      * @param name  name that needs to be checked if valid
-     * @return
+     * @return  true or false
      */
     private boolean isUsernameValid(String name) {
-        if(name.length() > 25) return false;
-        return true;
+        return name.length() <= 25;
     }
 
 
@@ -379,7 +377,9 @@ public class HostRegister extends FragmentActivity implements  LoaderCallbacks<C
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
 
     }
-
+    /**
+     * ProfileQuery interface
+     */
     private interface ProfileQuery {
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
@@ -387,12 +387,15 @@ public class HostRegister extends FragmentActivity implements  LoaderCallbacks<C
         };
 
         int ADDRESS = 0;
-        int IS_PRIMARY = 1;
     }
 
+    /**
+     * used for menu
+     * when one item is selected, it will react considering which item was clicked
+     * @param position  .
+     */
     private void selectItemFromDrawer(int position) {
 
-        FragmentManager fm = getFragmentManager();
         CreditDialogFragment credit = new CreditDialogFragment();
         credit.show(getSupportFragmentManager(), "Dialog");
 

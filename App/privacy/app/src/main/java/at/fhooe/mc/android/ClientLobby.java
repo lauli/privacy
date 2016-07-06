@@ -33,7 +33,7 @@ import java.util.TimerTask;
 /**
  * Created by laureenschausberger.
  * Activity for Client to see how many players have joined the game
- * will be updated by an intervall
+ * will be updated by an interval
  */
 public class ClientLobby extends FragmentActivity implements View.OnClickListener, QuitDialogFragment.OnHeadlineSelectedListener{
 

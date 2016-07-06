@@ -4,7 +4,8 @@ import org.json.JSONObject;
 
 /**
  * Created by laureenschausberger on 14.06.16.
+ * callback interface for AdditionalMethods calls
  */
 public interface OnJSONResponseCallback {
-    public void onJSONResponse(boolean success, JSONObject response);
+     void onJSONResponse(boolean success, JSONObject response);
 }

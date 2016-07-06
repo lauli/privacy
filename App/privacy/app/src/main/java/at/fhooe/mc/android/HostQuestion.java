@@ -24,12 +24,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class HostQuestion extends FragmentActivity implements View.OnClickListener, QuitDialogFragment.OnHeadlineSelectedListener{
 
-    /**
-     * TextView for the question, which will be shown
-     */
-    private TextView question;
+/**
+ *  Created by laureenschausberger.
+ *  Activity for Host to see question and answer it
+ *  will call HostVoted
+ */
+public class HostQuestion extends FragmentActivity implements View.OnClickListener, QuitDialogFragment.OnHeadlineSelectedListener{
 
     /**
      * menu and actionbar
@@ -56,12 +57,7 @@ public class HostQuestion extends FragmentActivity implements View.OnClickListen
     /**
      * Items in Actionbar
      */
-    ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
-
-    /**
-     * SharedPreferences name
-     */
-    private final String MyPREFERENCES = "myPref";
+    ArrayList<NavItem> mNavItems = new ArrayList<>();
 
     /**
      * ListView for Actionbar
@@ -79,6 +75,10 @@ public class HostQuestion extends FragmentActivity implements View.OnClickListen
     private DrawerLayout mDrawerLayout;
 
 
+    /**
+     *  creates Activity for Host to see question and answer it
+     *  shows question
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -91,7 +91,10 @@ public class HostQuestion extends FragmentActivity implements View.OnClickListen
         b = (Button) findViewById(R.id.host_question_no);
         b.setOnClickListener(this);
 
-        question = (TextView) findViewById(R.id.question);
+        /*
+      TextView for the question, which will be shown
+     */
+        TextView question = (TextView) findViewById(R.id.question);
         String quest = helper.getQuestion();
         question.setText(quest);
 
@@ -105,7 +108,11 @@ public class HostQuestion extends FragmentActivity implements View.OnClickListen
         imageView.setImageDrawable(drawerArrowDrawable);
 
         //------------------------------------------------------------------------ ListView in Actionbar
-        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
+        /*
+      SharedPreferences name
+     */
+        String myPREFERENCES = "myPref";
+        SharedPreferences preferences = getSharedPreferences(myPREFERENCES, MODE_PRIVATE);
         String username = preferences.getString("username", "");
 
         TextView name = (TextView) findViewById(R.id.user_name);
@@ -185,6 +192,11 @@ public class HostQuestion extends FragmentActivity implements View.OnClickListen
         // --------------------------------------------------------------------------------------------  actionbar End!
     }
 
+    /**
+     * onclick calls answerQuestion with  chosen yes/no and default value for guess
+     * call HostVoted
+     * @param view  .
+     */
     @Override
     public void onClick(View view) {
         showProgress(true);
@@ -224,7 +236,12 @@ public class HostQuestion extends FragmentActivity implements View.OnClickListen
         }
     }
 
-
+    /**
+     * used for menu
+     * when one item is selected, it will react considering which item was clicked
+     * @param position  .
+     * @param title     name of title
+     */
     private void selectItemFromDrawer(int position, String title) {
 
         FragmentManager fm = getFragmentManager();
@@ -285,11 +302,19 @@ public class HostQuestion extends FragmentActivity implements View.OnClickListen
         }
     }
 
+    /**
+     * finishes activity and cancels timer if quit is true
+     * is true if user clicked positive button and quitGame was a success
+     * @param quit true if quitGame
+     */
     @Override
     public void onArticleSelected(boolean quit) {
         finish();
     }
 
+    /**
+     * overridden because back should not be able to be pressed
+     */
     @Override
     public void onBackPressed() {
     }

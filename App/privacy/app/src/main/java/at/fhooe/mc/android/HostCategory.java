@@ -3,7 +3,6 @@ package at.fhooe.mc.android;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -28,6 +27,7 @@ import java.util.ArrayList;
 
 /**
  * Created by laureenschausberger.
+ * Activity for Host to show able question categories
  */
 public class HostCategory extends FragmentActivity implements View.OnClickListener{
 
@@ -57,12 +57,7 @@ public class HostCategory extends FragmentActivity implements View.OnClickListen
     /**
      * Items in Actionbar
      */
-    ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
-
-    /**
-     * SharedPreferences name
-     */
-    private final String MyPREFERENCES = "myPref";
+    ArrayList<NavItem> mNavItems = new ArrayList<>();
 
     /**
      * ListView for Actionbar
@@ -80,13 +75,17 @@ public class HostCategory extends FragmentActivity implements View.OnClickListen
     private DrawerLayout mDrawerLayout;
 
 
+    /**
+     * creates activity for hostcategory
+     * shows questioncategories
+     * @param savedInstanceState    .
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.host_category);
 
-        Button b = null;
-        b = (Button) findViewById(R.id.host_category_private);
+        Button b = (Button) findViewById(R.id.host_category_private);
         b.setOnClickListener(this);
         b = (Button) findViewById(R.id.host_category_under18);
         b.setOnClickListener(this);
@@ -103,7 +102,11 @@ public class HostCategory extends FragmentActivity implements View.OnClickListen
         imageView.setImageDrawable(drawerArrowDrawable);
 
         //------------------------------------------------------------------------ ListView in Actionbar
-        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
+        /*
+      SharedPreferences name
+     */
+        String myPREFERENCES = "myPref";
+        SharedPreferences preferences = getSharedPreferences(myPREFERENCES, MODE_PRIVATE);
         String username = preferences.getString("username", "");
         int punkte = preferences.getInt("points", -1);
 
@@ -139,10 +142,10 @@ public class HostCategory extends FragmentActivity implements View.OnClickListen
                 // Sometimes slideOffset ends up so close to but not quite 1 or 0.
                 if (slideOffset >= .995) {
                     flipped = true;
-                    drawerArrowDrawable.setFlip(flipped);
+                    drawerArrowDrawable.setFlip(true);
                 } else if (slideOffset <= .005) {
                     flipped = false;
-                    drawerArrowDrawable.setFlip(flipped);
+                    drawerArrowDrawable.setFlip(false);
                 }
 
                 drawerArrowDrawable.setParameter(offset);
@@ -181,6 +184,10 @@ public class HostCategory extends FragmentActivity implements View.OnClickListen
         // --------------------------------------------------------------------------------------------  actionbar End!
     }
 
+    /**
+     * onclick calls getQuestionIdsByGroupId with chosen categorynumber
+     * @param view  .
+     */
     @Override
     public void onClick(View view) {
         showProgress(true);
@@ -228,9 +235,12 @@ public class HostCategory extends FragmentActivity implements View.OnClickListen
         }
     }
 
+    /**
+     * used for menu
+     * when one item is selected, it will react considering which item was clicked
+     * @param position  .
+     */
     private void selectItemFromDrawer(int position) {
-
-        FragmentManager fm = getFragmentManager();
         CreditDialogFragment credit = new CreditDialogFragment();
         credit.show(getSupportFragmentManager(), "Dialog");
 
@@ -250,7 +260,7 @@ public class HostCategory extends FragmentActivity implements View.OnClickListen
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
 
-        final View mProgressView = (View) findViewById(R.id.host_category_progress);
+        final View mProgressView = findViewById(R.id.host_category_progress);
         LinearLayout b = (LinearLayout) findViewById(R.id.host_category_view);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {

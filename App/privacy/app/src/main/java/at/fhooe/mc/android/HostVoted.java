@@ -32,13 +32,27 @@ import java.util.TimerTask;
 
 /**
  * Created by laureenschausberger.
+ * Activity for Host to control when Guess-Activity gets called (for clients too)
+ * shows answered Users
+ * calls allowContinue for Clients to continue
+ * calls HostGuess
  */
 public class HostVoted extends FragmentActivity implements View.OnClickListener, QuitDialogFragment.OnHeadlineSelectedListener{
 
+    /**
+     * String items for listview
+     */
     private ArrayList<String> listItems = new ArrayList<String>();
-    private ListView list;
 
+    /**
+     * ArrayAdapter for listItems
+     */
     private ArrayAdapter<String> adapter;
+
+    /**
+     * timer for listview
+     * calls getAnsweredUsers
+     */
     private Timer timer = new Timer();
 
     /**
@@ -88,6 +102,11 @@ public class HostVoted extends FragmentActivity implements View.OnClickListener,
      */
     private DrawerLayout mDrawerLayout;
 
+
+    /**
+     * creates Activity for Host to control when Guess-Activity gets called (for clients too)
+     * shows answered Users
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +119,7 @@ public class HostVoted extends FragmentActivity implements View.OnClickListener,
         b = (Button) findViewById(R.id.host_voted_continue);
         b.setOnClickListener(this);
 
-        list = null;
+        ListView list = null;
         list = (ListView) findViewById(R.id.host_voted_players_list);
         this.adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
         list.setAdapter(this.adapter);
@@ -247,6 +266,10 @@ public class HostVoted extends FragmentActivity implements View.OnClickListener,
 
     }
 
+    /**
+     * onclick calls allowContinue and HostGuess
+     * @param view
+     */
     @Override
     public void onClick(View view) {
         timer.cancel();
@@ -266,7 +289,10 @@ public class HostVoted extends FragmentActivity implements View.OnClickListener,
         });
     }
 
-
+    /**
+     * adds a (players) statistic to listview
+     * @param name  name of player
+     */
     public void addItem(String name){
         boolean foundEqual = false;
         if(!adapter.isEmpty()) {
@@ -283,6 +309,12 @@ public class HostVoted extends FragmentActivity implements View.OnClickListener,
         }
     }
 
+    /**
+     * used for menu
+     * when one item is selected, it will react considering which item was clicked
+     * @param position  .
+     * @param title     name of title
+     */
     private void selectItemFromDrawer(int position, String title) {
 
         FragmentManager fm = getFragmentManager();
@@ -336,6 +368,9 @@ public class HostVoted extends FragmentActivity implements View.OnClickListener,
         }
     }
 
+    /**
+     * sets visibility from button to visible
+     */
     public void setVisibilityOfButton() {
         runOnUiThread(new Runnable() {
             @Override
@@ -346,6 +381,11 @@ public class HostVoted extends FragmentActivity implements View.OnClickListener,
         });
     }
 
+    /**
+     * finishes activity and canceled timerPlayer if quit is true
+     * is true if user clicked positive button and quitGame was a success
+     * @param quit true if quitGame
+     */
     @Override
     public void onArticleSelected(boolean quit) {
         timer.cancel();
@@ -354,6 +394,9 @@ public class HostVoted extends FragmentActivity implements View.OnClickListener,
         finish();
     }
 
+    /**
+     * overridden because back should not be able to be pressed
+     */
     @Override
     public void onBackPressed() {
     }

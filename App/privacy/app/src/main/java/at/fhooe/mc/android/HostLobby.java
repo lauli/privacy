@@ -3,7 +3,6 @@ package at.fhooe.mc.android;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -27,12 +26,15 @@ import android.widget.TextView;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
 
 /**
  * Created by laureenschausberger.
+ * Activity for Host to see how many players have joined the game
+ * will be updated by an interval
  */
 public class HostLobby extends FragmentActivity implements View.OnClickListener, QuitDialogFragment.OnHeadlineSelectedListener{
 
@@ -41,11 +43,6 @@ public class HostLobby extends FragmentActivity implements View.OnClickListener,
      * it will be updated permanently by the timer
      */
     private ArrayList<String> listItems = new ArrayList<String>();
-
-    /**
-     * ListView which shows us our listItems with our players
-     */
-    private ListView list;
 
     /**
      * Timer which calls AdditionalMethods-method getPlayersInGame() and saves players in listItems
@@ -83,12 +80,7 @@ public class HostLobby extends FragmentActivity implements View.OnClickListener,
     /**
      * Items in Actionbar
      */
-    ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
-
-    /**
-     * SharedPreferences name
-     */
-    private final String MyPREFERENCES = "myPref";
+    ArrayList<NavItem> mNavItems = new ArrayList<>();
 
     /**
      * ListView for Actionbar
@@ -106,18 +98,23 @@ public class HostLobby extends FragmentActivity implements View.OnClickListener,
     private DrawerLayout mDrawerLayout;
 
 
+    /**
+     * creates Activity for Host to see how many players have joined the game
+     * will be updated by an interval
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.host_lobby);
 
-        Button id = null;
-        id = (Button) findViewById(R.id.host_lobby_players);
+        Button id = (Button) findViewById(R.id.host_lobby_players);
         id.setText("ID: " + helper.getGameId());
 
-        list = null;
-        list = (ListView) findViewById(R.id.host_lobby_players_list);
-        this.adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
+        /*
+      ListView which shows us our listItems with our players
+     */
+        ListView list = (ListView) findViewById(R.id.host_lobby_players_list);
+        this.adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listItems);
         list.setAdapter(this.adapter);
 
         final Handler handler = new Handler();
@@ -161,7 +158,11 @@ public class HostLobby extends FragmentActivity implements View.OnClickListener,
         imageView.setImageDrawable(drawerArrowDrawable);
 
         //------------------------------------------------------------------------ ListView in Actionbar
-        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
+        /*
+      SharedPreferences name
+     */
+        String myPREFERENCES = "myPref";
+        SharedPreferences preferences = getSharedPreferences(myPREFERENCES, MODE_PRIVATE);
         String username = preferences.getString("username", "");
 
         TextView name = (TextView) findViewById(R.id.user_name);
@@ -199,10 +200,10 @@ public class HostLobby extends FragmentActivity implements View.OnClickListener,
                 // Sometimes slideOffset ends up so close to but not quite 1 or 0.
                 if (slideOffset >= .995) {
                     flipped = true;
-                    drawerArrowDrawable.setFlip(flipped);
+                    drawerArrowDrawable.setFlip(true);
                 } else if (slideOffset <= .005) {
                     flipped = false;
-                    drawerArrowDrawable.setFlip(flipped);
+                    drawerArrowDrawable.setFlip(false);
                 }
 
                 drawerArrowDrawable.setParameter(offset);
@@ -242,6 +243,14 @@ public class HostLobby extends FragmentActivity implements View.OnClickListener,
 
     }
 
+    /**
+     * onclick progressview will be shown by showProgress
+     * timerPlayer will be canceled
+     * getQuestionByUserAndGameId will be called
+     * calls HostQuestion
+     * finishes
+     * @param view .
+     */
     @Override
     public void onClick(View view) {
         switch (view.getId()){
@@ -269,6 +278,10 @@ public class HostLobby extends FragmentActivity implements View.OnClickListener,
 
     }
 
+    /**
+     * adds a (players) name to listview
+     * @param name  name of player
+     */
     public void addItem(String name){
         boolean foundEqual = false;
         if(!adapter.isEmpty()) {
@@ -285,10 +298,15 @@ public class HostLobby extends FragmentActivity implements View.OnClickListener,
         }
     }
 
+    /**
+     * used for menu
+     * when one item is selected, it will react considering which item was clicked
+     * @param position  .
+     * @param title     name of title
+     */
     private void selectItemFromDrawer(int position, String title) {
 
-        FragmentManager fm = getFragmentManager();
-        if(title == "Credit") {
+        if(Objects.equals(title, "Credit")) {
             CreditDialogFragment fragment = new CreditDialogFragment();
             fragment.show(getSupportFragmentManager(), "Dialog");
         }
@@ -313,7 +331,7 @@ public class HostLobby extends FragmentActivity implements View.OnClickListener,
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
 
-        final View mProgressView = (View) findViewById(R.id.host_lobby_progress);
+        final View mProgressView = findViewById(R.id.host_lobby_progress);
         Button b = (Button) findViewById(R.id.host_lobby_continue);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
@@ -338,6 +356,9 @@ public class HostLobby extends FragmentActivity implements View.OnClickListener,
         }
     }
 
+    /**
+     * sets button visibilty to visible
+     */
     public void setVisibilityOfButton() {
         runOnUiThread(new Runnable() {
             @Override
@@ -348,6 +369,11 @@ public class HostLobby extends FragmentActivity implements View.OnClickListener,
         });
     }
 
+    /**
+     * finishes activity and canceled timerPlayer if quit is true
+     * is true if user clicked positive button and quitGame was a success
+     * @param quit true if quitGame
+     */
     @Override
     public void onArticleSelected(boolean quit) {
         timer.cancel();
@@ -356,6 +382,9 @@ public class HostLobby extends FragmentActivity implements View.OnClickListener,
         finish();
     }
 
+    /**
+     * overridden because back should not be able to be pressed
+     */
     @Override
     public void onBackPressed() {
     }

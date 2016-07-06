@@ -832,7 +832,7 @@ public class AdditionalMethods {
 
     /**
      * POST REQUEST, that gets statistic of game
-     * used only when others didn't work
+     * used only by Host with use of timer
      * saves howManyYes, pointsFromThisRound, points
      * uses getStatisticsbyGameIdURL
      * result: statistic of game, player: id, name, points, difference, yesses

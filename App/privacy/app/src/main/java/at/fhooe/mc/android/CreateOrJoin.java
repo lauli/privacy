@@ -20,6 +20,11 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Objects;
+/*
+    * Created by laureenschausberger.
+    * creates activity for user to join or create a session
+    * also shows FirstLoginDialogFragment if its open for the first time
+ */
 
 public class CreateOrJoin extends FragmentActivity implements View.OnClickListener, FirstLoginDialogFragment.OnHeadlineSelectedListener{
 
